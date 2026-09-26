@@ -25,7 +25,7 @@ body {
 /* HEADER */
 
 header {
-    height: 72px;
+    height: 70px;
     background: var(--black);
     border-bottom: 4px solid var(--tedx-red);
 
@@ -37,7 +37,7 @@ header {
 
 .logo {
     color: var(--white);
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
 }
 
@@ -47,7 +47,7 @@ header {
 main {
     max-width: 900px;
     margin: 0 auto;
-    padding: 35px 25px 80px;
+    padding: 40px 25px 90px;
 }
 
 
@@ -56,15 +56,16 @@ main {
 .progress {
     display: flex;
     justify-content: space-between;
-    gap: 15px;
+    gap: 18px;
 
-    margin-bottom: 65px;
+    margin-bottom: 70px;
 
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     color: #AAAAAA;
 
     text-transform: uppercase;
+    letter-spacing: 0.4px;
 }
 
 .progress .active {
@@ -79,29 +80,30 @@ main {
 }
 
 .eyebrow {
-    margin: 0 0 12px;
+    margin: 0 0 16px;
 
     color: var(--tedx-red);
 
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 1.5px;
+    letter-spacing: 1.4px;
 }
 
 h1 {
-    margin: 0;
+    margin: 0 0 14px;
 
-    font-size: 42px;
-    line-height: 1.1;
+    font-size: 34px;
+    line-height: 1.25;
+    font-weight: 700;
 }
 
 .subtitle {
-    margin: 15px 0 40px;
+    margin: 0 0 45px;
 
     color: var(--text-grey);
 
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 
@@ -111,7 +113,7 @@ h1 {
     border: 1px solid var(--border);
     border-radius: 10px;
 
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 
     background: var(--white);
 
@@ -123,17 +125,20 @@ h1 {
 .ticket-card:hover {
     border-color: var(--azure);
 
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
 .ticket-content {
-    padding: 28px 30px;
+    padding: 32px 34px;
 }
 
-.ticket-label {
-    display: inline-block;
 
-    margin-bottom: 8px;
+/* CARD TEXT */
+
+.ticket-label {
+    display: block;
+
+    margin-bottom: 11px;
 
     color: var(--tedx-red);
 
@@ -143,32 +148,34 @@ h1 {
 }
 
 .ticket-card h2 {
-    margin: 0 0 8px;
+    margin: 0 0 13px;
 
-    font-size: 25px;
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 700;
 }
 
 .ticket-description {
-    max-width: 620px;
+    max-width: 650px;
 
     margin: 0;
 
     color: var(--text-grey);
 
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.65;
 }
 
 
-/* BOTTOM OF CARD */
+/* BOTTOM SECTION */
 
 .ticket-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    margin-top: 25px;
-    padding-top: 20px;
+    margin-top: 30px;
+    padding-top: 23px;
 
     border-top: 1px solid #EEEEEE;
 }
@@ -178,19 +185,21 @@ h1 {
 
 .price {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 10px;
 }
 
 .price strong {
-    font-size: 22px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 .old-price {
     color: #999999;
-    text-decoration: line-through;
 
-    font-size: 14px;
+    font-size: 13px;
+
+    text-decoration: line-through;
 }
 
 
@@ -201,19 +210,23 @@ h1 {
     align-items: center;
 
     border: 1px solid var(--border);
-    border-radius: 7px;
+    border-radius: 6px;
 
     overflow: hidden;
 }
 
 .quantity button {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
 
     border: none;
-    background: var(--light-grey);
 
-    font-size: 22px;
+    background: var(--light-grey);
+    color: var(--black);
+
+    font-size: 17px;
+    font-weight: 400;
+
     cursor: pointer;
 
     transition: background 0.2s ease;
@@ -224,11 +237,11 @@ h1 {
 }
 
 .quantity span {
-    width: 45px;
+    width: 34px;
 
     text-align: center;
 
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
 }
 
@@ -240,8 +253,8 @@ h1 {
     justify-content: space-between;
     align-items: center;
 
-    margin-top: 35px;
-    padding: 22px 25px;
+    margin-top: 40px;
+    padding: 23px 27px;
 
     background: var(--dark-azure);
     color: var(--white);
@@ -252,18 +265,20 @@ h1 {
 .summary div {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 7px;
 }
 
 .summary span {
-    font-size: 12px;
+    font-size: 11px;
     opacity: 0.75;
+
     text-transform: uppercase;
     letter-spacing: 0.8px;
 }
 
 .summary strong {
-    font-size: 20px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
 
@@ -272,8 +287,8 @@ h1 {
 .continue-button {
     width: 100%;
 
-    margin-top: 15px;
-    padding: 17px;
+    margin-top: 16px;
+    padding: 15px;
 
     border: none;
     border-radius: 7px;
@@ -281,7 +296,7 @@ h1 {
     background: var(--tedx-red);
     color: var(--white);
 
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
 
     cursor: pointer;
@@ -299,13 +314,15 @@ h1 {
 @media (max-width: 650px) {
 
     main {
-        padding: 25px 18px 60px;
+        padding: 30px 18px 60px;
     }
 
     .progress {
-        gap: 8px;
+        gap: 10px;
         overflow-x: auto;
+
         padding-bottom: 5px;
+        margin-bottom: 50px;
     }
 
     .progress span {
@@ -313,20 +330,24 @@ h1 {
     }
 
     h1 {
-        font-size: 34px;
+        font-size: 29px;
+    }
+
+    .subtitle {
+        margin-bottom: 35px;
     }
 
     .ticket-content {
-        padding: 23px;
+        padding: 27px 24px;
     }
 
     .ticket-bottom {
-        align-items: flex-start;
-        gap: 20px;
+        margin-top: 26px;
+        padding-top: 20px;
     }
 
-    .price {
-        flex-wrap: wrap;
+    .summary {
+        padding: 20px 22px;
     }
 
 }
