@@ -440,20 +440,22 @@ function displayAddons() {
 
 function calculatePrices() {
 
-    let mainHallCount =
+    const mainHallCount =
         Number(quantities.mainHall) || 0;
 
-    let vipCount =
+    const vipCount =
         Number(quantities.vip) || 0;
 
-    let watchPartyCount =
+    const watchPartyCount =
         Number(quantities.watchParty) || 0;
 
 
-    /*
-     * Main Hall + VIP share ONE
-     * Early Bird pool.
-     */
+    /* =========================
+       EARLY BIRD
+    ========================= */
+
+    // Main Hall + VIP share one
+    // combined Early Bird pool.
 
     const mainVipTotal =
         mainHallCount + vipCount;
@@ -461,13 +463,11 @@ function calculatePrices() {
     const mainVipEarlyBird =
         Math.min(mainVipTotal, 10);
 
-
     const mainHallEarlyBird =
         Math.min(
             mainHallCount,
             mainVipEarlyBird
         );
-
 
     const vipEarlyBird =
         Math.min(
@@ -476,21 +476,17 @@ function calculatePrices() {
             mainHallEarlyBird
         );
 
-
     const mainHallNormal =
         mainHallCount -
         mainHallEarlyBird;
-
 
     const vipNormal =
         vipCount -
         vipEarlyBird;
 
 
-    /*
-     * Watch Party has its own
-     * Early Bird pool.
-     */
+    // Watch Party has its own
+    // Early Bird pool.
 
     const watchPartyEarlyBird =
         Math.min(
@@ -498,36 +494,34 @@ function calculatePrices() {
             10
         );
 
-
     const watchPartyNormal =
         watchPartyCount -
         watchPartyEarlyBird;
 
 
+    /* =========================
+       TICKET TOTALS
+    ========================= */
+
     const mainHallEarlyTotal =
         mainHallEarlyBird *
         ticketPrices.mainHallEarly;
-
 
     const mainHallNormalTotal =
         mainHallNormal *
         ticketPrices.mainHallNormal;
 
-
     const vipEarlyTotal =
         vipEarlyBird *
         ticketPrices.vipEarly;
-
 
     const vipNormalTotal =
         vipNormal *
         ticketPrices.vipNormal;
 
-
     const watchPartyEarlyTotal =
         watchPartyEarlyBird *
         ticketPrices.watchPartyEarly;
-
 
     const watchPartyNormalTotal =
         watchPartyNormal *
@@ -543,8 +537,92 @@ function calculatePrices() {
         watchPartyNormalTotal;
 
 
-    let addonTotal = 0;
+    /* =========================
+       TICKET BREAKDOWN
+    ========================= */
 
+    const ticketBreakdown =
+        document.getElementById(
+            "ticketPriceBreakdown"
+        );
+
+    if (ticketBreakdown) {
+
+        ticketBreakdown.innerHTML = "";
+
+
+        function addTicketLine(
+            label,
+            quantity,
+            price
+        ) {
+
+            if (quantity <= 0) return;
+
+            const row =
+                document.createElement("div");
+
+            row.className = "price-line";
+
+            row.innerHTML = `
+                <span>
+                    ${label} × ${quantity}
+                </span>
+
+                <strong>
+                    Rp${(
+                        quantity * price
+                    ).toLocaleString("id-ID")}
+                </strong>
+            `;
+
+            ticketBreakdown.appendChild(row);
+        }
+
+
+        addTicketLine(
+            "Main Hall — Early Bird",
+            mainHallEarlyBird,
+            ticketPrices.mainHallEarly
+        );
+
+        addTicketLine(
+            "Main Hall — Normal",
+            mainHallNormal,
+            ticketPrices.mainHallNormal
+        );
+
+        addTicketLine(
+            "VIP — Early Bird",
+            vipEarlyBird,
+            ticketPrices.vipEarly
+        );
+
+        addTicketLine(
+            "VIP — Normal",
+            vipNormal,
+            ticketPrices.vipNormal
+        );
+
+        addTicketLine(
+            "Watch Party — Early Bird",
+            watchPartyEarlyBird,
+            ticketPrices.watchPartyEarly
+        );
+
+        addTicketLine(
+            "Watch Party — Normal",
+            watchPartyNormal,
+            ticketPrices.watchPartyNormal
+        );
+    }
+
+
+    /* =========================
+       ADD-ON TOTAL
+    ========================= */
+
+    let addonTotal = 0;
 
     Object.keys(addons).forEach(key => {
 
@@ -561,93 +639,18 @@ function calculatePrices() {
     });
 
 
-    const grandTotal =
-        ticketTotal + addonTotal;
-
-
     /* =========================
-       DISPLAY BREAKDOWN
+       ADD-ON BREAKDOWN
     ========================= */
 
-    const breakdown =
-        document.getElementById("priceBreakdown");
-
-    if (breakdown) {
-
-        breakdown.innerHTML = "";
-
-
-        function addPriceLine(
-            label,
-            quantity,
-            price
-        ) {
-
-            if (quantity <= 0) return;
-
-            const row =
-                document.createElement("div");
-
-            row.className = "price-line";
-
-            row.innerHTML = `
-
-                <span>
-                    ${label} × ${quantity}
-                </span>
-
-                <strong>
-                    Rp${(
-                        quantity * price
-                    ).toLocaleString("id-ID")}
-                </strong>
-
-            `;
-
-            breakdown.appendChild(row);
-        }
-
-
-        addPriceLine(
-            "Main Hall — Early Bird",
-            mainHallEarlyBird,
-            ticketPrices.mainHallEarly
+    const addonBreakdown =
+        document.getElementById(
+            "addonPriceBreakdown"
         );
 
+    if (addonBreakdown) {
 
-        addPriceLine(
-            "Main Hall — Normal",
-            mainHallNormal,
-            ticketPrices.mainHallNormal
-        );
-
-
-        addPriceLine(
-            "VIP — Early Bird",
-            vipEarlyBird,
-            ticketPrices.vipEarly
-        );
-
-
-        addPriceLine(
-            "VIP — Normal",
-            vipNormal,
-            ticketPrices.vipNormal
-        );
-
-
-        addPriceLine(
-            "Watch Party — Early Bird",
-            watchPartyEarlyBird,
-            ticketPrices.watchPartyEarly
-        );
-
-
-        addPriceLine(
-            "Watch Party — Normal",
-            watchPartyNormal,
-            ticketPrices.watchPartyNormal
-        );
+        addonBreakdown.innerHTML = "";
 
 
         Object.keys(addons).forEach(key => {
@@ -658,45 +661,63 @@ function calculatePrices() {
             const info =
                 addonInfo[key];
 
-            if (!info || quantity <= 0) return;
+            if (!info || quantity <= 0) {
+                return;
+            }
 
-            addPriceLine(
-                info.name,
-                quantity,
-                info.price
-            );
+            const row =
+                document.createElement("div");
+
+            row.className = "price-line";
+
+            row.innerHTML = `
+                <span>
+                    ${info.name} × ${quantity}
+                </span>
+
+                <strong>
+                    Rp${(
+                        quantity * info.price
+                    ).toLocaleString("id-ID")}
+                </strong>
+            `;
+
+            addonBreakdown.appendChild(row);
         });
     }
 
 
     /* =========================
-       TOTAL
+       SUBTOTAL / TOTAL
     ========================= */
 
+    const subtotal =
+        ticketTotal + addonTotal;
+
+
+    const subtotalElement =
+        document.getElementById(
+            "subtotalPrice"
+        );
+
+    if (subtotalElement) {
+
+        subtotalElement.textContent =
+            "Rp" +
+            subtotal.toLocaleString("id-ID");
+    }
+
+
     const totalElement =
-        document.getElementById("reviewTotal");
+        document.getElementById(
+            "reviewTotal"
+        );
 
     if (totalElement) {
 
         totalElement.textContent =
             "Rp" +
-            grandTotal.toLocaleString("id-ID");
-    }
-
-
-    /*
-     * Some versions of your Review page
-     * may use totalPrice instead.
-     */
-
-    const totalPriceElement =
-        document.getElementById("totalPrice");
-
-    if (totalPriceElement) {
-
-        totalPriceElement.textContent =
-            "Rp" +
-            grandTotal.toLocaleString("id-ID");
+            subtotal.toLocaleString("id-ID");
     }
 }
 
@@ -721,6 +742,10 @@ displayAttendees();
 displayAddons();
 
 calculatePrices();
+
+document
+    .getElementById("continueToPayment")
+    .addEventListener("click", continueToPayment);
 
 </script>
 
