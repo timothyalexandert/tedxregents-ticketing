@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,6 +71,14 @@ const ticketQuantities =
     };
 
 
+const ordererDetails =
+    JSON.parse(localStorage.getItem("ordererDetails")) || {
+        name: "",
+        email: "",
+        phone: ""
+    };
+
+
 const attendeeFields =
     document.getElementById("attendeeFields");
 
@@ -85,7 +94,7 @@ function addAttendeeFields(ticketType, quantity) {
 
         const group = document.createElement("div");
 
-        group.className = "attendee-group";
+        group.className = "attendee-box";
 
         group.innerHTML = `
             <div class="attendee-heading">
@@ -94,6 +103,7 @@ function addAttendeeFields(ticketType, quantity) {
             </div>
 
             <div class="form-group">
+
                 <label for="attendeeName${attendeeNumber}">
                     Full name
                 </label>
@@ -104,23 +114,68 @@ function addAttendeeFields(ticketType, quantity) {
                     placeholder="Enter full name"
                     required
                 >
+
             </div>
 
+
             <div class="form-group">
+
                 <label for="attendeeEmail${attendeeNumber}">
                     Email address
                 </label>
 
-                <input
-                    type="email"
-                    id="attendeeEmail${attendeeNumber}"
-                    placeholder="you@example.com"
-                    required
-                >
+                <div class="email-row">
+
+                    <input
+                        type="email"
+                        id="attendeeEmail${attendeeNumber}"
+                        placeholder="you@example.com"
+                        required
+                    >
+
+                    <label class="same-orderer">
+
+                        <input
+                            type="checkbox"
+                            id="sameAsOrderer${attendeeNumber}"
+                            onchange="toggleOrdererEmail(${attendeeNumber})"
+                        >
+
+                        <span>Same as orderer</span>
+
+                    </label>
+
+                </div>
+
             </div>
         `;
 
         attendeeFields.appendChild(group);
+    }
+}
+
+
+function toggleOrdererEmail(number) {
+
+    const checkbox =
+        document.getElementById(`sameAsOrderer${number}`);
+
+    const emailInput =
+        document.getElementById(`attendeeEmail${number}`);
+
+
+    if (checkbox.checked) {
+
+        emailInput.value = ordererDetails.email;
+
+        emailInput.disabled = true;
+
+    } else {
+
+        emailInput.value = "";
+
+        emailInput.disabled = false;
+
     }
 }
 
@@ -170,3 +225,4 @@ document
 </body>
 
 </html>
+```
