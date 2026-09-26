@@ -2642,6 +2642,7 @@ h1 {
 .success-section .subtitle {
     max-width: 540px;
     margin: 15px auto 0;
+    text-align: center;
 }
 
 
