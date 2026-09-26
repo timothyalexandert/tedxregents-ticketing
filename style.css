@@ -1659,11 +1659,10 @@ h1 {
    HEADER LOGO
    ========================================================= */
 
-.site-logo {
+header.site-header img.site-logo {
+    width: 200px !important;
+    height: auto !important;
+    max-width: 200px !important;
+    max-height: 50px !important;
     display: block !important;
-    height: 38px !important;
-    width: auto !important;
-    max-width: 260px !important;
-    max-height: 38px !important;
-    object-fit: contain !important;
 }
