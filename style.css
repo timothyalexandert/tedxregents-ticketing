@@ -420,7 +420,7 @@ h1 {
 }
 
 
-```css
+
 /* ATTENDEES */
 
 .attendee-box {
@@ -428,17 +428,22 @@ h1 {
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 28px 30px 4px;
-    margin-top: 28px;
-    margin-bottom: 28px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    /* Clear separation between attendees */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .attendee-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     margin-bottom: 28px;
     padding-bottom: 18px;
-    border-bottom: 1px solid var(--border);
+
+    border-bottom: 2px solid var(--border);
 }
 
 .attendee-heading span {
@@ -454,38 +459,77 @@ h1 {
     font-weight: 600;
 }
 
-.attendee-box .form-group {
-    margin-bottom: 28px;
+
+/* Email label + Same as orderer */
+
+.email-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 10px;
 }
 
-.email-row {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.email-label-row > label:first-child {
+    margin-bottom: 0;
 }
+
+
+/* Same as orderer */
 
 .same-orderer {
     display: flex !important;
     flex-direction: row !important;
     align-items: center;
-    gap: 8px;
+
+    gap: 6px;
+
     margin: 0 !important;
-    color: var(--text-grey) !important;
-    font-size: 12px !important;
+
+    color: #888888 !important;
+    font-size: 11px !important;
     font-weight: 500 !important;
+
     cursor: pointer;
+    opacity: 0.8;
 }
 
 .same-orderer input {
-    width: 15px;
-    height: 15px;
+    width: 14px;
+    height: 14px;
+
     margin: 0;
+
     accent-color: var(--tedx-red);
+    cursor: pointer;
 }
+
+
+/* Disabled email field */
 
 .form-group input:disabled {
     background: var(--light-grey);
     color: var(--text-grey);
     cursor: not-allowed;
 }
-```
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .attendee-box {
+        padding: 24px 20px 2px;
+    }
+
+    .email-label-row {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .same-orderer {
+        white-space: nowrap;
+    }
+
+}
+
