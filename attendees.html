@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendees — TEDxRegents</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">TEDxRegents</div>
+</header>
+
+
+<main>
+
+    <div class="progress">
+        <span>01 Tickets</span>
+        <span>02 Details</span>
+        <span class="active">03 Attendees</span>
+        <span>04 Seats</span>
+        <span>05 Add-ons</span>
+        <span>06 Review</span>
+        <span>07 Payment</span>
+    </div>
+
+
+    <section class="details-section">
+
+        <p class="eyebrow">ATTENDEES</p>
+
+        <h1>Who’s attending?</h1>
+
+        <p class="subtitle">
+            Enter the details of each person attending TEDxRegents.
+        </p>
+
+
+        <form id="attendeesForm">
+
+            <div id="attendeeFields"></div>
+
+
+            <button
+                type="submit"
+                class="continue-button"
+            >
+                Continue
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const ticketQuantities =
+    JSON.parse(localStorage.getItem("ticketQuantities")) || {
+        mainHall: 0,
+        vip: 0,
+        watchParty: 0
+    };
+
+
+const attendeeFields =
+    document.getElementById("attendeeFields");
+
+
+let attendeeNumber = 0;
+
+
+function addAttendeeFields(ticketType, quantity) {
+
+    for (let i = 1; i <= quantity; i++) {
+
+        attendeeNumber++;
+
+        const group = document.createElement("div");
+
+        group.className = "attendee-group";
+
+        group.innerHTML = `
+            <div class="attendee-heading">
+                <span>ATTENDEE ${attendeeNumber}</span>
+                <strong>${ticketType}</strong>
+            </div>
+
+            <div class="form-group">
+                <label for="attendeeName${attendeeNumber}">
+                    Full name
+                </label>
+
+                <input
+                    type="text"
+                    id="attendeeName${attendeeNumber}"
+                    placeholder="Enter full name"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="attendeeEmail${attendeeNumber}">
+                    Email address
+                </label>
+
+                <input
+                    type="email"
+                    id="attendeeEmail${attendeeNumber}"
+                    placeholder="you@example.com"
+                    required
+                >
+            </div>
+        `;
+
+        attendeeFields.appendChild(group);
+    }
+}
+
+
+addAttendeeFields("Main Hall", ticketQuantities.mainHall);
+addAttendeeFields("VIP", ticketQuantities.vip);
+addAttendeeFields("Watch Party", ticketQuantities.watchParty);
+
+
+document
+    .getElementById("attendeesForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const attendees = [];
+
+        for (let i = 1; i <= attendeeNumber; i++) {
+
+            attendees.push({
+                name:
+                    document
+                        .getElementById(`attendeeName${i}`)
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById(`attendeeEmail${i}`)
+                        .value
+                        .trim()
+            });
+
+        }
+
+        localStorage.setItem(
+            "attendees",
+            JSON.stringify(attendees)
+        );
+
+        window.location.href = "seats.html";
+
+    });
+
+</script>
+
+</body>
+
+</html>
