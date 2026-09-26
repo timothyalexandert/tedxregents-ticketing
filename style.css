@@ -1670,25 +1670,30 @@ h1 {
 /* SECTION HEADINGS */
 
 .review-section-heading {
-    margin-top: 55px;
-    margin-bottom: 20px;
+    margin-top: 52px;
+    margin-bottom: 26px;
 }
 
 .review-section-heading h2 {
     margin: 0;
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--tedx-red);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-size: 21px;
+    font-weight: 700;
+    color: #234f6f;
+    letter-spacing: 0;
 }
 
 .review-heading {
-    margin-top: 60px;
+    margin-top: 58px;
+}
+
+.price-heading {
+    margin-top: 58px;
 }
 
 
-/* YOUR DETAILS */
+/* =========================
+   YOUR DETAILS
+========================= */
 
 #reviewOrderer {
     margin-bottom: 10px;
@@ -1697,14 +1702,17 @@ h1 {
 .orderer-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
-    border: 1px solid #d9d9d9;
+
+    border: 1px solid #d9dde1;
+    border-radius: 10px;
+    overflow: hidden;
+
     background: #ffffff;
 }
 
 .review-detail {
-    padding: 20px 24px;
-    border-right: 1px solid #d9d9d9;
+    padding: 19px 22px;
+    border-right: 1px solid #e1e4e7;
 }
 
 .review-detail:nth-child(2) {
@@ -1714,29 +1722,34 @@ h1 {
 .review-detail.email-detail {
     grid-column: 1 / -1;
     border-right: none;
-    border-top: 1px solid #d9d9d9;
+    border-top: 1px solid #e1e4e7;
 }
 
 .review-detail span {
     display: block;
-    margin-bottom: 7px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #777777;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+
+    font-size: 12px;
+    font-weight: 600;
+    color: #7a858d;
+    text-transform: none;
+    letter-spacing: 0;
 }
 
 .review-detail strong {
     display: block;
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--black);
+
+    font-size: 15px;
+    font-weight: 500;
+    color: #252a2e;
+
     overflow-wrap: anywhere;
 }
 
 
-/* ATTENDEE CARDS */
+/* =========================
+   ATTENDEES
+========================= */
 
 #reviewAttendees {
     display: flex;
@@ -1745,7 +1758,9 @@ h1 {
 }
 
 .attendee-review-card {
-    border: 1px solid #d9d9d9;
+    border: 1px solid #d9dde1;
+    border-radius: 10px;
+    overflow: hidden;
     background: #ffffff;
 }
 
@@ -1758,13 +1773,14 @@ h1 {
     justify-content: space-between;
     gap: 20px;
 
-    padding: 20px 24px;
+    padding: 18px 22px;
 
     cursor: pointer;
     list-style: none;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--black);
+
+    font-size: 16px;
+    font-weight: 600;
+    color: #252a2e;
 }
 
 .attendee-review-card summary::-webkit-details-marker {
@@ -1773,9 +1789,10 @@ h1 {
 
 .attendee-review-card summary::after {
     content: "+";
-    font-size: 22px;
+
+    font-size: 19px;
     font-weight: 400;
-    color: var(--tedx-red);
+    color: #234f6f;
 }
 
 .attendee-review-card[open] summary::after {
@@ -1784,60 +1801,44 @@ h1 {
 
 .attendee-toggle {
     margin-left: auto;
-    font-size: 13px;
-    font-weight: 600;
-    color: #777777;
+
+    font-size: 12px;
+    font-weight: 500;
+    color: #8a9298;
 }
 
 
 /* ATTENDEE CONTENT */
 
 .attendee-review-content {
-    padding: 0 24px 24px;
+    padding: 0 22px 22px;
 }
+
+
+/* REMOVE FULL NAME SECTION */
 
 .attendee-full-name {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding-top: 2px;
-    padding-bottom: 20px;
-}
-
-.attendee-full-name span,
-.attendee-info span {
-    font-size: 12px;
-    font-weight: 700;
-    color: #777777;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.attendee-full-name strong,
-.attendee-info strong {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--black);
-    overflow-wrap: anywhere;
+    display: none;
 }
 
 .attendee-divider {
-    height: 1px;
-    background: #d9d9d9;
-    margin-bottom: 20px;
+    display: none;
 }
 
 
-/* ATTENDEE INFO GRID */
+/* ATTENDEE INFO */
 
 .attendee-info-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+
+    border-top: 1px solid #e1e4e7;
+    padding-top: 18px;
 }
 
 .attendee-info {
-    padding: 0 20px;
-    border-right: 1px solid #d9d9d9;
+    padding: 0 18px;
+    border-right: 1px solid #e1e4e7;
 }
 
 .attendee-info:first-child {
@@ -1851,18 +1852,36 @@ h1 {
 
 .attendee-info span {
     display: block;
-    margin-bottom: 7px;
+    margin-bottom: 6px;
+
+    font-size: 11px;
+    font-weight: 600;
+    color: #7a858d;
+
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.attendee-info strong {
+    display: block;
+
+    font-size: 14px;
+    font-weight: 500;
+    color: #252a2e;
+
+    overflow-wrap: anywhere;
 }
 
 
-/* PRICE BREAKDOWN */
-
-.price-heading {
-    margin-top: 60px;
-}
+/* =========================
+   PRICE BREAKDOWN
+========================= */
 
 .price-breakdown {
-    border: 1px solid #d9d9d9;
+    border: 1px solid #d9dde1;
+    border-radius: 10px;
+    overflow: hidden;
+
     background: #ffffff;
 }
 
@@ -1871,45 +1890,80 @@ h1 {
     width: 100%;
 }
 
+
+/* PRICE LINES */
+
 .price-line {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
 
-    padding: 17px 24px;
+    margin: 0 22px;
+    padding: 15px 0;
 
-    border-bottom: 1px solid #e1e1e1;
-
-    font-size: 15px;
-}
-
-.price-line:last-child {
-    border-bottom: none;
+    font-size: 14px;
 }
 
 .price-line span {
-    color: #444444;
+    color: #4c555b;
+    font-weight: 400;
 }
 
 .price-line strong {
-    color: var(--black);
-    font-weight: 700;
+    color: #252a2e;
+    font-weight: 600;
     white-space: nowrap;
 }
 
 
-/* ADD-ON OWNER */
+/* SUBTOTALS */
 
-.addon-owner-heading {
-    padding: 20px 24px 10px;
+.price-subtotal {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 4px 22px 0;
+    padding: 14px 0;
+
+    border-top: 1px solid #e1e4e7;
 
     font-size: 14px;
-    font-weight: 800;
-    color: var(--tedx-red);
+}
 
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+.price-subtotal span {
+    color: #68737b;
+    font-weight: 500;
+}
+
+.price-subtotal strong {
+    color: #252a2e;
+    font-weight: 700;
+}
+
+
+/* ADD-ONS HEADING */
+
+.addon-owner-heading {
+    margin: 8px 22px 0;
+    padding: 14px 0 5px;
+
+    border-top: 1px solid #e1e4e7;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #234f6f;
+}
+
+.addon-owner-heading .addon-label {
+    color: #234f6f;
+}
+
+.addon-owner-heading .addon-under {
+    color: #8a9298;
+    font-weight: 400;
 }
 
 .addon-price-line {
@@ -1917,7 +1971,9 @@ h1 {
 }
 
 
-/* TOTAL */
+/* =========================
+   GRAND TOTAL
+========================= */
 
 .review-total {
     display: flex;
@@ -1925,44 +1981,49 @@ h1 {
     justify-content: space-between;
     gap: 20px;
 
-    padding: 22px 24px;
+    padding: 19px 22px;
 
     background: #102a43;
     color: #ffffff;
+
+    border-radius: 0 0 10px 10px;
 }
 
 .review-total span {
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 .review-total strong {
-    font-size: 22px;
-    font-weight: 800;
+    font-size: 20px;
+    font-weight: 700;
     color: #ffffff;
 }
 
 
-/* CONTINUE BUTTON */
+/* =========================
+   CONTINUE
+========================= */
 
 .review-section .continue-button {
     margin-top: 24px;
 }
 
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 600px) {
 
     .review-section-heading {
         margin-top: 42px;
-        margin-bottom: 16px;
+        margin-bottom: 22px;
     }
 
     .review-section-heading h2 {
-        font-size: 21px;
+        font-size: 19px;
     }
 
     .orderer-grid {
@@ -1971,11 +2032,11 @@ h1 {
 
     .review-detail {
         border-right: none;
-        border-bottom: 1px solid #d9d9d9;
+        border-bottom: 1px solid #e1e4e7;
     }
 
     .review-detail:nth-child(2) {
-        border-bottom: 1px solid #d9d9d9;
+        border-bottom: 1px solid #e1e4e7;
     }
 
     .review-detail.email-detail {
@@ -1985,54 +2046,57 @@ h1 {
     }
 
     .attendee-review-card summary {
-        padding: 18px 20px;
+        padding: 17px 18px;
     }
 
     .attendee-review-content {
-        padding: 0 20px 20px;
+        padding: 0 18px 18px;
     }
 
     .attendee-info-grid {
         grid-template-columns: 1fr 1fr;
-        gap: 20px 0;
+        gap: 18px 0;
     }
 
     .attendee-info {
-        padding: 0 15px;
-        border-right: 1px solid #d9d9d9;
+        padding: 0 14px;
+        border-right: 1px solid #e1e4e7;
+    }
+
+    .attendee-info:first-child {
+        padding-left: 0;
     }
 
     .attendee-info:nth-child(2) {
         border-right: none;
     }
 
-    .attendee-info:nth-child(3),
-    .attendee-info:nth-child(4) {
-        padding-top: 20px;
-    }
-
     .attendee-info:nth-child(3) {
         padding-left: 0;
+        padding-top: 18px;
     }
 
     .attendee-info:nth-child(4) {
+        padding-top: 18px;
         border-right: none;
     }
 
     .price-line {
-        padding: 15px 18px;
+        margin: 0 18px;
+        padding: 14px 0;
         font-size: 14px;
     }
 
+    .price-subtotal {
+        margin: 4px 18px 0;
+    }
+
     .addon-owner-heading {
-        padding: 18px 18px 8px;
+        margin-left: 18px;
+        margin-right: 18px;
     }
 
     .review-total {
-        padding: 20px 18px;
-    }
-
-    .review-total strong {
-        font-size: 19px;
+        padding: 18px;
     }
 }
