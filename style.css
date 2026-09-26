@@ -421,42 +421,78 @@ h1 {
 
 
 
+```css id="7m4xq8"
 /* ATTENDEES */
+
+#attendeeFields {
+    margin-top: 42px;
+}
+
+
+/* Individual attendee box */
 
 .attendee-box {
     background: var(--white);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 28px 30px 4px;
-    margin-top: 30px;
-    margin-bottom: 30px;
 
-    /* Clear separation between attendees */
+    padding: 30px 30px 6px;
+
+    margin-bottom: 42px;
+
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
+
+
+/* Attendee heading */
 
 .attendee-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    margin-bottom: 28px;
-    padding-bottom: 18px;
+    padding-bottom: 20px;
 
     border-bottom: 2px solid var(--border);
 }
 
+
+.attendee-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+}
+
+
 .attendee-heading span {
     color: var(--tedx-red);
+
     font-size: 11px;
     font-weight: 700;
+
     letter-spacing: 0.08em;
 }
 
+
 .attendee-heading strong {
     color: var(--text-grey);
+
     font-size: 12px;
     font-weight: 600;
+}
+
+
+/* Content inside attendee */
+
+.attendee-content {
+    padding-top: 32px;
+}
+
+
+.attendee-box .form-group {
+    margin-bottom: 34px;
 }
 
 
@@ -467,8 +503,11 @@ h1 {
     justify-content: space-between;
     align-items: center;
 
+    gap: 24px;
+
     margin-bottom: 10px;
 }
+
 
 .email-label-row > label:first-child {
     margin-bottom: 0;
@@ -482,17 +521,22 @@ h1 {
     flex-direction: row !important;
     align-items: center;
 
-    gap: 6px;
+    gap: 8px;
 
     margin: 0 !important;
 
     color: #888888 !important;
+
     font-size: 11px !important;
     font-weight: 500 !important;
 
+    white-space: nowrap;
+
     cursor: pointer;
+
     opacity: 0.8;
 }
+
 
 .same-orderer input {
     width: 14px;
@@ -501,6 +545,7 @@ h1 {
     margin: 0;
 
     accent-color: var(--tedx-red);
+
     cursor: pointer;
 }
 
@@ -509,8 +554,52 @@ h1 {
 
 .form-group input:disabled {
     background: var(--light-grey);
+
     color: var(--text-grey);
+
     cursor: not-allowed;
+}
+
+
+/* COLLAPSIBLE ATTENDEES */
+
+.attendee-box.collapsible .attendee-heading {
+    cursor: pointer;
+}
+
+
+.attendee-arrow {
+    flex: 0 0 auto;
+
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 18px;
+
+    color: var(--text-grey) !important;
+
+    font-size: 18px !important;
+
+    transition: transform 0.2s ease;
+}
+
+
+.attendee-box.collapsible .attendee-content {
+    display: none;
+}
+
+
+.attendee-box.collapsible.open .attendee-content {
+    display: block;
+}
+
+
+.attendee-box.collapsible.open .attendee-arrow {
+    transform: rotate(180deg);
 }
 
 
@@ -518,13 +607,24 @@ h1 {
 
 @media (max-width: 600px) {
 
+    #attendeeFields {
+        margin-top: 34px;
+    }
+
     .attendee-box {
-        padding: 24px 20px 2px;
+        padding: 25px 20px 2px;
+
+        margin-bottom: 32px;
+    }
+
+    .attendee-content {
+        padding-top: 28px;
     }
 
     .email-label-row {
         align-items: flex-start;
-        gap: 10px;
+
+        gap: 12px;
     }
 
     .same-orderer {
@@ -532,4 +632,3 @@ h1 {
     }
 
 }
-
