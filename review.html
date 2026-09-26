@@ -401,7 +401,6 @@ function displayAttendees() {
 
 function calculatePrices() {
 
-
     const mainHallCount =
         Number(quantities.mainHall) || 0;
 
@@ -415,9 +414,6 @@ function calculatePrices() {
     /* =========================
        EARLY BIRD
     ========================= */
-
-    // Main Hall + VIP share one
-    // combined Early Bird pool.
 
     const mainVipTotal =
         mainHallCount + vipCount;
@@ -446,9 +442,6 @@ function calculatePrices() {
         vipCount -
         vipEarlyBird;
 
-
-    // Watch Party has its own
-    // Early Bird pool.
 
     const watchPartyEarlyBird =
         Math.min(
@@ -524,7 +517,8 @@ function calculatePrices() {
             const row =
                 document.createElement("div");
 
-            row.className = "price-line";
+            row.className =
+                "price-line";
 
             row.innerHTML = `
                 <span>
@@ -577,6 +571,27 @@ function calculatePrices() {
             watchPartyNormal,
             ticketPrices.watchPartyNormal
         );
+
+
+        /* TICKETS SUBTOTAL */
+
+        const ticketSubtotal =
+            document.createElement("div");
+
+        ticketSubtotal.className =
+            "price-subtotal";
+
+        ticketSubtotal.innerHTML = `
+            <span>Tickets subtotal</span>
+
+            <strong>
+                Rp${ticketTotal.toLocaleString("id-ID")}
+            </strong>
+        `;
+
+        ticketBreakdown.appendChild(
+            ticketSubtotal
+        );
     }
 
 
@@ -601,105 +616,134 @@ function calculatePrices() {
     });
 
 
-  /* =========================
-   ADD-ON BREAKDOWN
-========================= */
+    /* =========================
+       ADD-ON BREAKDOWN
+    ========================= */
 
-const addonBreakdown =
-    document.getElementById(
-        "addonPriceBreakdown"
-    );
-
-if (addonBreakdown) {
-
-    addonBreakdown.innerHTML = "";
-
-    const ownerIndex =
-        Number(addonOwner);
-
-    const owner =
-        attendees[ownerIndex];
-
-    const ownerName =
-        owner
-            ? owner.name
-            : "Unassigned";
-
-
-    const selectedAddons = [];
-
-    Object.keys(addons).forEach(key => {
-
-        const quantity =
-            Number(addons[key]) || 0;
-
-        const info =
-            addonInfo[key];
-
-        if (!info || quantity <= 0) {
-            return;
-        }
-
-        selectedAddons.push({
-            name: info.name,
-            quantity: quantity,
-            price: info.price
-        });
-
-    });
-
-
-    if (selectedAddons.length > 0) {
-
-        const heading =
-            document.createElement("div");
-
-        heading.className =
-            "addon-owner-heading";
-
-        heading.textContent =
-            ownerName;
-
-        addonBreakdown.appendChild(
-            heading
+    const addonBreakdown =
+        document.getElementById(
+            "addonPriceBreakdown"
         );
 
+    if (addonBreakdown) {
 
-        selectedAddons.forEach(addon => {
+        addonBreakdown.innerHTML = "";
 
-            const row =
+        const ownerIndex =
+            Number(addonOwner);
+
+        const owner =
+            attendees[ownerIndex];
+
+        const ownerName =
+            owner
+                ? owner.name
+                : "Unassigned";
+
+
+        const selectedAddons = [];
+
+
+        Object.keys(addons).forEach(key => {
+
+            const quantity =
+                Number(addons[key]) || 0;
+
+            const info =
+                addonInfo[key];
+
+            if (!info || quantity <= 0) {
+                return;
+            }
+
+            selectedAddons.push({
+                name: info.name,
+                quantity: quantity,
+                price: info.price
+            });
+
+        });
+
+
+        if (selectedAddons.length > 0) {
+
+            const heading =
                 document.createElement("div");
 
-            row.className =
-                "price-line addon-price-line";
+            heading.className =
+                "addon-owner-heading";
 
-            row.innerHTML = `
-                <span>
-                    ${addon.name} × ${addon.quantity}
+            heading.innerHTML = `
+                <span class="addon-label">
+                    Add ons
                 </span>
 
+                <span class="addon-under">
+                    , under ${ownerName}
+                </span>
+            `;
+
+            addonBreakdown.appendChild(
+                heading
+            );
+
+
+            selectedAddons.forEach(addon => {
+
+                const row =
+                    document.createElement("div");
+
+                row.className =
+                    "price-line addon-price-line";
+
+                row.innerHTML = `
+                    <span>
+                        ${addon.name} × ${addon.quantity}
+                    </span>
+
+                    <strong>
+                        Rp${(
+                            addon.price *
+                            addon.quantity
+                        ).toLocaleString("id-ID")}
+                    </strong>
+                `;
+
+                addonBreakdown.appendChild(row);
+
+            });
+
+
+            /* ADD-ONS SUBTOTAL */
+
+            const addonSubtotal =
+                document.createElement("div");
+
+            addonSubtotal.className =
+                "price-subtotal";
+
+            addonSubtotal.innerHTML = `
+                <span>Add ons subtotal</span>
+
                 <strong>
-                    Rp${(
-                        addon.price *
-                        addon.quantity
-                    ).toLocaleString("id-ID")}
+                    Rp${addonTotal.toLocaleString("id-ID")}
                 </strong>
             `;
 
-            addonBreakdown.appendChild(row);
-
-        });
-
+            addonBreakdown.appendChild(
+                addonSubtotal
+            );
+        }
     }
-}
 
 
     /* =========================
-       SUBTOTAL / TOTAL
+       GRAND TOTAL
     ========================= */
 
-    const subtotal =
+    const grandTotal =
         ticketTotal + addonTotal;
+
 
     const totalElement =
         document.getElementById(
@@ -710,7 +754,7 @@ if (addonBreakdown) {
 
         totalElement.textContent =
             "Rp" +
-            subtotal.toLocaleString("id-ID");
+            grandTotal.toLocaleString("id-ID");
     }
 }
 
