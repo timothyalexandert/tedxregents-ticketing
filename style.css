@@ -668,9 +668,10 @@ h1 {
    ----------------------------------------- */
 
 @media (max-width: 600px) {
-    .attendees-form {
-        padding-top: 30px !important;
+    .details-section > .subtitle {
+        margin-bottom: 30px !important;
     }
+}
 
     .attendee-heading {
         padding: 16px 20px !important;
@@ -690,11 +691,31 @@ h1 {
     }
 }
 
+
+/* SPACE BETWEEN SUBTITLE AND FIRST ATTENDEE */
+
+.details-section > .subtitle {
+    margin-bottom: 42px !important;
+}
+
 .attendees-form {
-    padding-top: 42px !important;
     margin-top: 0 !important;
+    padding-top: 0 !important;
 }
 
 #attendeeFields {
     margin-top: 0 !important;
+}
+
+#attendeeFields .attendee-box:first-child {
+    margin-top: 0 !important;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+    .details-section > .subtitle {
+        margin-bottom: 30px !important;
+    }
 }
