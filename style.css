@@ -437,31 +437,24 @@ h1 {
    ATTENDEE BOX
    ----------------------------------------- */
 
-.attendee-box {
-    display: block !important;
-
-    width: 100%;
-
-    .attendee-box {
-    margin-bottom: 20px !important;
-}
-
-.attendee-box[open] {
-    margin-bottom: 42px !important;
-}
-    padding: 0 !important;
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    box-shadow: none;
-
-    overflow: hidden;
-
-    box-sizing: border-box;
-}
+.attendee-box { 
+    display: block !important; 
+    
+    width: 100%; 
+    
+    margin: 0 0 42px 0 !important; 
+    padding: 0 !important; 
+    
+    background: var(--white); 
+    
+    border: 1px solid var(--border); 
+    border-radius: 10px; 
+    
+    box-shadow: none; 
+    
+    overflow: hidden; 
+    
+    box-sizing: border-box; }
 
 
 /* -----------------------------------------
