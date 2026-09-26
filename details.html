@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Your Details — TEDxRegents</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">TEDxRegents</div>
+</header>
+
+
+<main>
+
+    <!-- PROGRESS -->
+
+    <div class="progress">
+        <span>01 Tickets</span>
+        <span class="active">02 Details</span>
+        <span>03 Attendees</span>
+        <span>04 Seats</span>
+        <span>05 Add-ons</span>
+        <span>06 Review</span>
+        <span>07 Payment</span>
+    </div>
+
+
+    <!-- DETAILS -->
+
+    <section class="details-section">
+
+        <p class="eyebrow">YOUR DETAILS</p>
+
+        <h1>Who's placing the order?</h1>
+
+        <p class="subtitle">
+            Enter the contact details of the person making this booking.
+        </p>
+
+
+        <form id="detailsForm">
+
+            <!-- NAME -->
+
+            <div class="form-group">
+
+                <label for="name">
+                    Full name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="form-group">
+
+                <label for="email">
+                    Email address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="you@example.com"
+                    required
+                >
+
+            </div>
+
+
+            <!-- PHONE -->
+
+            <div class="form-group">
+
+                <label for="phone">
+                    Phone number
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+62 812 3456 7890"
+                    required
+                >
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="continue-button"
+            >
+                Continue
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const form = document.getElementById("detailsForm");
+
+
+form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+
+    const ordererDetails = {
+
+        name:
+            document.getElementById("name").value.trim(),
+
+        email:
+            document.getElementById("email").value.trim(),
+
+        phone:
+            document.getElementById("phone").value.trim()
+
+    };
+
+
+    /*
+        Save the person placing the order.
+
+        This is temporary frontend storage.
+        The final order will eventually be handled by Pretix.
+    */
+
+    localStorage.setItem(
+        "ordererDetails",
+        JSON.stringify(ordererDetails)
+    );
+
+
+    window.location.href = "attendees.html";
+
+});
+
+</script>
+
+</body>
+
+</html>
