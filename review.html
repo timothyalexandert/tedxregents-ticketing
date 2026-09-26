@@ -47,6 +47,14 @@
             Make sure everything looks right before continuing to payment.
         </p>
 
+        <!-- ORDERER -->
+
+        <div class="review-section-heading">
+            <h2>Orderer</h2>
+        </div>
+        
+        <div id="reviewOrderer"></div>
+
 
         <!-- ATTENDEES -->
 
@@ -149,6 +157,9 @@ const quantities =
 const attendees =
     getStoredJSON("attendees", []);
 
+const ordererDetails =
+    getStoredJSON("ordererDetails", {});
+
 const selectedSeats =
     getStoredJSON("selectedSeats", {});
 
@@ -240,6 +251,44 @@ const addonInfo = {
     }
 };
 
+/* =========================
+   ORDERER DETAILS
+========================= */
+    function displayOrderer() {
+
+    const container =
+        document.getElementById("reviewOrderer");
+
+    if (!container) return;
+
+    container.innerHTML = `
+
+        <div class="review-block">
+
+            <div class="attendee-review-detail">
+                <span>Name</span>
+                <strong>
+                    ${ordererDetails.name || "Not provided"}
+                </strong>
+            </div>
+
+            <div class="attendee-review-detail">
+                <span>Email</span>
+                <strong>
+                    ${ordererDetails.email || "Not provided"}
+                </strong>
+            </div>
+
+            <div class="attendee-review-detail">
+                <span>Phone</span>
+                <strong>
+                    ${ordererDetails.phone || "Not provided"}
+                </strong>
+            </div>
+
+        </div>
+    `;
+}
 
 /* =========================
    ATTENDEE DETAILS
@@ -736,12 +785,15 @@ function continueToPayment() {
 /* =========================
    START
 ========================= */
+displayOrderer();
 
 displayAttendees();
 
 displayAddons();
 
 calculatePrices();
+
+
 
 document
     .getElementById("continueToPayment")
