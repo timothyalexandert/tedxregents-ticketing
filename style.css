@@ -2148,31 +2148,6 @@ h1 {
     margin: 0 auto;
 }
 
-.payment-total {
-    margin-top: 38px;
-    padding: 20px 22px;
-    background: #102a43;
-    border-radius: 12px;
-    color: #ffffff;
-}
-
-.payment-total > div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.payment-total span {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.payment-total strong {
-    font-size: 21px;
-    font-weight: 700;
-    white-space: nowrap;
-}
 
 
 /* =========================
