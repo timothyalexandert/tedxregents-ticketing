@@ -2583,3 +2583,226 @@ h1 {
         font-size: 19px;
     }
 }
+
+
+
+
+
+
+
+```css
+/* =========================
+   SUCCESS PAGE
+========================= */
+
+.success-section {
+    max-width: 650px;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 60px;
+}
+
+
+/* =========================
+   SUCCESS ICON
+========================= */
+
+.success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 64px;
+    height: 64px;
+
+    margin: 64px auto 28px;
+
+    border-radius: 50%;
+
+    background: #102a43;
+    color: #ffffff;
+
+    font-size: 31px;
+    font-weight: 500;
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.success-section .eyebrow {
+    margin-bottom: 13px;
+}
+
+.success-section h1 {
+    margin: 0;
+}
+
+.success-section .subtitle {
+    max-width: 540px;
+    margin: 15px auto 0;
+}
+
+
+/* =========================
+   ORDER SUMMARY
+========================= */
+
+.success-summary {
+    margin-top: 48px;
+
+    border: 1px solid #d9dde1;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    background: #ffffff;
+
+    text-align: left;
+}
+
+.success-summary-heading {
+    padding: 19px 22px;
+
+    border-bottom: 1px solid #e1e4e7;
+}
+
+.success-summary-heading h2 {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #234f6f;
+}
+
+.success-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 17px 22px;
+
+    border-bottom: 1px solid #e1e4e7;
+}
+
+.success-detail:last-child {
+    border-bottom: none;
+}
+
+.success-detail span {
+    font-size: 12px;
+    font-weight: 600;
+    color: #7a858d;
+}
+
+.success-detail strong {
+    font-size: 14px;
+    font-weight: 600;
+    color: #252a2e;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================
+   NEXT STEPS
+========================= */
+
+.success-next {
+    margin-top: 38px;
+
+    padding: 22px;
+
+    border: 1px solid #d9dde1;
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    text-align: left;
+}
+
+.success-next h2 {
+    margin: 0 0 8px;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    color: #234f6f;
+}
+
+.success-next p {
+    margin: 0;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    color: #7a858d;
+}
+
+
+/* =========================
+   NOTE
+========================= */
+
+.success-note {
+    margin: 24px auto 0;
+
+    max-width: 540px;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: #8a9298;
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.success-section .continue-button {
+    width: 100%;
+    margin-top: 24px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .success-icon {
+        width: 58px;
+        height: 58px;
+
+        margin-top: 48px;
+        margin-bottom: 24px;
+
+        font-size: 28px;
+    }
+
+    .success-summary {
+        margin-top: 38px;
+    }
+
+    .success-detail {
+        align-items: flex-start;
+        padding: 16px 18px;
+    }
+
+    .success-detail strong {
+        max-width: 60%;
+    }
+
+    .success-next {
+        margin-top: 30px;
+        padding: 18px;
+    }
+}
+```
+
