@@ -33,8 +33,9 @@ body {
     align-items: center;
 
     padding: 0 7%;
-}
 
+    overflow: hidden;
+}
 
 /* MAIN */
 
@@ -1659,9 +1660,10 @@ h1 {
    ========================================================= */
 
 .site-logo {
-    height: 38px;
-    width: auto;
-    max-width: 260px;
-    object-fit: contain;
-    display: block;
+    display: block !important;
+    height: 38px !important;
+    width: auto !important;
+    max-width: 260px !important;
+    max-height: 38px !important;
+    object-fit: contain !important;
 }
