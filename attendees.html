@@ -46,6 +46,7 @@
 
 
         <form id="attendeesForm" class="attendees-form">
+
             <div id="attendeeFields"></div>
 
 
@@ -94,6 +95,10 @@ const totalAttendees =
     ticketQuantities.watchParty;
 
 
+/* =========================
+   ADD ATTENDEE FIELDS
+========================= */
+
 function addAttendeeFields(ticketType, quantity) {
 
     for (let i = 1; i <= quantity; i++) {
@@ -102,17 +107,17 @@ function addAttendeeFields(ticketType, quantity) {
 
 
         /*
-            Use normal boxes for 1–2 attendees.
-
-            If there are more than 2 attendees,
-            use native collapsible <details>.
+            Use collapsible boxes for 3+ attendees.
+            Keep normal boxes for 1–2 attendees.
         */
 
         if (totalAttendees > 2) {
 
-            const box = document.createElement("details");
+            const box =
+                document.createElement("details");
 
-            box.className = "attendee-box";
+            box.className =
+                "attendee-box";
 
             if (attendeeNumber === 1) {
                 box.open = true;
@@ -125,7 +130,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                     <span class="attendee-name">
                         ATTENDEE ${attendeeNumber}
-                        <em>  -  ${ticketType}</em>
+                        <em> - ${ticketType}</em>
                     </span>
 
                     <span class="attendee-arrow">⌄</span>
@@ -135,9 +140,13 @@ function addAttendeeFields(ticketType, quantity) {
 
                 <div class="attendee-content">
 
+                    <!-- FULL NAME -->
+
                     <div class="form-group">
 
-                        <label for="attendeeName${attendeeNumber}">
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
                             Full name
                         </label>
 
@@ -151,11 +160,52 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
 
+                    <!-- PHONE -->
+
                     <div class="form-group">
 
                         <div class="email-label-row">
 
-                            <label for="attendeeEmail${attendeeNumber}">
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
                                 Email address
                             </label>
 
@@ -163,7 +213,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                                 <input
                                     type="checkbox"
-                                    id="sameAsOrderer${attendeeNumber}"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
                                     onchange="toggleOrdererEmail(${attendeeNumber})"
                                 >
 
@@ -191,9 +241,11 @@ function addAttendeeFields(ticketType, quantity) {
 
         } else {
 
-            const box = document.createElement("div");
+            const box =
+                document.createElement("div");
 
-            box.className = "attendee-box";
+            box.className =
+                "attendee-box";
 
 
             box.innerHTML = `
@@ -202,7 +254,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                     <span class="attendee-name">
                         ATTENDEE ${attendeeNumber}
-                        <em>  -  ${ticketType}</em>
+                        <em> - ${ticketType}</em>
                     </span>
 
                 </div>
@@ -210,9 +262,13 @@ function addAttendeeFields(ticketType, quantity) {
 
                 <div class="attendee-content">
 
+                    <!-- FULL NAME -->
+
                     <div class="form-group">
 
-                        <label for="attendeeName${attendeeNumber}">
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
                             Full name
                         </label>
 
@@ -226,11 +282,52 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
 
+                    <!-- PHONE -->
+
                     <div class="form-group">
 
                         <div class="email-label-row">
 
-                            <label for="attendeeEmail${attendeeNumber}">
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
                                 Email address
                             </label>
 
@@ -238,7 +335,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                                 <input
                                     type="checkbox"
-                                    id="sameAsOrderer${attendeeNumber}"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
                                     onchange="toggleOrdererEmail(${attendeeNumber})"
                                 >
 
@@ -268,30 +365,81 @@ function addAttendeeFields(ticketType, quantity) {
 }
 
 
-function toggleOrdererEmail(number) {
+/* =========================
+   SAME AS ORDERER — PHONE
+========================= */
+
+function toggleOrdererPhone(number) {
 
     const checkbox =
-        document.getElementById(`sameAsOrderer${number}`);
+        document.getElementById(
+            `sameAsOrdererPhone${number}`
+        );
 
-    const emailInput =
-        document.getElementById(`attendeeEmail${number}`);
+    const phoneInput =
+        document.getElementById(
+            `attendeePhone${number}`
+        );
 
 
     if (checkbox.checked) {
 
-        emailInput.value = ordererDetails.email;
+        phoneInput.value =
+            ordererDetails.phone;
 
-        emailInput.disabled = true;
+        phoneInput.disabled =
+            true;
 
     } else {
 
-        emailInput.value = "";
+        phoneInput.value =
+            "";
 
-        emailInput.disabled = false;
-
+        phoneInput.disabled =
+            false;
     }
 }
 
+
+/* =========================
+   SAME AS ORDERER — EMAIL
+========================= */
+
+function toggleOrdererEmail(number) {
+
+    const checkbox =
+        document.getElementById(
+            `sameAsOrdererEmail${number}`
+        );
+
+    const emailInput =
+        document.getElementById(
+            `attendeeEmail${number}`
+        );
+
+
+    if (checkbox.checked) {
+
+        emailInput.value =
+            ordererDetails.email;
+
+        emailInput.disabled =
+            true;
+
+    } else {
+
+        emailInput.value =
+            "";
+
+        emailInput.disabled =
+            false;
+    }
+}
+
+
+/* =========================
+   BUILD ATTENDEES
+========================= */
 
 addAttendeeFields(
     "Main Hall",
@@ -309,6 +457,10 @@ addAttendeeFields(
 );
 
 
+/* =========================
+   SAVE ATTENDEES
+========================= */
+
 document
     .getElementById("attendeesForm")
     .addEventListener("submit", function(event) {
@@ -324,13 +476,25 @@ document
 
                 name:
                     document
-                        .getElementById(`attendeeName${i}`)
+                        .getElementById(
+                            `attendeeName${i}`
+                        )
+                        .value
+                        .trim(),
+
+                phone:
+                    document
+                        .getElementById(
+                            `attendeePhone${i}`
+                        )
                         .value
                         .trim(),
 
                 email:
                     document
-                        .getElementById(`attendeeEmail${i}`)
+                        .getElementById(
+                            `attendeeEmail${i}`
+                        )
                         .value
                         .trim()
 
@@ -345,7 +509,8 @@ document
         );
 
 
-        window.location.href = "seats.html";
+        window.location.href =
+            "seats.html";
 
     });
 
@@ -354,4 +519,3 @@ document
 </body>
 
 </html>
-```
