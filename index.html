@@ -3,65 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEDxRegents — Get Your Tickets</title>
+    <title>Tickets — TEDxRegents</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <header>
-        <h1>TEDxRegents</h1>
-        <p>Secondary School Bali</p>
-    </header>
+<header>
+    <div class="logo">TEDxRegents</div>
+</header>
 
-    <main>
-        <div class="progress">
-            <span class="active">01 Tickets</span>
-            <span>02 Details</span>
-            <span>03 Attendees</span>
-            <span>04 Seats</span>
-            <span>05 Add-ons</span>
-            <span>06 Review</span>
-            <span>07 Payment</span>
-        </div>
+<main>
 
-        <section class="ticket-page">
-            <p class="eyebrow">TEDxRegents Secondary School Bali</p>
-            <h2>Get Your Tickets</h2>
-            <p class="description">
-                Choose your ticket type to get started.
-            </p>
+    <!-- PROGRESS -->
+    <div class="progress">
+        <span class="active">01 Tickets</span>
+        <span>02 Details</span>
+        <span>03 Attendees</span>
+        <span>04 Seats</span>
+        <span>05 Add-ons</span>
+        <span>06 Review</span>
+        <span>07 Payment</span>
+    </div>
 
-            <div class="ticket-options">
 
-                <div class="ticket-card">
-                    <div>
-                        <h3>Main Hall</h3>
-                        <p>Watch TEDxRegents live in the main hall.</p>
-                    </div>
-                    <button>Choose</button>
+    <!-- TICKET SECTION -->
+    <section class="ticket-section">
+
+        <p class="eyebrow">TEDxREGENTS SECONDARY SCHOOL BALI</p>
+
+        <h1>Choose your tickets.</h1>
+
+        <p class="subtitle">
+            Pick your tickets below. Early Bird pricing is available while it lasts.
+        </p>
+
+
+        <!-- MAIN HALL -->
+        <div class="ticket-card">
+
+            <div class="ticket-content">
+
+                <div>
+                    <span class="ticket-label">MAIN HALL</span>
+
+                    <h2>Main Hall</h2>
+
+                    <p class="ticket-description">
+                        Experience the full TEDxRegents programme live in the main
+                        auditorium, surrounded by speakers, performances, and the
+                        TEDx community.
+                    </p>
                 </div>
 
-                <div class="ticket-card">
-                    <div>
-                        <h3>VIP</h3>
-                        <p>Enjoy the VIP experience while choosing your own Main Hall seat.</p>
-                    </div>
-                    <button>Choose</button>
-                </div>
+                <div class="ticket-bottom">
 
-                <div class="ticket-card">
-                    <div>
-                        <h3>Watch Party</h3>
-                        <p>Experience TEDxRegents together from our Watch Party.</p>
+                    <div class="price">
+                        <strong>Rp40,000</strong>
+                        <span class="old-price">Rp45,000</span>
                     </div>
-                    <button>Choose</button>
+
+                    <div class="quantity">
+                        <button onclick="changeQuantity('mainHall', -1)">−</button>
+
+                        <span id="mainHallQuantity">0</span>
+
+                        <button onclick="changeQuantity('mainHall', 1)">+</button>
+                    </div>
+
                 </div>
 
             </div>
-        </section>
-    </main>
 
-    <script src="script.js"></script>
+        </div>
+
+
+        <!-- VIP -->
+        <div class="ticket-card">
+
+            <div class="ticket-content">
+
+                <div>
+                    <span class="ticket-label">VIP</span>
+
+                    <h2>VIP</h2>
+
+                    <p class="ticket-description">
+                        Enjoy the TEDxRegents experience with exclusive VIP
+                        benefits throughout the event.
+                    </p>
+                </div>
+
+                <div class="ticket-bottom">
+
+                    <div class="price">
+                        <strong>Rp50,000</strong>
+                        <span class="old-price">Rp55,000</span>
+                    </div>
+
+                    <div class="quantity">
+                        <button onclick="changeQuantity('vip', -1)">−</button>
+
+                        <span id="vipQuantity">0</span>
+
+                        <button onclick="changeQuantity('vip', 1)">+</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- WATCH PARTY -->
+        <div class="ticket-card">
+
+            <div class="ticket-content">
+
+                <div>
+                    <span class="ticket-label">WATCH PARTY</span>
+
+                    <h2>Watch Party</h2>
+
+                    <p class="ticket-description">
+                        Catch the TEDxRegents experience together with the
+                        community from our dedicated Watch Party space.
+                    </p>
+                </div>
+
+                <div class="ticket-bottom">
+
+                    <div class="price">
+                        <strong>Rp25,000</strong>
+                        <span class="old-price">Rp30,000</span>
+                    </div>
+
+                    <div class="quantity">
+                        <button onclick="changeQuantity('watchParty', -1)">−</button>
+
+                        <span id="watchPartyQuantity">0</span>
+
+                        <button onclick="changeQuantity('watchParty', 1)">+</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ORDER SUMMARY -->
+        <div class="summary">
+
+            <div>
+                <span>Total tickets</span>
+                <strong id="totalTickets">0</strong>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong id="totalPrice">Rp0</strong>
+            </div>
+
+        </div>
+
+
+        <button class="continue-button" onclick="continueToDetails()">
+            Continue
+        </button>
+
+    </section>
+
+</main>
+
+
+<script>
+
+const quantities = {
+    mainHall: 0,
+    vip: 0,
+    watchParty: 0
+};
+
+
+function changeQuantity(type, amount) {
+
+    quantities[type] += amount;
+
+    if (quantities[type] < 0) {
+        quantities[type] = 0;
+    }
+
+    document.getElementById(type + "Quantity").textContent =
+        quantities[type];
+
+    updateSummary();
+}
+
+
+function updateSummary() {
+
+    const mainHall = quantities.mainHall;
+    const vip = quantities.vip;
+    const watchParty = quantities.watchParty;
+
+    /*
+        TEMPORARY calculation for testing.
+
+        Main Hall + VIP share the first 10 Early Bird tickets.
+        Watch Party has its own first 10 Early Bird tickets.
+
+        The real calculation will eventually be handled
+        by Pretix/backend.
+    */
+
+    const mainVipTotal = mainHall + vip;
+
+    const mainVipEarlyBird = Math.min(mainVipTotal, 10);
+
+    const mainHallEarlyBird = Math.min(
+        mainHall,
+        mainVipEarlyBird
+    );
+
+    const vipEarlyBird = Math.min(
+        vip,
+        mainVipEarlyBird - mainHallEarlyBird
+    );
+
+    const mainHallNormal =
+        mainHall - mainHallEarlyBird;
+
+    const vipNormal =
+        vip - vipEarlyBird;
+
+
+    const watchPartyEarlyBird =
+        Math.min(watchParty, 10);
+
+    const watchPartyNormal =
+        watchParty - watchPartyEarlyBird;
+
+
+    const totalPrice =
+        (mainHallEarlyBird * 40000) +
+        (mainHallNormal * 45000) +
+
+        (vipEarlyBird * 50000) +
+        (vipNormal * 55000) +
+
+        (watchPartyEarlyBird * 25000) +
+        (watchPartyNormal * 30000);
+
+
+    const totalTickets =
+        mainHall +
+        vip +
+        watchParty;
+
+
+    document.getElementById("totalTickets").textContent =
+        totalTickets;
+
+    document.getElementById("totalPrice").textContent =
+        "Rp" + totalPrice.toLocaleString("id-ID");
+}
+
+
+function continueToDetails() {
+
+    const totalTickets =
+        quantities.mainHall +
+        quantities.vip +
+        quantities.watchParty;
+
+    if (totalTickets === 0) {
+        alert("Please select at least one ticket.");
+        return;
+    }
+
+    localStorage.setItem(
+        "ticketQuantities",
+        JSON.stringify(quantities)
+    );
+
+    window.location.href = "details.html";
+}
+
+</script>
+
 </body>
 </html>
