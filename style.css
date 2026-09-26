@@ -598,14 +598,10 @@ h1 {
    ----------------------------------------- */
 
 .email-label-row {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-
-    width: 100%;
-    gap: 40px;
-
-    margin-bottom: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
 }
 
 .email-label-row > label:first-child {
@@ -672,8 +668,13 @@ h1 {
    ----------------------------------------- */
 
 @media (max-width: 600px) {
-    .details-section > .subtitle {
-        margin-bottom: 30px !important;
+    .email-label-row {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .same-orderer {
+        flex-shrink: 0;
     }
 }
 
@@ -685,10 +686,7 @@ h1 {
         padding: 30px 20px 4px !important;
     }
 
-    .email-label-row {
-        align-items: flex-start !important;
-        gap: 15px;
-    }
+
 
     .same-orderer {
         flex-shrink: 0;
