@@ -1,9 +1,3 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
 :root {
     --tedx-red: #EB0028;
     --black: #191919;
@@ -11,154 +5,328 @@
     --orange: #FCA321;
     --azure: #386284;
     --white: #FFFFFF;
+    --light-grey: #F5F5F5;
+    --border: #DDDDDD;
+    --text-grey: #666666;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: Arial, sans-serif;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
     background: var(--white);
     color: var(--black);
 }
 
+
 /* HEADER */
 
 header {
-    padding: 30px 6%;
+    height: 72px;
     background: var(--black);
-    color: var(--white);
     border-bottom: 4px solid var(--tedx-red);
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 7%;
 }
 
-header h1 {
-    font-size: 24px;
+.logo {
+    color: var(--white);
+    font-size: 22px;
+    font-weight: 700;
 }
 
-header p {
-    margin-top: 5px;
-    color: #d8d8d8;
-}
 
 /* MAIN */
 
 main {
-    max-width: 1100px;
-    margin: auto;
-    padding: 50px 6%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 35px 25px 80px;
 }
+
 
 /* PROGRESS */
 
 .progress {
     display: flex;
-    gap: 25px;
-    margin-bottom: 70px;
-    color: var(--azure);
-    font-size: 14px;
-    flex-wrap: wrap;
-}
+    justify-content: space-between;
+    gap: 15px;
 
-.progress span {
-    opacity: 0.55;
+    margin-bottom: 65px;
+
+    font-size: 12px;
+    font-weight: 700;
+    color: #AAAAAA;
+
+    text-transform: uppercase;
 }
 
 .progress .active {
     color: var(--tedx-red);
-    font-weight: bold;
-    opacity: 1;
 }
 
-/* TICKET PAGE */
 
-.ticket-page {
-    max-width: 800px;
+/* INTRO */
+
+.ticket-section {
+    width: 100%;
 }
 
 .eyebrow {
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    margin: 0 0 12px;
+
     color: var(--tedx-red);
-    margin-bottom: 15px;
-    font-weight: bold;
+
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
 }
 
-h2 {
-    font-size: 56px;
-    line-height: 1;
-    margin-bottom: 20px;
-    color: var(--black);
+h1 {
+    margin: 0;
+
+    font-size: 42px;
+    line-height: 1.1;
 }
 
-.description {
-    color: var(--azure);
-    margin-bottom: 45px;
-    font-size: 18px;
+.subtitle {
+    margin: 15px 0 40px;
+
+    color: var(--text-grey);
+
+    font-size: 16px;
+    line-height: 1.5;
 }
 
-/* TICKET CARDS */
 
-.ticket-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+/* TICKET CARD */
 
 .ticket-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    margin-bottom: 18px;
+
     background: var(--white);
-    border: 2px solid #e5e5e5;
-    padding: 25px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-    transition: 0.2s ease;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .ticket-card:hover {
-    border-color: var(--tedx-red);
-    transform: translateY(-2px);
+    border-color: var(--azure);
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
-.ticket-card h3 {
-    font-size: 22px;
+.ticket-content {
+    padding: 28px 30px;
+}
+
+.ticket-label {
+    display: inline-block;
+
     margin-bottom: 8px;
-    color: var(--black);
+
+    color: var(--tedx-red);
+
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
 }
 
-.ticket-card p {
-    color: var(--azure);
+.ticket-card h2 {
+    margin: 0 0 8px;
+
+    font-size: 25px;
 }
 
-/* BUTTON */
+.ticket-description {
+    max-width: 620px;
 
-button {
+    margin: 0;
+
+    color: var(--text-grey);
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* BOTTOM OF CARD */
+
+.ticket-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 25px;
+    padding-top: 20px;
+
+    border-top: 1px solid #EEEEEE;
+}
+
+
+/* PRICE */
+
+.price {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price strong {
+    font-size: 22px;
+}
+
+.old-price {
+    color: #999999;
+    text-decoration: line-through;
+
+    font-size: 14px;
+}
+
+
+/* QUANTITY */
+
+.quantity {
+    display: flex;
+    align-items: center;
+
+    border: 1px solid var(--border);
+    border-radius: 7px;
+
+    overflow: hidden;
+}
+
+.quantity button {
+    width: 42px;
+    height: 42px;
+
     border: none;
+    background: var(--light-grey);
+
+    font-size: 22px;
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.quantity button:hover {
+    background: var(--orange);
+}
+
+.quantity span {
+    width: 45px;
+
+    text-align: center;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+
+/* SUMMARY */
+
+.summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 35px;
+    padding: 22px 25px;
+
+    background: var(--dark-azure);
+    color: var(--white);
+
+    border-radius: 8px;
+}
+
+.summary div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.summary span {
+    font-size: 12px;
+    opacity: 0.75;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.summary strong {
+    font-size: 20px;
+}
+
+
+/* CONTINUE */
+
+.continue-button {
+    width: 100%;
+
+    margin-top: 15px;
+    padding: 17px;
+
+    border: none;
+    border-radius: 7px;
+
     background: var(--tedx-red);
     color: var(--white);
-    padding: 13px 25px;
+
+    font-size: 16px;
+    font-weight: 700;
+
     cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: 0.2s ease;
+
+    transition: background 0.2s ease;
 }
 
-button:hover {
+.continue-button:hover {
     background: var(--dark-azure);
 }
 
+
 /* MOBILE */
 
-@media (max-width: 700px) {
+@media (max-width: 650px) {
 
-    h2 {
-        font-size: 42px;
-    }
-
-    .ticket-card {
-        flex-direction: column;
-        align-items: flex-start;
+    main {
+        padding: 25px 18px 60px;
     }
 
     .progress {
-        gap: 12px;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 5px;
     }
+
+    .progress span {
+        white-space: nowrap;
+    }
+
+    h1 {
+        font-size: 34px;
+    }
+
+    .ticket-content {
+        padding: 23px;
+    }
+
+    .ticket-bottom {
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .price {
+        flex-wrap: wrap;
+    }
+
 }
