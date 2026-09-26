@@ -2640,9 +2640,10 @@ h1 {
 }
 
 .success-section .subtitle {
-    max-width: 540px;
-    margin: 15px auto 0;
-    text-align: center;
+    max-width: none;
+    margin: 15px 0 0;
+    text-align: left;
+    white-space: nowrap;
 }
 
 
