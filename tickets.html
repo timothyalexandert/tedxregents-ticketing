@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Choose Your Ticket — TEDxRegents</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>TEDxRegents</h1>
+    <p>Secondary School Bali</p>
+</header>
+
+<main>
+
+    <div class="progress">
+        <span class="active">01 Tickets</span>
+        <span>02 Details</span>
+        <span>03 Attendees</span>
+        <span>04 Seats</span>
+        <span>05 Add-ons</span>
+        <span>06 Review</span>
+        <span>07 Payment</span>
+    </div>
+
+    <section class="ticket-page">
+
+        <p class="eyebrow">Choose your ticket</p>
+
+        <h2 id="ticket-heading">Ticket</h2>
+
+        <p class="description">
+            Select your ticket type below.
+        </p>
+
+        <div class="ticket-options">
+
+            <div class="ticket-card">
+                <div>
+                    <h3>Early Bird</h3>
+                    <p>Get your ticket at the early bird price.</p>
+                </div>
+
+                <button onclick="selectTicket('Early Bird')">
+                    Choose
+                </button>
+            </div>
+
+            <div class="ticket-card">
+                <div>
+                    <h3>Normal</h3>
+                    <p>Regular event ticket.</p>
+                </div>
+
+                <button onclick="selectTicket('Normal')">
+                    Choose
+                </button>
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+    const ticketType = localStorage.getItem("ticketType");
+
+    if (ticketType) {
+        document.getElementById("ticket-heading").textContent =
+            ticketType + " Ticket";
+    }
+
+    function selectTicket(priceType) {
+
+        localStorage.setItem("priceType", priceType);
+
+        window.location.href = "details.html";
+    }
+
+</script>
+
+</body>
+</html>
