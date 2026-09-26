@@ -85,6 +85,12 @@ const attendeeFields =
 let attendeeNumber = 0;
 
 
+const totalAttendees =
+    ticketQuantities.mainHall +
+    ticketQuantities.vip +
+    ticketQuantities.watchParty;
+
+
 function addAttendeeFields(ticketType, quantity) {
 
     for (let i = 1; i <= quantity; i++) {
@@ -95,64 +101,122 @@ function addAttendeeFields(ticketType, quantity) {
 
         group.className = "attendee-box";
 
+
+        /*
+            If there are more than 2 attendees,
+            make the cards collapsible.
+        */
+
+        if (totalAttendees > 2) {
+
+            group.classList.add("collapsible");
+
+            if (attendeeNumber === 1) {
+                group.classList.add("open");
+            }
+
+        }
+
+
         group.innerHTML = `
-            <div class="attendee-heading">
-                <span>ATTENDEE ${attendeeNumber}</span>
-                <strong>${ticketType}</strong>
-            </div>
 
+            <div
+                class="attendee-heading"
+                ${totalAttendees > 2
+                    ? `onclick="toggleAttendee(${attendeeNumber})"`
+                    : ""}
+            >
 
-            <div class="form-group">
+                <div class="attendee-title">
 
-                <label for="attendeeName${attendeeNumber}">
-                    Full name
-                </label>
+                    <span>ATTENDEE ${attendeeNumber}</span>
 
-                <input
-                    type="text"
-                    id="attendeeName${attendeeNumber}"
-                    placeholder="Enter full name"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group">
-
-                <div class="email-label-row">
-
-                    <label for="attendeeEmail${attendeeNumber}">
-                        Email address
-                    </label>
-
-                    <label class="same-orderer">
-
-                        <input
-                            type="checkbox"
-                            id="sameAsOrderer${attendeeNumber}"
-                            onchange="toggleOrdererEmail(${attendeeNumber})"
-                        >
-
-                        <span>Same as orderer</span>
-
-                    </label>
+                    <strong>${ticketType}</strong>
 
                 </div>
 
 
-                <input
-                    type="email"
-                    id="attendeeEmail${attendeeNumber}"
-                    placeholder="you@example.com"
-                    required
-                >
+                ${
+                    totalAttendees > 2
+                        ? `<span
+                                class="attendee-arrow"
+                                id="arrow${attendeeNumber}"
+                           >⌄</span>`
+                        : ""
+                }
+
+            </div>
+
+
+            <div
+                class="attendee-content"
+                id="attendeeContent${attendeeNumber}"
+            >
+
+                <div class="form-group">
+
+                    <label for="attendeeName${attendeeNumber}">
+                        Full name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="attendeeName${attendeeNumber}"
+                        placeholder="Enter full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <div class="email-label-row">
+
+                        <label for="attendeeEmail${attendeeNumber}">
+                            Email address
+                        </label>
+
+                        <label class="same-orderer">
+
+                            <input
+                                type="checkbox"
+                                id="sameAsOrderer${attendeeNumber}"
+                                onchange="toggleOrdererEmail(${attendeeNumber})"
+                            >
+
+                            <span>Same as orderer</span>
+
+                        </label>
+
+                    </div>
+
+
+                    <input
+                        type="email"
+                        id="attendeeEmail${attendeeNumber}"
+                        placeholder="you@example.com"
+                        required
+                    >
+
+                </div>
 
             </div>
         `;
 
         attendeeFields.appendChild(group);
     }
+}
+
+
+function toggleAttendee(number) {
+
+    const box =
+        document
+            .querySelectorAll(".attendee-box")[number - 1];
+
+    box.classList.toggle("open");
+
 }
 
 
@@ -181,9 +245,20 @@ function toggleOrdererEmail(number) {
 }
 
 
-addAttendeeFields("Main Hall", ticketQuantities.mainHall);
-addAttendeeFields("VIP", ticketQuantities.vip);
-addAttendeeFields("Watch Party", ticketQuantities.watchParty);
+addAttendeeFields(
+    "Main Hall",
+    ticketQuantities.mainHall
+);
+
+addAttendeeFields(
+    "VIP",
+    ticketQuantities.vip
+);
+
+addAttendeeFields(
+    "Watch Party",
+    ticketQuantities.watchParty
+);
 
 
 document
@@ -194,9 +269,11 @@ document
 
         const attendees = [];
 
+
         for (let i = 1; i <= attendeeNumber; i++) {
 
             attendees.push({
+
                 name:
                     document
                         .getElementById(`attendeeName${i}`)
@@ -208,14 +285,17 @@ document
                         .getElementById(`attendeeEmail${i}`)
                         .value
                         .trim()
+
             });
 
         }
+
 
         localStorage.setItem(
             "attendees",
             JSON.stringify(attendees)
         );
+
 
         window.location.href = "seats.html";
 
