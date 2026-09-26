@@ -723,94 +723,73 @@ h1 {
 
 
 
+
+
+
+
+
 /* =========================================
-   SEATS
+   SEATING PAGE
    ========================================= */
 
 .seats-section {
-    max-width: 900px;
+    width: 100%;
+    max-width: 1200px;
 }
 
 
-/* -----------------------------------------
-   CURRENT ATTENDEE
-   ----------------------------------------- */
+/* =========================================
+   MAIN LAYOUT
+   ========================================= */
 
-.current-attendee {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.seating-layout {
+    display: grid;
 
-    margin-top: 45px;
-    margin-bottom: 45px;
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(300px, 0.8fr);
 
-    padding: 18px 22px;
+    gap: 24px;
 
-    background: var(--light-grey);
-
-    border-radius: 8px;
+    margin-top: 48px;
 }
 
-.current-label {
-    margin: 0 0 5px;
 
-    color: var(--text-grey);
+/* =========================================
+   SEATING CHART BOX
+   ========================================= */
 
-    font-size: 10px;
-    font-weight: 700;
+.seating-chart-box {
+    padding: 28px;
 
-    letter-spacing: 0.08em;
+    background: var(--white);
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-sizing: border-box;
 }
 
-#currentAttendeeName {
-    margin: 0;
+
+.venue-header {
+    margin-bottom: 24px;
 
     color: var(--black);
-
-    font-size: 15px;
-    font-weight: 700;
-}
-
-#currentAttendeeTicket {
-    color: var(--tedx-red);
 
     font-size: 11px;
     font-weight: 700;
 
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
 }
 
 
-/* -----------------------------------------
-   SEATING PLAN
-   ----------------------------------------- */
+.stage {
+    width: 58%;
 
-.seat-plan-wrapper {
-    width: 100%;
+    margin: 0 auto 52px;
 
-    padding: 30px 20px 35px;
-
-    background: #fafafa;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    box-sizing: border-box;
-
-    overflow-x: auto;
-}
-
-
-/* -----------------------------------------
-   STAGE
-   ----------------------------------------- */
-
-.stage-label {
-    width: 55%;
-
-    margin: 0 auto 55px;
-
-    padding: 12px;
+    padding: 12px 10px;
 
     background: var(--black);
 
@@ -823,27 +802,40 @@ h1 {
 
     letter-spacing: 0.12em;
 
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
 
-/* -----------------------------------------
-   ROW
-   ----------------------------------------- */
+/* =========================================
+   SEAT MAP
+   ========================================= */
+
+.seat-map {
+    width: 100%;
+
+    overflow-x: auto;
+
+    padding-bottom: 8px;
+}
+
 
 .seat-row {
     display: flex;
+
     align-items: center;
 
     justify-content: center;
 
-    gap: 7px;
+    gap: 6px;
 
-    margin-bottom: 9px;
+    margin-bottom: 10px;
+
+    min-width: 500px;
 }
 
+
 .seat-row-label {
-    width: 20px;
+    width: 18px;
 
     margin-right: 8px;
 
@@ -856,46 +848,73 @@ h1 {
 }
 
 
-/* -----------------------------------------
-   SEAT
-   ----------------------------------------- */
+/* =========================================
+   THEATRE SEAT
+   ========================================= */
 
-.seat {
-    width: 34px;
-    height: 34px;
+.theatre-seat {
+    position: relative;
+
+    width: 28px;
+    height: 31px;
 
     padding: 0;
 
-    border: 1px solid var(--border);
-    border-radius: 5px;
+    border: 1px solid #cfcfcf;
+
+    border-radius: 7px 7px 4px 4px;
 
     background: var(--white);
 
     color: var(--black);
 
     font-family: inherit;
-    font-size: 11px;
+
+    font-size: 8px;
     font-weight: 700;
 
     cursor: pointer;
 
     transition:
+        transform 0.15s ease,
         background 0.15s ease,
-        color 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.15s ease;
+        border-color 0.15s ease;
 }
 
-.seat:hover {
-    border-color: var(--tedx-red);
 
-    transform: translateY(-1px);
+/* Seat back */
+
+.theatre-seat::before {
+    content: "";
+
+    position: absolute;
+
+    top: -4px;
+    left: 3px;
+    right: 3px;
+
+    height: 9px;
+
+    border: 1px solid #cfcfcf;
+
+    border-bottom: none;
+
+    border-radius: 6px 6px 0 0;
+
+    background: inherit;
+}
+
+
+.theatre-seat:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--tedx-red);
 }
 
 
 /* Selected */
 
-.seat.selected {
+.theatre-seat.selected {
     background: var(--tedx-red);
 
     border-color: var(--tedx-red);
@@ -903,60 +922,75 @@ h1 {
     color: var(--white);
 }
 
+.theatre-seat.selected::before {
+    border-color: var(--tedx-red);
+}
 
-/* Unavailable */
 
-.seat.unavailable {
-    background: #e5e5e5;
+/* Taken */
 
-    border-color: #e5e5e5;
+.theatre-seat.taken {
+    background: #dddddd;
+
+    border-color: #dddddd;
 
     color: #999999;
 
     cursor: not-allowed;
 }
 
-.seat.unavailable:hover {
+.theatre-seat.taken::before {
+    border-color: #dddddd;
+}
+
+.theatre-seat.taken:hover {
     transform: none;
 }
 
 
-/* -----------------------------------------
+/* =========================================
    LEGEND
-   ----------------------------------------- */
+   ========================================= */
 
 .seat-legend {
     display: flex;
+
     justify-content: center;
 
-    gap: 28px;
+    gap: 24px;
 
-    margin-top: 28px;
+    margin-top: 30px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid var(--border);
 
     color: var(--text-grey);
 
     font-size: 11px;
 }
 
+
 .seat-legend > div {
     display: flex;
+
     align-items: center;
 
     gap: 7px;
 }
 
-.legend-seat {
-    display: inline-block;
 
-    width: 14px;
+.legend-seat {
+    width: 13px;
     height: 14px;
 
-    border: 1px solid var(--border);
+    border: 1px solid #cfcfcf;
 
-    border-radius: 3px;
+    border-radius: 4px 4px 3px 3px;
 
     background: var(--white);
 }
+
 
 .legend-seat.selected {
     background: var(--tedx-red);
@@ -964,92 +998,317 @@ h1 {
     border-color: var(--tedx-red);
 }
 
-.legend-seat.unavailable {
-    background: #e5e5e5;
 
-    border-color: #e5e5e5;
+.legend-seat.taken {
+    background: #dddddd;
+
+    border-color: #dddddd;
 }
 
 
-/* -----------------------------------------
-   SELECTED SEAT
-   ----------------------------------------- */
+/* =========================================
+   ATTENDEE PANEL
+   ========================================= */
 
-.selected-seat-box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.attendee-selection-box {
+    align-self: start;
 
-    margin-top: 30px;
-
-    padding: 18px 22px;
+    background: var(--white);
 
     border: 1px solid var(--border);
 
-    border-radius: 8px;
+    border-radius: 12px;
+
+    overflow: hidden;
 }
 
-.selected-seat-box span {
-    color: var(--text-grey);
+
+.selection-header {
+    padding: 26px 26px 22px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.selection-eyebrow {
+    margin: 0 0 8px;
+
+    color: var(--tedx-red);
 
     font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+}
+
+
+.selection-header h2 {
+    margin: 0 0 7px;
+
+    color: var(--black);
+
+    font-size: 20px;
+}
+
+
+.selection-header p:last-child {
+    margin: 0;
+
+    color: var(--text-grey);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================
+   ATTENDEE CARDS
+   ========================================= */
+
+.attendee-list {
+    padding: 10px;
+}
+
+
+.attendee-card {
+    display: block;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding: 15px;
+
+    background: var(--white);
+
+    border: 1px solid transparent;
+
+    border-radius: 7px;
+
+    color: var(--black);
+
+    font-family: inherit;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+
+.attendee-card:hover {
+    background: var(--light-grey);
+}
+
+
+.attendee-card.active {
+    background: #fff5f6;
+
+    border-color: rgba(235, 0, 40, 0.35);
+}
+
+
+.attendee-card-top {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 7px;
+}
+
+
+.attendee-number {
+    color: var(--tedx-red);
+
+    font-size: 9px;
     font-weight: 700;
 
     letter-spacing: 0.08em;
 }
 
-.selected-seat-box strong {
-    color: var(--black);
 
-    font-size: 14px;
+.attendee-ticket {
+    color: var(--text-grey);
+
+    font-size: 9px;
+    font-weight: 600;
 }
 
 
-/* -----------------------------------------
+.attendee-card-name {
+    display: block;
+
+    margin-bottom: 7px;
+
+    font-size: 13px;
+}
+
+
+.attendee-seat-status {
+    display: block;
+
+    color: var(--text-grey);
+
+    font-size: 11px;
+}
+
+
+/* =========================================
+   CURRENT SELECTION
+   ========================================= */
+
+.selection-info {
+    margin: 5px 16px 18px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.selection-info span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--text-grey);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+
+.selection-info strong {
+    color: var(--black);
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   NEXT VENUE
+   ========================================= */
+
+.next-venue-notice {
+    display: flex;
+
+    align-items: center;
+
+    margin-top: 24px;
+
+    padding: 18px 22px;
+
+    background: var(--light-grey);
+
+    border-radius: 8px;
+}
+
+
+.notice-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--tedx-red);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+}
+
+
+.next-venue-notice strong {
+    display: block;
+
+    color: var(--black);
+
+    font-size: 13px;
+}
+
+
+.next-venue-notice p {
+    margin: 4px 0 0;
+
+    color: var(--text-grey);
+
+    font-size: 11px;
+}
+
+
+/* =========================================
+   CONTINUE
+   ========================================= */
+
+.seats-section > .continue-button {
+    display: block;
+
+    margin-top: 28px;
+
+    margin-left: auto;
+}
+
+
+/* =========================================
    MOBILE
-   ----------------------------------------- */
+   ========================================= */
+
+@media (max-width: 850px) {
+
+    .seating-layout {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+    }
+
+
+    .attendee-selection-box {
+        order: -1;
+    }
+
+
+    .seating-chart-box {
+        padding: 20px 15px;
+    }
+
+
+    .stage {
+        width: 65%;
+
+        margin-bottom: 42px;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
-    .current-attendee {
+    .seating-layout {
         margin-top: 35px;
-        margin-bottom: 30px;
-
-        padding: 16px 18px;
     }
 
-    .seat-plan-wrapper {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
-
-    .stage-label {
-        width: 70%;
-
-        margin-bottom: 40px;
-    }
-
-    .seat-row {
-        gap: 5px;
-
-        margin-bottom: 7px;
-    }
-
-    .seat-row-label {
-        margin-right: 5px;
-    }
-
-    .seat {
-        width: 30px;
-        height: 30px;
-
-        font-size: 10px;
-    }
 
     .seat-legend {
         flex-wrap: wrap;
 
-        gap: 15px;
+        gap: 14px;
+    }
+
+
+    .next-venue-notice {
+        padding: 16px 18px;
     }
 
 }
