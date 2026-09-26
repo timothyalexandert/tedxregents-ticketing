@@ -1312,3 +1312,36 @@ h1 {
     }
 
 }
+
+
+
+
+
+
+
+
+
+/* =========================================
+   WATCH PARTY SCREEN
+   ========================================= */
+
+.screen {
+    width: 58%;
+
+    margin: 0 auto 52px;
+
+    padding: 12px 10px;
+
+    background: var(--black);
+
+    color: var(--white);
+
+    text-align: center;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+
+    border-radius: 4px;
+}
