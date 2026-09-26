@@ -516,7 +516,6 @@ h1 {
 
 /* Product name after the dash */
 
-.attendee-heading > span:first-child::first-line {
     color: var(--tedx-red);
 }
 
@@ -729,3 +728,13 @@ h1 {
 
 }
 ```
+.attendee-name {
+    color: var(--tedx-red);
+}
+
+.attendee-name em {
+    color: var(--text-grey);
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0;
+}
