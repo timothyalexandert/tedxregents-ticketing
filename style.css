@@ -452,7 +452,7 @@ h1 {
 /* Extra space ABOVE the first box */
 
 #attendeeFields .attendee-box:first-child {
-    margin-top: 60px !important;
+    margin-top: 42px !important;
 }
 
 
@@ -676,7 +676,7 @@ h1 {
 @media (max-width: 600px) {
 
     #attendeeFields .attendee-box:first-child {
-        margin-top: 40px !important;
+        margin-top: 30px !important;
     }
 
     .attendee-heading {
