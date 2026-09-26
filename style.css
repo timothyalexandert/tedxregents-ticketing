@@ -1664,6 +1664,9 @@ h1 {
 
 
 
+
+
+
 /* =========================================================
    REVIEW PAGE
    ========================================================= */
@@ -1677,8 +1680,35 @@ h1 {
     margin-bottom: 42px;
 }
 
-.review-block {
-    margin-bottom: 24px;
+
+/* SECTION HEADINGS */
+
+.review-section-heading {
+    margin: 0 0 18px;
+}
+
+.review-section-heading h2 {
+    margin: 0;
+
+    color: var(--black);
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.addons-review-heading {
+    margin-top: 48px;
+}
+
+.price-heading {
+    margin-top: 48px;
+}
+
+
+/* ATTENDEE REVIEW CARD */
+
+.attendee-review-card {
+    margin-bottom: 18px;
 
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -1688,19 +1718,108 @@ h1 {
     overflow: hidden;
 }
 
-.review-block-header {
-    padding: 20px 24px;
+
+/* ATTENDEE HEADER */
+
+.attendee-review-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 24px;
 
     border-bottom: 1px solid var(--border);
 }
 
-.review-block-header h2 {
+.attendee-review-number {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--tedx-red);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.1em;
+}
+
+.attendee-review-header h3 {
     margin: 0;
+
+    color: var(--black);
 
     font-size: 18px;
     font-weight: 700;
+}
+
+.attendee-review-price {
+    flex-shrink: 0;
 
     color: var(--black);
+
+    font-size: 16px;
+}
+
+
+/* ATTENDEE DETAILS */
+
+.attendee-review-details {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.5fr)
+        minmax(130px, 0.8fr)
+        minmax(130px, 0.8fr);
+
+    gap: 0;
+}
+
+.attendee-review-detail {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+    padding: 19px 24px;
+}
+
+.attendee-review-detail + .attendee-review-detail {
+    border-left: 1px solid var(--border);
+}
+
+.attendee-review-detail span {
+    color: var(--text-grey);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.09em;
+}
+
+.attendee-review-detail strong {
+    color: var(--black);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ADD-ONS BLOCK */
+
+.review-block {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--white);
+
+    overflow: hidden;
 }
 
 .review-row {
@@ -1729,33 +1848,15 @@ h1 {
 }
 
 .review-row strong {
-    font-size: 14px;
     color: var(--black);
+
+    font-size: 14px;
 }
 
 .review-row span {
     color: var(--text-grey);
+
     font-size: 12px;
-    line-height: 1.4;
-}
-
-.review-detail {
-    display: flex;
-    flex-direction: column;
-
-    gap: 7px;
-
-    padding: 20px 24px;
-}
-
-.review-detail strong {
-    color: var(--black);
-    font-size: 15px;
-}
-
-.review-detail span {
-    color: var(--text-grey);
-    font-size: 13px;
 }
 
 .review-empty {
@@ -1764,6 +1865,7 @@ h1 {
     padding: 20px 24px;
 
     color: var(--text-grey);
+
     font-size: 13px;
 }
 
@@ -1781,15 +1883,78 @@ h1 {
     color: var(--black);
 }
 
-.review-total {
+
+/* PRICE BREAKDOWN */
+
+.price-breakdown {
+    padding: 20px 24px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--white);
+}
+
+.price-line {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
-    margin-top: 36px;
+    gap: 20px;
+
+    padding: 9px 0;
+
+    color: var(--text-grey);
+
+    font-size: 13px;
+}
+
+.price-line strong {
+    flex-shrink: 0;
+
+    color: var(--black);
+
+    font-size: 13px;
+}
+
+.price-divider {
+    height: 1px;
+
+    margin: 10px 0;
+
+    background: var(--border);
+}
+
+.subtotal-line {
+    padding-top: 14px;
+
+    color: var(--black);
+
+    font-size: 14px;
+}
+
+.subtotal-line strong {
+    font-size: 15px;
+}
+
+
+/* TOTAL */
+
+.review-total {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-top: 24px;
+
     padding: 24px 26px;
 
     background: var(--dark-azure);
+
     color: var(--white);
 
     border-radius: 8px;
@@ -1797,7 +1962,9 @@ h1 {
 
 .review-total span {
     font-size: 12px;
+
     text-transform: uppercase;
+
     letter-spacing: 0.08em;
 
     opacity: 0.75;
@@ -1810,32 +1977,34 @@ h1 {
 
 /* MOBILE */
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
+
+    .attendee-review-header {
+        padding: 20px;
+    }
+
+    .attendee-review-details {
+        grid-template-columns: 1fr;
+    }
+
+    .attendee-review-detail {
+        padding: 16px 20px;
+    }
+
+    .attendee-review-detail + .attendee-review-detail {
+        border-left: none;
+
+        border-top: 1px solid var(--border);
+    }
 
     .review-row {
-        align-items: flex-start;
-
-        flex-direction: column;
-
-        gap: 10px;
-
         padding: 17px 20px;
+
+        align-items: flex-start;
     }
 
-    .review-block-header {
-        padding: 18px 20px;
-    }
-
-    .review-detail {
-        padding: 19px 20px;
-    }
-
-    .review-empty {
-        padding: 19px 20px;
-    }
-
-    .review-addon-owner {
-        padding: 16px 20px;
+    .price-breakdown {
+        padding: 17px 20px;
     }
 
     .review-total {
