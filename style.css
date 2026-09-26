@@ -1667,46 +1667,45 @@ h1 {
    REVIEW PAGE
 ========================= */
 
+
 /* =========================
    SECTION HEADINGS
 ========================= */
 
 .review-section-heading {
     margin-top: 58px;
-    margin-bottom: 36px;
-    position: relative;
+    margin-bottom: 38px;
 }
 
 .review-section-heading h2 {
     margin: 0;
+
     font-size: 21px;
     font-weight: 700;
+
     color: #234f6f;
+
     letter-spacing: 0;
-    display: inline-block;
 }
 
-/* Small TEDx red accent */
 
-.review-section-heading h2::after {
-    content: "";
-    display: block;
-
-    width: 28px;
-    height: 3px;
-
-    background: #eb0029;
-    border-radius: 3px;
-
-    margin-top: 8px;
-}
+/* MORE SEPARATION BETWEEN
+   YOUR DETAILS AND ATTENDEES */
 
 .review-heading {
     margin-top: 64px;
 }
 
+.review-heading + #reviewOrderer {
+    margin-bottom: 78px;
+}
+
+
+/* PRICE BREAKDOWN */
+
 .price-heading {
     margin-top: 64px;
+    margin-bottom: 38px;
 }
 
 
@@ -1724,6 +1723,7 @@ h1 {
 
     border: 1px solid #d9dde1;
     border-radius: 12px;
+
     overflow: hidden;
 
     background: #ffffff;
@@ -1731,6 +1731,7 @@ h1 {
 
 .review-detail {
     padding: 19px 22px;
+
     border-right: 1px solid #e1e4e7;
 }
 
@@ -1778,11 +1779,13 @@ h1 {
 #reviewAttendees {
     display: flex;
     flex-direction: column;
+
     gap: 14px;
 }
 
 .attendee-review-card {
     border: 1px solid #d9dde1;
+
     border-radius: 12px;
 
     overflow: hidden;
@@ -1791,7 +1794,7 @@ h1 {
 }
 
 
-/* OPEN ATTENDEE ACCENT */
+/* SUBTLE RED ACCENT WHEN OPEN */
 
 .attendee-review-card[open] {
     border-top: 2px solid #eb0029;
@@ -1825,7 +1828,7 @@ h1 {
 }
 
 
-/* RED + / - */
+/* RED + / − */
 
 .attendee-review-card summary::after {
     content: "+";
@@ -1842,7 +1845,6 @@ h1 {
     content: "−";
     color: #eb0029;
 }
-
 
 .attendee-toggle {
     margin-left: auto;
@@ -1861,9 +1863,6 @@ h1 {
 .attendee-review-content {
     padding: 0 22px 22px;
 }
-
-
-/* Full name is intentionally hidden */
 
 .attendee-full-name {
     display: none;
@@ -1899,6 +1898,7 @@ h1 {
 
 .attendee-info:last-child {
     padding-right: 0;
+
     border-right: none;
 }
 
@@ -1934,6 +1934,7 @@ h1 {
 
 .price-breakdown {
     border: 1px solid #d9dde1;
+
     border-radius: 12px;
 
     overflow: hidden;
@@ -1959,6 +1960,7 @@ h1 {
     gap: 20px;
 
     margin: 0 22px;
+
     padding: 15px 0;
 
     font-size: 14px;
@@ -1981,27 +1983,47 @@ h1 {
    SUBTOTALS
 ========================= */
 
+/*
+   Highlighted so they are clearly
+   different from individual items.
+*/
+
 .price-subtotal {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    margin: 4px 22px 0;
-    padding: 14px 0;
+    gap: 20px;
 
-    border-top: 1px solid #e1e4e7;
+    margin: 8px 14px 0;
+
+    padding: 15px 12px;
+
+    border-top: 1px solid #d9dde1;
+
+    border-radius: 7px 7px 0 0;
+
+    background: #f3f6f8;
 
     font-size: 14px;
 }
 
 .price-subtotal span {
-    color: #68737b;
-    font-weight: 500;
+    color: #234f6f;
+
+    font-weight: 700;
+
+    letter-spacing: 0.1px;
 }
 
 .price-subtotal strong {
-    color: #252a2e;
+    color: #102a43;
+
+    font-size: 15px;
+
     font-weight: 700;
+
+    white-space: nowrap;
 }
 
 
@@ -2010,13 +2032,14 @@ h1 {
 ========================= */
 
 .addon-owner-heading {
-    margin: 8px 22px 0;
+    margin: 18px 22px 0;
 
-    padding: 14px 0 5px;
+    padding: 16px 0 5px;
 
     border-top: 1px solid #e1e4e7;
 
     font-size: 14px;
+
     font-weight: 600;
 }
 
@@ -2026,6 +2049,7 @@ h1 {
 
 .addon-owner-heading .addon-under {
     color: #8a9298;
+
     font-weight: 400;
 }
 
@@ -2048,6 +2072,7 @@ h1 {
     padding: 19px 22px;
 
     background: #102a43;
+
     color: #ffffff;
 
     border-radius: 0 0 12px 12px;
@@ -2085,19 +2110,29 @@ h1 {
 
     .review-section-heading {
         margin-top: 48px;
-        margin-bottom: 30px;
+        margin-bottom: 32px;
     }
 
     .review-section-heading h2 {
         font-size: 19px;
     }
 
+
+    /* EXTRA SPACE AFTER
+       YOUR DETAILS */
+
     .review-heading {
         margin-top: 52px;
     }
 
+    .review-heading + #reviewOrderer {
+        margin-bottom: 64px;
+    }
+
+
     .price-heading {
         margin-top: 52px;
+        margin-bottom: 32px;
     }
 
 
@@ -2109,6 +2144,7 @@ h1 {
 
     .review-detail {
         border-right: none;
+
         border-bottom: 1px solid #e1e4e7;
     }
 
@@ -2161,6 +2197,7 @@ h1 {
 
     .attendee-info:nth-child(4) {
         padding-top: 18px;
+
         border-right: none;
     }
 
@@ -2169,13 +2206,17 @@ h1 {
 
     .price-line {
         margin: 0 18px;
+
         padding: 14px 0;
 
         font-size: 14px;
     }
 
     .price-subtotal {
-        margin: 4px 18px 0;
+        margin-left: 10px;
+        margin-right: 10px;
+
+        padding: 14px 12px;
     }
 
     .addon-owner-heading {
