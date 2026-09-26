@@ -420,164 +420,235 @@ h1 {
 }
 
 
+```css id="x9q2lm"
+/* =========================================
+   ATTENDEES
+   ========================================= */
 
-```css id="m7v2qa"
-/* ATTENDEES */
+
+/* More breathing room before Attendee 1 */
 
 #attendeeFields {
-    margin-top: 64px;
+    margin-top: 90px !important;
 }
 
 
-/* Individual attendee box */
+/* -----------------------------------------
+   ATTENDEE BOX
+   ----------------------------------------- */
 
 .attendee-box {
-    display: block;
+    display: block !important;
+
+    width: 100%;
+
+    margin: 0 0 42px 0 !important;
+    padding: 0 !important;
 
     background: var(--white);
 
     border: 1px solid var(--border);
     border-radius: 10px;
 
-    padding: 0;
-
-    margin-bottom: 46px;
-
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    box-shadow: none;
 
     overflow: hidden;
 
-    transition: margin 0.2s ease;
+    box-sizing: border-box;
 }
 
 
-/* Attendee heading */
+/* -----------------------------------------
+   COLLAPSED HEADER
+   ----------------------------------------- */
 
 .attendee-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
 
     width: 100%;
-    min-height: 64px;
 
-    padding: 18px 28px;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 18px 28px !important;
 
     box-sizing: border-box;
+
+    border: none !important;
+
+    cursor: pointer;
+
+    line-height: 1.3;
+}
+
+
+/* Remove browser's default triangle */
+
+.attendee-heading::-webkit-details-marker {
+    display: none;
+}
+
+.attendee-heading::marker {
+    display: none;
+}
+
+
+/* -----------------------------------------
+   ATTENDEE TITLE
+   ----------------------------------------- */
+
+.attendee-heading > span:first-child {
+    display: flex;
+    align-items: center;
 
     color: var(--tedx-red);
 
     font-size: 11px;
     font-weight: 700;
 
+    line-height: 1.3;
+
     letter-spacing: 0.08em;
-
-    cursor: pointer;
-
-    border-bottom: none;
 }
 
 
-/* Remove native details marker */
+/* Product name after the dash */
 
-summary {
-    list-style: none;
-}
-
-summary::-webkit-details-marker {
-    display: none;
+.attendee-heading > span:first-child::first-line {
+    color: var(--tedx-red);
 }
 
 
-/* Arrow */
+/* -----------------------------------------
+   ARROW
+   ----------------------------------------- */
 
 .attendee-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 
     flex-shrink: 0;
 
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
 
-    margin-left: 18px;
+    margin: 0 0 0 20px !important;
+    padding: 0 !important;
 
-    color: var(--text-grey);
+    color: var(--text-grey) !important;
 
-    font-size: 17px;
-    font-weight: 400;
+    font-size: 16px !important;
+    font-weight: 400 !important;
 
-    line-height: 1;
+    line-height: 20px !important;
 
-    letter-spacing: 0;
+    letter-spacing: 0 !important;
 
-    transform: translateY(0);
+    transform: none;
 
     transition: transform 0.2s ease;
 }
 
+
+/* Rotate when open */
 
 .attendee-box[open] .attendee-arrow {
     transform: rotate(180deg);
 }
 
 
-/* Divider only appears when attendee is OPEN */
+/* -----------------------------------------
+   DIVIDER
+   ----------------------------------------- */
+
+/*
+   CLOSED:
+   No divider at all.
+*/
+
+.attendee-box:not([open]) .attendee-heading {
+    border-bottom: none !important;
+}
+
+
+/*
+   OPEN:
+   Divider appears and is slightly thicker.
+*/
 
 .attendee-box[open] .attendee-heading {
-    border-bottom: 3px solid var(--border);
+    border-bottom: 2px solid var(--border) !important;
 }
 
 
-/* Content */
+/* -----------------------------------------
+   OPEN CONTENT
+   ----------------------------------------- */
 
 .attendee-content {
-    padding: 38px 30px 8px;
+    display: block;
+
+    padding: 38px 30px 8px !important;
+
+    box-sizing: border-box;
 }
 
 
-/* Form spacing */
+/* -----------------------------------------
+   FORM SPACING
+   ----------------------------------------- */
 
 .attendee-box .form-group {
-    margin-bottom: 40px;
+    margin-bottom: 40px !important;
 }
 
 
-/* Email label + Same as orderer */
+/* -----------------------------------------
+   EMAIL ROW
+   ----------------------------------------- */
 
 .email-label-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
 
-    gap: 35px;
+    width: 100%;
 
-    margin-bottom: 16px;
+    gap: 40px;
+
+    margin-bottom: 16px !important;
 }
 
+
+/* Email address label */
 
 .email-label-row > label:first-child {
-    margin-bottom: 0;
+    margin: 0 !important;
 }
 
 
-/* Same as orderer */
+/* -----------------------------------------
+   SAME AS ORDERER
+   ----------------------------------------- */
 
 .same-orderer {
     display: flex !important;
-    flex-direction: row !important;
-    align-items: center;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0;
 
     gap: 9px;
 
-    padding: 6px 10px;
-
     margin: 0 !important;
-
-    border-radius: 5px;
+    padding: 7px 11px !important;
 
     background: rgba(0, 0, 0, 0.035);
+
+    border-radius: 5px;
 
     color: #888888 !important;
 
@@ -589,18 +660,18 @@ summary::-webkit-details-marker {
     white-space: nowrap;
 
     cursor: pointer;
-
-    opacity: 0.9;
 }
 
 
+/* Checkbox */
+
 .same-orderer input {
-    width: 14px;
-    height: 14px;
+    width: 14px !important;
+    height: 14px !important;
 
     flex-shrink: 0;
 
-    margin: 0;
+    margin: 0 !important;
 
     accent-color: var(--tedx-red);
 
@@ -608,7 +679,7 @@ summary::-webkit-details-marker {
 }
 
 
-/* Disabled email field */
+/* Disabled email */
 
 .form-group input:disabled {
     background: var(--light-grey);
@@ -619,33 +690,38 @@ summary::-webkit-details-marker {
 }
 
 
-/* Mobile */
+/* =========================================
+   MOBILE
+   ========================================= */
 
 @media (max-width: 600px) {
 
     #attendeeFields {
-        margin-top: 46px;
+        margin-top: 60px !important;
     }
+
 
     .attendee-box {
-        margin-bottom: 34px;
+        margin-bottom: 32px !important;
     }
+
 
     .attendee-heading {
-        min-height: 58px;
-
-        padding: 16px 20px;
+        padding: 16px 20px !important;
     }
+
 
     .attendee-content {
-        padding: 30px 20px 4px;
+        padding: 30px 20px 4px !important;
     }
 
+
     .email-label-row {
-        align-items: flex-start;
+        align-items: flex-start !important;
 
         gap: 15px;
     }
+
 
     .same-orderer {
         flex-shrink: 0;
