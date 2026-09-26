@@ -1662,14 +1662,8 @@ h1 {
 
 
 
-
 /* =========================
    REVIEW PAGE
-========================= */
-
-
-/* =========================
-   SECTION HEADINGS
 ========================= */
 
 .review-section-heading {
@@ -1679,59 +1673,53 @@ h1 {
 
 .review-section-heading h2 {
     margin: 0;
-
     font-size: 21px;
     font-weight: 700;
-
     color: #234f6f;
-
     letter-spacing: 0;
 }
 
-
-/* MORE SEPARATION BETWEEN
-   YOUR DETAILS AND ATTENDEES */
-
+/* Your Details */
 .review-heading {
     margin-top: 64px;
+    margin-bottom: 19px;
 }
 
+/* Space between Your Details box and Attendees Details */
 .review-heading + #reviewOrderer {
     margin-bottom: 78px;
 }
 
+/* Attendees Details heading → attendee info */
+.review-heading + #reviewOrderer + .review-section-heading {
+    margin-bottom: 19px;
+}
 
-/* PRICE BREAKDOWN */
-
+/* Price Breakdown */
 .price-heading {
     margin-top: 64px;
     margin-bottom: 38px;
 }
 
-
-/* =========================
-   YOUR DETAILS
-========================= */
-
 #reviewOrderer {
     margin-bottom: 10px;
 }
 
+/* =========================
+   ORDERER DETAILS
+========================= */
+
 .orderer-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-
     border: 1px solid #d9dde1;
     border-radius: 12px;
-
     overflow: hidden;
-
     background: #ffffff;
 }
 
 .review-detail {
     padding: 19px 22px;
-
     border-right: 1px solid #e1e4e7;
 }
 
@@ -1741,36 +1729,27 @@ h1 {
 
 .review-detail.email-detail {
     grid-column: 1 / -1;
-
     border-right: none;
     border-top: 1px solid #e1e4e7;
 }
 
 .review-detail span {
     display: block;
-
     margin-bottom: 6px;
-
     font-size: 12px;
     font-weight: 600;
-
     color: #7a858d;
-
     text-transform: none;
     letter-spacing: 0;
 }
 
 .review-detail strong {
     display: block;
-
     font-size: 15px;
     font-weight: 500;
-
     color: #252a2e;
-
     overflow-wrap: anywhere;
 }
-
 
 /* =========================
    ATTENDEES
@@ -1779,47 +1758,31 @@ h1 {
 #reviewAttendees {
     display: flex;
     flex-direction: column;
-
     gap: 14px;
 }
 
 .attendee-review-card {
     border: 1px solid #d9dde1;
-
     border-radius: 12px;
-
     overflow: hidden;
-
     background: #ffffff;
 }
 
-
-/* SUBTLE RED ACCENT WHEN OPEN */
-
+/* Subtle red accent only when opened */
 .attendee-review-card[open] {
     border-top: 2px solid #eb0029;
 }
-
-
-/* =========================
-   COLLAPSIBLE HEADER
-========================= */
 
 .attendee-review-card summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 18px 22px;
-
     cursor: pointer;
     list-style: none;
-
     font-size: 16px;
     font-weight: 600;
-
     color: #252a2e;
 }
 
@@ -1827,17 +1790,12 @@ h1 {
     display: none;
 }
 
-
-/* RED + / − */
-
+/* Red + / − indicator */
 .attendee-review-card summary::after {
     content: "+";
-
     font-size: 21px;
     font-weight: 400;
-
     color: #eb0029;
-
     line-height: 1;
 }
 
@@ -1848,22 +1806,16 @@ h1 {
 
 .attendee-toggle {
     margin-left: auto;
-
     font-size: 12px;
     font-weight: 500;
-
     color: #8a9298;
 }
-
-
-/* =========================
-   ATTENDEE CONTENT
-========================= */
 
 .attendee-review-content {
     padding: 0 22px 22px;
 }
 
+/* Full name is already shown in the collapsed header */
 .attendee-full-name {
     display: none;
 }
@@ -1872,23 +1824,16 @@ h1 {
     display: none;
 }
 
-
-/* =========================
-   ATTENDEE INFO
-========================= */
-
+/* Attendee information */
 .attendee-info-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-
     border-top: 1px solid #e1e4e7;
-
     padding-top: 18px;
 }
 
 .attendee-info {
     padding: 0 18px;
-
     border-right: 1px solid #e1e4e7;
 }
 
@@ -1898,35 +1843,26 @@ h1 {
 
 .attendee-info:last-child {
     padding-right: 0;
-
     border-right: none;
 }
 
 .attendee-info span {
     display: block;
-
     margin-bottom: 6px;
-
     font-size: 11px;
     font-weight: 600;
-
     color: #7a858d;
-
     text-transform: none;
     letter-spacing: 0;
 }
 
 .attendee-info strong {
     display: block;
-
     font-size: 14px;
     font-weight: 500;
-
     color: #252a2e;
-
     overflow-wrap: anywhere;
 }
-
 
 /* =========================
    PRICE BREAKDOWN
@@ -1934,11 +1870,8 @@ h1 {
 
 .price-breakdown {
     border: 1px solid #d9dde1;
-
     border-radius: 12px;
-
     overflow: hidden;
-
     background: #ffffff;
 }
 
@@ -1947,22 +1880,14 @@ h1 {
     width: 100%;
 }
 
-
-/* =========================
-   PRICE LINES
-========================= */
-
+/* Individual price lines */
 .price-line {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     margin: 0 22px;
-
     padding: 15px 0;
-
     font-size: 14px;
 }
 
@@ -1974,72 +1899,48 @@ h1 {
 .price-line strong {
     color: #252a2e;
     font-weight: 600;
-
     white-space: nowrap;
 }
-
 
 /* =========================
    SUBTOTALS
 ========================= */
 
-/*
-   Highlighted so they are clearly
-   different from individual items.
-*/
-
 .price-subtotal {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     margin: 8px 14px 0;
-
     padding: 15px 12px;
-
     border-top: 1px solid #d9dde1;
-
     border-radius: 7px 7px 0 0;
-
     background: #f3f6f8;
-
     font-size: 14px;
 }
 
 .price-subtotal span {
     color: #234f6f;
-
     font-weight: 700;
-
     letter-spacing: 0.1px;
 }
 
 .price-subtotal strong {
     color: #102a43;
-
     font-size: 15px;
-
     font-weight: 700;
-
     white-space: nowrap;
 }
 
-
 /* =========================
-   ADD-ONS OWNER
+   ADD-ONS
 ========================= */
 
 .addon-owner-heading {
     margin: 18px 22px 0;
-
     padding: 16px 0 5px;
-
     border-top: 1px solid #e1e4e7;
-
     font-size: 14px;
-
     font-weight: 600;
 }
 
@@ -2049,7 +1950,6 @@ h1 {
 
 .addon-owner-heading .addon-under {
     color: #8a9298;
-
     font-weight: 400;
 }
 
@@ -2057,6 +1957,10 @@ h1 {
     padding-top: 10px;
 }
 
+/* Extra breathing room after Add ons subtotal */
+#addonPriceBreakdown .price-subtotal {
+    margin-bottom: 14px;
+}
 
 /* =========================
    GRAND TOTAL
@@ -2066,41 +1970,32 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 19px 22px;
-
     background: #102a43;
-
     color: #ffffff;
-
     border-radius: 0 0 12px 12px;
 }
 
 .review-total span {
     font-size: 14px;
     font-weight: 600;
-
     color: #ffffff;
 }
 
 .review-total strong {
     font-size: 20px;
     font-weight: 700;
-
     color: #ffffff;
 }
 
-
 /* =========================
-   CONTINUE
+   CONTINUE BUTTON
 ========================= */
 
 .review-section .continue-button {
     margin-top: 24px;
 }
-
 
 /* =========================
    MOBILE
@@ -2117,26 +2012,31 @@ h1 {
         font-size: 19px;
     }
 
-
-    /* EXTRA SPACE AFTER
-       YOUR DETAILS */
-
+    /* Your Details */
     .review-heading {
         margin-top: 52px;
+        margin-bottom: 19px;
     }
 
+    /* Keep separation between Your Details and Attendees */
     .review-heading + #reviewOrderer {
         margin-bottom: 64px;
     }
 
+    /* Attendees heading → attendee cards */
+    .review-heading + #reviewOrderer + .review-section-heading {
+        margin-bottom: 19px;
+    }
 
+    /* Price Breakdown */
     .price-heading {
         margin-top: 52px;
         margin-bottom: 32px;
     }
 
-
-    /* YOUR DETAILS */
+    /* =========================
+       ORDERER
+    ========================= */
 
     .orderer-grid {
         grid-template-columns: 1fr;
@@ -2144,7 +2044,6 @@ h1 {
 
     .review-detail {
         border-right: none;
-
         border-bottom: 1px solid #e1e4e7;
     }
 
@@ -2154,13 +2053,13 @@ h1 {
 
     .review-detail.email-detail {
         grid-column: auto;
-
         border-top: none;
         border-bottom: none;
     }
 
-
-    /* ATTENDEES */
+    /* =========================
+       ATTENDEES
+    ========================= */
 
     .attendee-review-card summary {
         padding: 17px 18px;
@@ -2172,13 +2071,11 @@ h1 {
 
     .attendee-info-grid {
         grid-template-columns: 1fr 1fr;
-
         gap: 18px 0;
     }
 
     .attendee-info {
         padding: 0 14px;
-
         border-right: 1px solid #e1e4e7;
     }
 
@@ -2197,25 +2094,22 @@ h1 {
 
     .attendee-info:nth-child(4) {
         padding-top: 18px;
-
         border-right: none;
     }
 
-
-    /* PRICE */
+    /* =========================
+       PRICE
+    ========================= */
 
     .price-line {
         margin: 0 18px;
-
         padding: 14px 0;
-
         font-size: 14px;
     }
 
     .price-subtotal {
         margin-left: 10px;
         margin-right: 10px;
-
         padding: 14px 12px;
     }
 
@@ -2224,11 +2118,16 @@ h1 {
         margin-right: 18px;
     }
 
+    /* Keep extra space below add-on subtotal on mobile */
+    #addonPriceBreakdown .price-subtotal {
+        margin-bottom: 14px;
+    }
 
-    /* TOTAL */
+    /* =========================
+       TOTAL
+    ========================= */
 
     .review-total {
         padding: 18px;
     }
-
 }
