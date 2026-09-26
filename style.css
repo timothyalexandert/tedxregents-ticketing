@@ -1665,277 +1665,257 @@ h1 {
 
 
 
-
-
-/* =========================================================
+/* =========================
    REVIEW PAGE
-   ========================================================= */
-
-.review-section {
-    width: 100%;
-    max-width: 850px;
-}
-
-.review-section > .subtitle {
-    margin-bottom: 42px;
-}
-
+========================= */
 
 /* SECTION HEADINGS */
 
 .review-section-heading {
-    margin: 0 0 18px;
+    margin-top: 55px;
+    margin-bottom: 20px;
 }
 
 .review-section-heading h2 {
     margin: 0;
-
-    color: var(--black);
-
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.addons-review-heading {
-    margin-top: 48px;
-}
-
-.price-heading {
-    margin-top: 48px;
-}
-
-
-/* ATTENDEE REVIEW CARD */
-
-.attendee-review-card {
-    margin-bottom: 18px;
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--white);
-
-    overflow: hidden;
-}
-
-
-/* ATTENDEE HEADER */
-
-.attendee-review-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    padding: 22px 24px;
-
-    border-bottom: 1px solid var(--border);
-}
-
-.attendee-review-number {
-    display: block;
-
-    margin-bottom: 7px;
-
+    font-size: 24px;
+    font-weight: 800;
     color: var(--tedx-red);
-
-    font-size: 10px;
-    font-weight: 700;
-
-    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.attendee-review-header h3 {
-    margin: 0;
-
-    color: var(--black);
-
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.attendee-review-price {
-    flex-shrink: 0;
-
-    color: var(--black);
-
-    font-size: 16px;
+.review-heading {
+    margin-top: 60px;
 }
 
 
-/* ATTENDEE DETAILS */
+/* YOUR DETAILS */
 
-.attendee-review-details {
+#reviewOrderer {
+    margin-bottom: 10px;
+}
+
+.orderer-grid {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.5fr)
-        minmax(130px, 0.8fr)
-        minmax(130px, 0.8fr);
-
+    grid-template-columns: 1fr 1fr;
     gap: 0;
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
 }
 
-.attendee-review-detail {
-    display: flex;
-    flex-direction: column;
-
-    gap: 7px;
-
-    padding: 19px 24px;
+.review-detail {
+    padding: 20px 24px;
+    border-right: 1px solid #d9d9d9;
 }
 
-.attendee-review-detail + .attendee-review-detail {
-    border-left: 1px solid var(--border);
+.review-detail:nth-child(2) {
+    border-right: none;
 }
 
-.attendee-review-detail span {
-    color: var(--text-grey);
+.review-detail.email-detail {
+    grid-column: 1 / -1;
+    border-right: none;
+    border-top: 1px solid #d9d9d9;
+}
 
-    font-size: 9px;
+.review-detail span {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
     font-weight: 700;
-
-    letter-spacing: 0.09em;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.attendee-review-detail strong {
-    color: var(--black);
-
-    font-size: 12px;
+.review-detail strong {
+    display: block;
+    font-size: 16px;
     font-weight: 600;
-
-    line-height: 1.4;
-
+    color: var(--black);
     overflow-wrap: anywhere;
 }
 
 
-/* ADD-ONS BLOCK */
+/* ATTENDEE CARDS */
 
-.review-block {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--white);
-
-    overflow: hidden;
+#reviewAttendees {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.review-row {
+.attendee-review-card {
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
+}
+
+
+/* COLLAPSIBLE HEADER */
+
+.attendee-review-card summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    gap: 30px;
-
-    padding: 18px 24px;
-
-    border-bottom: 1px solid #EEEEEE;
-}
-
-.review-row:last-child {
-    border-bottom: none;
-}
-
-.review-row > div {
-    display: flex;
-    flex-direction: column;
-
-    gap: 5px;
-
-    min-width: 0;
-}
-
-.review-row strong {
-    color: var(--black);
-
-    font-size: 14px;
-}
-
-.review-row span {
-    color: var(--text-grey);
-
-    font-size: 12px;
-}
-
-.review-empty {
-    margin: 0;
+    gap: 20px;
 
     padding: 20px 24px;
 
-    color: var(--text-grey);
-
-    font-size: 13px;
-}
-
-.review-addon-owner {
-    padding: 17px 24px;
-
-    background: var(--light-grey);
-
-    color: var(--text-grey);
-
-    font-size: 12px;
-}
-
-.review-addon-owner strong {
+    cursor: pointer;
+    list-style: none;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--black);
+}
+
+.attendee-review-card summary::-webkit-details-marker {
+    display: none;
+}
+
+.attendee-review-card summary::after {
+    content: "+";
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--tedx-red);
+}
+
+.attendee-review-card[open] summary::after {
+    content: "−";
+}
+
+.attendee-toggle {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: #777777;
+}
+
+
+/* ATTENDEE CONTENT */
+
+.attendee-review-content {
+    padding: 0 24px 24px;
+}
+
+.attendee-full-name {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 2px;
+    padding-bottom: 20px;
+}
+
+.attendee-full-name span,
+.attendee-info span {
+    font-size: 12px;
+    font-weight: 700;
+    color: #777777;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.attendee-full-name strong,
+.attendee-info strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black);
+    overflow-wrap: anywhere;
+}
+
+.attendee-divider {
+    height: 1px;
+    background: #d9d9d9;
+    margin-bottom: 20px;
+}
+
+
+/* ATTENDEE INFO GRID */
+
+.attendee-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.attendee-info {
+    padding: 0 20px;
+    border-right: 1px solid #d9d9d9;
+}
+
+.attendee-info:first-child {
+    padding-left: 0;
+}
+
+.attendee-info:last-child {
+    padding-right: 0;
+    border-right: none;
+}
+
+.attendee-info span {
+    display: block;
+    margin-bottom: 7px;
 }
 
 
 /* PRICE BREAKDOWN */
 
+.price-heading {
+    margin-top: 60px;
+}
+
 .price-breakdown {
-    padding: 20px 24px;
+    border: 1px solid #d9d9d9;
+    background: #ffffff;
+}
 
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    background: var(--white);
+#ticketPriceBreakdown,
+#addonPriceBreakdown {
+    width: 100%;
 }
 
 .price-line {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
 
-    padding: 9px 0;
+    padding: 17px 24px;
 
-    color: var(--text-grey);
+    border-bottom: 1px solid #e1e1e1;
 
-    font-size: 13px;
+    font-size: 15px;
+}
+
+.price-line:last-child {
+    border-bottom: none;
+}
+
+.price-line span {
+    color: #444444;
 }
 
 .price-line strong {
-    flex-shrink: 0;
-
     color: var(--black);
-
-    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
-.price-divider {
-    height: 1px;
 
-    margin: 10px 0;
+/* ADD-ON OWNER */
 
-    background: var(--border);
-}
-
-.subtotal-line {
-    padding-top: 14px;
-
-    color: var(--black);
+.addon-owner-heading {
+    padding: 20px 24px 10px;
 
     font-size: 14px;
+    font-weight: 800;
+    color: var(--tedx-red);
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
-.subtotal-line strong {
-    font-size: 15px;
+.addon-price-line {
+    padding-top: 10px;
 }
 
 
@@ -1943,72 +1923,118 @@ h1 {
 
 .review-total {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
 
-    margin-top: 24px;
+    padding: 22px 24px;
 
-    padding: 24px 26px;
-
-    background: var(--dark-azure);
-
-    color: var(--white);
-
-    border-radius: 8px;
+    background: #102a43;
+    color: #ffffff;
 }
 
 .review-total span {
-    font-size: 12px;
-
+    font-size: 16px;
+    font-weight: 700;
     text-transform: uppercase;
-
-    letter-spacing: 0.08em;
-
-    opacity: 0.75;
+    letter-spacing: 0.05em;
 }
 
 .review-total strong {
-    font-size: 21px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+
+/* CONTINUE BUTTON */
+
+.review-section .continue-button {
+    margin-top: 24px;
 }
 
 
 /* MOBILE */
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
 
-    .attendee-review-header {
-        padding: 20px;
+    .review-section-heading {
+        margin-top: 42px;
+        margin-bottom: 16px;
     }
 
-    .attendee-review-details {
+    .review-section-heading h2 {
+        font-size: 21px;
+    }
+
+    .orderer-grid {
         grid-template-columns: 1fr;
     }
 
-    .attendee-review-detail {
-        padding: 16px 20px;
+    .review-detail {
+        border-right: none;
+        border-bottom: 1px solid #d9d9d9;
     }
 
-    .attendee-review-detail + .attendee-review-detail {
-        border-left: none;
-
-        border-top: 1px solid var(--border);
+    .review-detail:nth-child(2) {
+        border-bottom: 1px solid #d9d9d9;
     }
 
-    .review-row {
-        padding: 17px 20px;
-
-        align-items: flex-start;
+    .review-detail.email-detail {
+        grid-column: auto;
+        border-top: none;
+        border-bottom: none;
     }
 
-    .price-breakdown {
-        padding: 17px 20px;
+    .attendee-review-card summary {
+        padding: 18px 20px;
+    }
+
+    .attendee-review-content {
+        padding: 0 20px 20px;
+    }
+
+    .attendee-info-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 0;
+    }
+
+    .attendee-info {
+        padding: 0 15px;
+        border-right: 1px solid #d9d9d9;
+    }
+
+    .attendee-info:nth-child(2) {
+        border-right: none;
+    }
+
+    .attendee-info:nth-child(3),
+    .attendee-info:nth-child(4) {
+        padding-top: 20px;
+    }
+
+    .attendee-info:nth-child(3) {
+        padding-left: 0;
+    }
+
+    .attendee-info:nth-child(4) {
+        border-right: none;
+    }
+
+    .price-line {
+        padding: 15px 18px;
+        font-size: 14px;
+    }
+
+    .addon-owner-heading {
+        padding: 18px 18px 8px;
     }
 
     .review-total {
-        padding: 21px 20px;
+        padding: 20px 18px;
     }
 
+    .review-total strong {
+        font-size: 19px;
+    }
 }
