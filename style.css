@@ -449,12 +449,6 @@ h1 {
 }
 
 
-/* Extra space ABOVE the first box */
-
-#attendeeFields .attendee-box:first-child {
-    margin-top: 42px !important;
-}
-
 
 /* More space after an OPEN box */
 
@@ -674,9 +668,8 @@ h1 {
    ----------------------------------------- */
 
 @media (max-width: 600px) {
-
-    #attendeeFields .attendee-box:first-child {
-        margin-top: 30px !important;
+    .attendees-form {
+        padding-top: 30px !important;
     }
 
     .attendee-heading {
@@ -695,4 +688,13 @@ h1 {
     .same-orderer {
         flex-shrink: 0;
     }
+}
+
+.attendees-form {
+    padding-top: 42px !important;
+    margin-top: 0 !important;
+}
+
+#attendeeFields {
+    margin-top: 0 !important;
 }
