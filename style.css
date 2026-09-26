@@ -418,3 +418,40 @@ h1 {
 .form-group input::placeholder {
     color: #999999;
 }
+
+
+/* ATTENDEES */
+
+.attendee-group {
+    padding: 28px 0 10px;
+    margin-bottom: 28px;
+    border-top: 1px solid var(--border);
+}
+
+.attendee-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.attendee-heading span {
+    color: var(--tedx-red);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.attendee-heading strong {
+    color: var(--text-grey);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.attendee-group .form-group {
+    margin-bottom: 26px;
+}
+
+.attendee-group .form-group:last-child {
+    margin-bottom: 0;
+}
