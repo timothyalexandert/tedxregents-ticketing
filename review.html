@@ -47,16 +47,21 @@
             Make sure everything looks right before continuing to payment.
         </p>
 
-        <!-- ORDERER -->
+
+        <!-- =========================
+             YOUR DETAILS
+        ========================== -->
 
         <div class="review-section-heading review-heading">
             <h2>Your Details</h2>
         </div>
-        
+
         <div id="reviewOrderer"></div>
 
 
-        <!-- ATTENDEES -->
+        <!-- =========================
+             ATTENDEES
+        ========================== -->
 
         <div class="review-section-heading">
             <h2>Attendees Details</h2>
@@ -65,23 +70,26 @@
         <div id="reviewAttendees"></div>
 
 
-        <!-- PRICE BREAKDOWN -->
+        <!-- =========================
+             PRICE BREAKDOWN
+        ========================== -->
 
         <div class="review-section-heading price-heading">
             <h2>Price Breakdown</h2>
         </div>
 
-    <div class="price-breakdown">
+        <div class="price-breakdown">
 
-    <div id="ticketPriceBreakdown"></div>
+            <div id="ticketPriceBreakdown"></div>
 
-    <div id="addonPriceBreakdown"></div>
+            <div id="addonPriceBreakdown"></div>
 
-</div>
+        </div>
 
 
-
-        <!-- TOTAL -->
+        <!-- =========================
+             TOTAL
+        ========================== -->
 
         <div class="review-total">
 
@@ -94,7 +102,9 @@
         </div>
 
 
-        <!-- CONTINUE -->
+        <!-- =========================
+             CONTINUE
+        ========================== -->
 
         <button
             type="button"
@@ -111,11 +121,16 @@
 
 <script>
 
+/* =========================
+   GET STORED DATA
+========================= */
+
 function getStoredJSON(key, fallback) {
 
     try {
 
-        const value = localStorage.getItem(key);
+        const value =
+            localStorage.getItem(key);
 
         return value
             ? JSON.parse(value)
@@ -124,6 +139,7 @@ function getStoredJSON(key, fallback) {
     } catch (error) {
 
         return fallback;
+
     }
 }
 
@@ -133,22 +149,39 @@ function getStoredJSON(key, fallback) {
 ========================= */
 
 const quantities =
-    getStoredJSON("ticketQuantities", {});
+    getStoredJSON(
+        "ticketQuantities",
+        {}
+    );
 
 const attendees =
-    getStoredJSON("attendees", []);
+    getStoredJSON(
+        "attendees",
+        []
+    );
 
 const ordererDetails =
-    getStoredJSON("ordererDetails", {});
+    getStoredJSON(
+        "ordererDetails",
+        {}
+    );
 
 const selectedSeats =
-    getStoredJSON("selectedSeats", {});
+    getStoredJSON(
+        "selectedSeats",
+        {}
+    );
 
 const addons =
-    getStoredJSON("addons", {});
+    getStoredJSON(
+        "addons",
+        {}
+    );
 
 const addonOwner =
-    localStorage.getItem("addonOwner") || "";
+    localStorage.getItem(
+        "addonOwner"
+    ) || "";
 
 
 /* =========================
@@ -157,33 +190,54 @@ const addonOwner =
 
 const ticketTypes = [];
 
-for (
-    let i = 0;
-    i < (quantities.mainHall || 0);
-    i++
-) {
-    ticketTypes.push("Main Hall");
-}
+
+/* MAIN HALL */
 
 for (
     let i = 0;
-    i < (quantities.vip || 0);
+    i < (Number(quantities.mainHall) || 0);
     i++
 ) {
-    ticketTypes.push("VIP");
+
+    ticketTypes.push(
+        "Main Hall"
+    );
+
 }
+
+
+/* VIP */
 
 for (
     let i = 0;
-    i < (quantities.watchParty || 0);
+    i < (Number(quantities.vip) || 0);
     i++
 ) {
-    ticketTypes.push("Watch Party");
+
+    ticketTypes.push(
+        "VIP"
+    );
+
+}
+
+
+/* WATCH PARTY */
+
+for (
+    let i = 0;
+    i < (Number(quantities.watchParty) || 0);
+    i++
+) {
+
+    ticketTypes.push(
+        "Watch Party"
+    );
+
 }
 
 
 /* =========================
-   PRICES
+   TICKET PRICES
 ========================= */
 
 const ticketPrices = {
@@ -196,8 +250,13 @@ const ticketPrices = {
 
     watchPartyEarly: 25000,
     watchPartyNormal: 30000
+
 };
 
+
+/* =========================
+   ADD-ON INFORMATION
+========================= */
 
 const addonInfo = {
 
@@ -230,202 +289,300 @@ const addonInfo = {
         name: "Food",
         price: 30000
     }
+
 };
 
+
 /* =========================
-   ORDERER DETAILS
+   DISPLAY ORDERER
 ========================= */
+
 function displayOrderer() {
 
     const container =
-        document.getElementById("reviewOrderer");
+        document.getElementById(
+            "reviewOrderer"
+        );
 
     if (!container) return;
+
 
     container.innerHTML = `
 
         <div class="orderer-grid">
 
             <div class="review-detail">
+
                 <span>Full name</span>
+
                 <strong>
                     ${ordererDetails.name || "Not provided"}
                 </strong>
+
             </div>
 
+
             <div class="review-detail">
+
                 <span>Phone</span>
+
                 <strong>
                     ${ordererDetails.phone || "Not provided"}
                 </strong>
+
             </div>
 
+
             <div class="review-detail email-detail">
+
                 <span>Email</span>
+
                 <strong>
                     ${ordererDetails.email || "Not provided"}
                 </strong>
+
             </div>
 
         </div>
+
     `;
+
 }
-    
+
+
 /* =========================
-   ATTENDEE DETAILS
+   DISPLAY ATTENDEES
 ========================= */
 
 function displayAttendees() {
 
     const container =
-        document.getElementById("reviewAttendees");
+        document.getElementById(
+            "reviewAttendees"
+        );
 
     if (!container) return;
 
+
     container.innerHTML = "";
+
 
     const shouldCollapse =
         attendees.length >= 3;
 
 
-    attendees.forEach((attendee, index) => {
+    attendees.forEach(
+        (attendee, index) => {
 
-        const ticketType =
-            ticketTypes[index] || "Ticket";
-
-        const attendeeNumber =
-            index + 1;
-
-        const seat =
-            selectedSeats[attendeeNumber];
+            const ticketType =
+                ticketTypes[index] ||
+                "Ticket";
 
 
-        const card =
-            document.createElement(
-                shouldCollapse
-                    ? "details"
-                    : "div"
-            );
-
-        card.className =
-            "attendee-review-card";
+            const attendeeNumber =
+                index + 1;
 
 
-        if (shouldCollapse) {
+            const seat =
+                selectedSeats[
+                    attendeeNumber
+                ];
 
-            const summary =
-                document.createElement("summary");
 
-            summary.innerHTML = `
-                <span>
-                    ${attendee.name || "Attendee " + attendeeNumber}
-                </span>
+            const card =
+                document.createElement(
+                    shouldCollapse
+                        ? "details"
+                        : "div"
+                );
 
-                <span class="attendee-toggle">
-                    View details
-                </span>
+
+            card.className =
+                "attendee-review-card";
+
+
+            /* =========================
+               COLLAPSIBLE HEADER
+            ========================== */
+
+            if (shouldCollapse) {
+
+                const summary =
+                    document.createElement(
+                        "summary"
+                    );
+
+
+                summary.innerHTML = `
+
+                    <span>
+                        ${
+                            attendee.name ||
+                            "Attendee " +
+                            attendeeNumber
+                        }
+                    </span>
+
+                    <span class="attendee-toggle">
+                        View details
+                    </span>
+
+                `;
+
+
+                card.appendChild(
+                    summary
+                );
+
+            }
+
+
+            /* =========================
+               ATTENDEE CONTENT
+            ========================== */
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+
+            content.className =
+                "attendee-review-content";
+
+
+            content.innerHTML = `
+
+                <div class="attendee-info-grid">
+
+                    <div class="attendee-info">
+
+                        <span>Ticket</span>
+
+                        <strong>
+                            ${ticketType}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="attendee-info">
+
+                        <span>Seat</span>
+
+                        <strong>
+                            ${
+                                seat
+                                    ? seat.display
+                                    : "Not selected"
+                            }
+                        </strong>
+
+                    </div>
+
+
+                    <div class="attendee-info">
+
+                        <span>Phone</span>
+
+                        <strong>
+                            ${
+                                attendee.phone ||
+                                "Not provided"
+                            }
+                        </strong>
+
+                    </div>
+
+
+                    <div class="attendee-info">
+
+                        <span>Email</span>
+
+                        <strong>
+                            ${
+                                attendee.email ||
+                                "Not provided"
+                            }
+                        </strong>
+
+                    </div>
+
+                </div>
+
             `;
 
-            card.appendChild(summary);
+
+            card.appendChild(
+                content
+            );
+
+
+            container.appendChild(
+                card
+            );
+
         }
+    );
 
-
-        const content =
-            document.createElement("div");
-
-        content.className =
-            "attendee-review-content";
-
-
-        content.innerHTML = `
-
-            <div class="attendee-full-name">
-                <span>Full name</span>
-                <strong>
-                    ${attendee.name || "Not provided"}
-                </strong>
-            </div>
-
-            <div class="attendee-divider"></div>
-
-            <div class="attendee-info-grid">
-
-                <div class="attendee-info">
-                    <span>Ticket</span>
-                    <strong>
-                        ${ticketType}
-                    </strong>
-                </div>
-
-                <div class="attendee-info">
-                    <span>Seat</span>
-                    <strong>
-                        ${
-                            seat
-                                ? seat.display
-                                : "Not selected"
-                        }
-                    </strong>
-                </div>
-
-                <div class="attendee-info">
-                    <span>Phone</span>
-                    <strong>
-                        ${attendee.phone || "Not provided"}
-                    </strong>
-                </div>
-
-                <div class="attendee-info">
-                    <span>Email</span>
-                    <strong>
-                        ${attendee.email || "Not provided"}
-                    </strong>
-                </div>
-
-            </div>
-        `;
-
-
-        card.appendChild(content);
-
-        container.appendChild(card);
-
-    });
 }
 
 
-
 /* =========================
-   PRICE CALCULATION
+   CALCULATE PRICES
 ========================= */
 
 function calculatePrices() {
 
+    /* =========================
+       QUANTITIES
+    ========================== */
+
     const mainHallCount =
-        Number(quantities.mainHall) || 0;
+        Number(
+            quantities.mainHall
+        ) || 0;
+
 
     const vipCount =
-        Number(quantities.vip) || 0;
+        Number(
+            quantities.vip
+        ) || 0;
+
 
     const watchPartyCount =
-        Number(quantities.watchParty) || 0;
+        Number(
+            quantities.watchParty
+        ) || 0;
 
 
     /* =========================
-       EARLY BIRD
-    ========================= */
+       EARLY BIRD CALCULATION
+    ========================== */
 
     const mainVipTotal =
-        mainHallCount + vipCount;
+        mainHallCount +
+        vipCount;
+
+
+    /*
+       Main Hall + VIP share
+       the same first-10 pool.
+    */
 
     const mainVipEarlyBird =
-        Math.min(mainVipTotal, 10);
+        Math.min(
+            mainVipTotal,
+            10
+        );
+
 
     const mainHallEarlyBird =
         Math.min(
             mainHallCount,
             mainVipEarlyBird
         );
+
 
     const vipEarlyBird =
         Math.min(
@@ -434,20 +591,28 @@ function calculatePrices() {
             mainHallEarlyBird
         );
 
+
     const mainHallNormal =
         mainHallCount -
         mainHallEarlyBird;
+
 
     const vipNormal =
         vipCount -
         vipEarlyBird;
 
 
+    /*
+       Watch Party has
+       its own first-10 pool.
+    */
+
     const watchPartyEarlyBird =
         Math.min(
             watchPartyCount,
             10
         );
+
 
     const watchPartyNormal =
         watchPartyCount -
@@ -456,27 +621,32 @@ function calculatePrices() {
 
     /* =========================
        TICKET TOTALS
-    ========================= */
+    ========================== */
 
     const mainHallEarlyTotal =
         mainHallEarlyBird *
         ticketPrices.mainHallEarly;
 
+
     const mainHallNormalTotal =
         mainHallNormal *
         ticketPrices.mainHallNormal;
+
 
     const vipEarlyTotal =
         vipEarlyBird *
         ticketPrices.vipEarly;
 
+
     const vipNormalTotal =
         vipNormal *
         ticketPrices.vipNormal;
 
+
     const watchPartyEarlyTotal =
         watchPartyEarlyBird *
         ticketPrices.watchPartyEarly;
+
 
     const watchPartyNormalTotal =
         watchPartyNormal *
@@ -494,12 +664,13 @@ function calculatePrices() {
 
     /* =========================
        TICKET BREAKDOWN
-    ========================= */
+    ========================== */
 
     const ticketBreakdown =
         document.getElementById(
             "ticketPriceBreakdown"
         );
+
 
     if (ticketBreakdown) {
 
@@ -514,25 +685,41 @@ function calculatePrices() {
 
             if (quantity <= 0) return;
 
+
             const row =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             row.className =
                 "price-line";
 
+
             row.innerHTML = `
+
                 <span>
                     ${label} × ${quantity}
                 </span>
 
                 <strong>
-                    Rp${(
-                        quantity * price
-                    ).toLocaleString("id-ID")}
+                    Rp${
+                        (
+                            quantity *
+                            price
+                        ).toLocaleString(
+                            "id-ID"
+                        )
+                    }
                 </strong>
+
             `;
 
-            ticketBreakdown.appendChild(row);
+
+            ticketBreakdown.appendChild(
+                row
+            );
+
         }
 
 
@@ -542,11 +729,13 @@ function calculatePrices() {
             ticketPrices.mainHallEarly
         );
 
+
         addTicketLine(
             "Main Hall — Normal",
             mainHallNormal,
             ticketPrices.mainHallNormal
         );
+
 
         addTicketLine(
             "VIP — Early Bird",
@@ -554,17 +743,20 @@ function calculatePrices() {
             ticketPrices.vipEarly
         );
 
+
         addTicketLine(
             "VIP — Normal",
             vipNormal,
             ticketPrices.vipNormal
         );
 
+
         addTicketLine(
             "Watch Party — Early Bird",
             watchPartyEarlyBird,
             ticketPrices.watchPartyEarly
         );
+
 
         addTicketLine(
             "Watch Party — Normal",
@@ -573,107 +765,184 @@ function calculatePrices() {
         );
 
 
-        /* TICKETS SUBTOTAL */
+        /* =========================
+           TICKET SUBTOTAL
+        ========================== */
 
         const ticketSubtotal =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         ticketSubtotal.className =
             "price-subtotal";
 
+
         ticketSubtotal.innerHTML = `
-            <span>Tickets subtotal</span>
+
+            <span>
+                Tickets subtotal
+            </span>
 
             <strong>
-                Rp${ticketTotal.toLocaleString("id-ID")}
+                Rp${
+                    ticketTotal.toLocaleString(
+                        "id-ID"
+                    )
+                }
             </strong>
+
         `;
+
 
         ticketBreakdown.appendChild(
             ticketSubtotal
         );
+
     }
 
 
     /* =========================
        ADD-ON TOTAL
-    ========================= */
+    ========================== */
 
     let addonTotal = 0;
 
-    Object.keys(addons).forEach(key => {
 
-        const quantity =
-            Number(addons[key]) || 0;
+    Object.keys(addons).forEach(
+        key => {
 
-        const info =
-            addonInfo[key];
+            const quantity =
+                Number(
+                    addons[key]
+                ) || 0;
 
-        if (!info) return;
 
-        addonTotal +=
-            quantity * info.price;
-    });
+            const info =
+                addonInfo[key];
+
+
+            if (!info) return;
+
+
+            addonTotal +=
+                quantity *
+                info.price;
+
+        }
+    );
 
 
     /* =========================
        ADD-ON BREAKDOWN
-    ========================= */
+    ========================== */
 
     const addonBreakdown =
         document.getElementById(
             "addonPriceBreakdown"
         );
 
+
     if (addonBreakdown) {
 
         addonBreakdown.innerHTML = "";
 
+
+        /* =========================
+           FIND OWNER
+        ========================== */
+
         const ownerIndex =
             Number(addonOwner);
 
+
         const owner =
-            attendees[ownerIndex];
+            attendees[
+                ownerIndex
+            ];
+
 
         const ownerName =
-            owner
+            owner &&
+            owner.name
                 ? owner.name
                 : "Unassigned";
 
 
+        /* =========================
+           FIND SELECTED ADD-ONS
+        ========================== */
+
         const selectedAddons = [];
 
 
-        Object.keys(addons).forEach(key => {
+        Object.keys(addons).forEach(
+            key => {
 
-            const quantity =
-                Number(addons[key]) || 0;
+                const quantity =
+                    Number(
+                        addons[key]
+                    ) || 0;
 
-            const info =
-                addonInfo[key];
 
-            if (!info || quantity <= 0) {
-                return;
+                const info =
+                    addonInfo[key];
+
+
+                if (
+                    !info ||
+                    quantity <= 0
+                ) {
+                    return;
+                }
+
+
+                selectedAddons.push({
+
+                    name:
+                        info.name,
+
+                    quantity:
+                        quantity,
+
+                    price:
+                        info.price
+
+                });
+
             }
-
-            selectedAddons.push({
-                name: info.name,
-                quantity: quantity,
-                price: info.price
-            });
-
-        });
+        );
 
 
-        if (selectedAddons.length > 0) {
+        /* =========================
+           DISPLAY ADD-ONS
+        ========================== */
+
+        if (
+            selectedAddons.length > 0
+        ) {
+
+            /*
+               ADD-ONS OWNER HEADING
+
+               This is deliberately
+               created here, AFTER
+               ownerName exists.
+            */
 
             const heading =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             heading.className =
                 "addon-owner-heading";
 
+
             heading.innerHTML = `
+
                 <span class="addon-label">
                     Add ons
                 </span>
@@ -681,68 +950,107 @@ function calculatePrices() {
                 <span class="addon-under">
                     , under ${ownerName}
                 </span>
+
             `;
+
 
             addonBreakdown.appendChild(
                 heading
             );
 
 
-            selectedAddons.forEach(addon => {
+            /* =========================
+               ADD-ON ITEMS
+            ========================== */
 
-                const row =
-                    document.createElement("div");
+            selectedAddons.forEach(
+                addon => {
 
-                row.className =
-                    "price-line addon-price-line";
-
-                row.innerHTML = `
-                    <span>
-                        ${addon.name} × ${addon.quantity}
-                    </span>
-
-                    <strong>
-                        Rp${(
-                            addon.price *
-                            addon.quantity
-                        ).toLocaleString("id-ID")}
-                    </strong>
-                `;
-
-                addonBreakdown.appendChild(row);
-
-            });
+                    const row =
+                        document.createElement(
+                            "div"
+                        );
 
 
-            /* ADD-ONS SUBTOTAL */
+                    row.className =
+                        "price-line addon-price-line";
+
+
+                    row.innerHTML = `
+
+                        <span>
+                            ${addon.name} × ${addon.quantity}
+                        </span>
+
+                        <strong>
+                            Rp${
+                                (
+                                    addon.price *
+                                    addon.quantity
+                                ).toLocaleString(
+                                    "id-ID"
+                                )
+                            }
+                        </strong>
+
+                    `;
+
+
+                    addonBreakdown.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+            /* =========================
+               ADD-ON SUBTOTAL
+            ========================== */
 
             const addonSubtotal =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             addonSubtotal.className =
                 "price-subtotal";
 
+
             addonSubtotal.innerHTML = `
-                <span>Add ons subtotal</span>
+
+                <span>
+                    Add ons subtotal
+                </span>
 
                 <strong>
-                    Rp${addonTotal.toLocaleString("id-ID")}
+                    Rp${
+                        addonTotal.toLocaleString(
+                            "id-ID"
+                        )
+                    }
                 </strong>
+
             `;
+
 
             addonBreakdown.appendChild(
                 addonSubtotal
             );
+
         }
+
     }
 
 
     /* =========================
        GRAND TOTAL
-    ========================= */
+    ========================== */
 
     const grandTotal =
-        ticketTotal + addonTotal;
+        ticketTotal +
+        addonTotal;
 
 
     const totalElement =
@@ -750,29 +1058,36 @@ function calculatePrices() {
             "reviewTotal"
         );
 
+
     if (totalElement) {
 
         totalElement.textContent =
             "Rp" +
-            grandTotal.toLocaleString("id-ID");
+            grandTotal.toLocaleString(
+                "id-ID"
+            );
+
     }
+
 }
 
 
 /* =========================
-   CONTINUE
+   CONTINUE TO PAYMENT
 ========================= */
 
 function continueToPayment() {
 
     window.location.href =
         "payment.html";
+
 }
 
 
 /* =========================
-   START
+   START PAGE
 ========================= */
+
 displayOrderer();
 
 displayAttendees();
@@ -780,10 +1095,24 @@ displayAttendees();
 calculatePrices();
 
 
+/* =========================
+   PAYMENT BUTTON
+========================= */
 
-document
-    .getElementById("continueToPayment")
-    .addEventListener("click", continueToPayment);
+const paymentButton =
+    document.getElementById(
+        "continueToPayment"
+    );
+
+
+if (paymentButton) {
+
+    paymentButton.addEventListener(
+        "click",
+        continueToPayment
+    );
+
+}
 
 </script>
 
