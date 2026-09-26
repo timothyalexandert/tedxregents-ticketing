@@ -352,7 +352,6 @@ h1 {
 
 }
 
-
 /* DETAILS FORM */
 
 .details-section {
@@ -361,25 +360,32 @@ h1 {
 }
 
 .details-section h1 {
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+}
+
+.details-section .subtitle {
+    margin-bottom: 0;
 }
 
 #detailsForm {
-    margin-top: 40px;
+    margin-top: 32px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
 
-    margin-bottom: 26px;
+    margin-bottom: 34px;
 }
 
 .form-group label {
-    margin-bottom: 9px;
+    margin-bottom: 10px;
+
+    color: var(--black);
 
     font-size: 14px;
     font-weight: 700;
+    line-height: 1.4;
 }
 
 .form-group input {
@@ -398,8 +404,9 @@ h1 {
 
     outline: none;
 
-    transition: border-color 0.2s ease,
-                box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .form-group input:focus {
