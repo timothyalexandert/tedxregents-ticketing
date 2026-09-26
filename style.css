@@ -2527,3 +2527,84 @@ h1 {
         min-height: 68px;
     }
 }
+
+
+/* =========================
+   PAYMENT PRICE BREAKDOWN
+========================= */
+
+.payment-price-section {
+    margin-top: 38px;
+}
+
+.payment-price-section .payment-heading {
+    margin-top: 0;
+    margin-bottom: 38px;
+}
+
+.payment-price-section .price-breakdown {
+    border: 1px solid #d9dde1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+
+/* Total is now INSIDE the price box */
+
+.payment-price-section .payment-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-top: 14px;
+    padding: 19px 22px;
+
+    background: #102a43;
+    color: #ffffff;
+
+    border-radius: 0 0 12px 12px;
+}
+
+.payment-price-section .payment-total span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.payment-price-section .payment-total strong {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+}
+
+
+/* Add-on subtotal spacing */
+
+#addonPriceBreakdown .price-subtotal {
+    margin-bottom: 14px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    .payment-price-section {
+        margin-top: 30px;
+    }
+
+    .payment-price-section .payment-heading {
+        margin-bottom: 32px;
+    }
+
+    .payment-price-section .payment-total {
+        padding: 18px;
+    }
+
+    .payment-price-section .payment-total strong {
+        font-size: 19px;
+    }
+}
