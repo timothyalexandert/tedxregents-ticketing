@@ -719,3 +719,337 @@ h1 {
         margin-bottom: 30px !important;
     }
 }
+
+
+
+
+/* =========================================
+   SEATS
+   ========================================= */
+
+.seats-section {
+    max-width: 900px;
+}
+
+
+/* -----------------------------------------
+   CURRENT ATTENDEE
+   ----------------------------------------- */
+
+.current-attendee {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 45px;
+    margin-bottom: 45px;
+
+    padding: 18px 22px;
+
+    background: var(--light-grey);
+
+    border-radius: 8px;
+}
+
+.current-label {
+    margin: 0 0 5px;
+
+    color: var(--text-grey);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+#currentAttendeeName {
+    margin: 0;
+
+    color: var(--black);
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+#currentAttendeeTicket {
+    color: var(--tedx-red);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+}
+
+
+/* -----------------------------------------
+   SEATING PLAN
+   ----------------------------------------- */
+
+.seat-plan-wrapper {
+    width: 100%;
+
+    padding: 30px 20px 35px;
+
+    background: #fafafa;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    box-sizing: border-box;
+
+    overflow-x: auto;
+}
+
+
+/* -----------------------------------------
+   STAGE
+   ----------------------------------------- */
+
+.stage-label {
+    width: 55%;
+
+    margin: 0 auto 55px;
+
+    padding: 12px;
+
+    background: var(--black);
+
+    color: var(--white);
+
+    text-align: center;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.12em;
+
+    border-radius: 3px;
+}
+
+
+/* -----------------------------------------
+   ROW
+   ----------------------------------------- */
+
+.seat-row {
+    display: flex;
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    margin-bottom: 9px;
+}
+
+.seat-row-label {
+    width: 20px;
+
+    margin-right: 8px;
+
+    color: var(--text-grey);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-align: center;
+}
+
+
+/* -----------------------------------------
+   SEAT
+   ----------------------------------------- */
+
+.seat {
+    width: 34px;
+    height: 34px;
+
+    padding: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    background: var(--white);
+
+    color: var(--black);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.seat:hover {
+    border-color: var(--tedx-red);
+
+    transform: translateY(-1px);
+}
+
+
+/* Selected */
+
+.seat.selected {
+    background: var(--tedx-red);
+
+    border-color: var(--tedx-red);
+
+    color: var(--white);
+}
+
+
+/* Unavailable */
+
+.seat.unavailable {
+    background: #e5e5e5;
+
+    border-color: #e5e5e5;
+
+    color: #999999;
+
+    cursor: not-allowed;
+}
+
+.seat.unavailable:hover {
+    transform: none;
+}
+
+
+/* -----------------------------------------
+   LEGEND
+   ----------------------------------------- */
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+
+    gap: 28px;
+
+    margin-top: 28px;
+
+    color: var(--text-grey);
+
+    font-size: 11px;
+}
+
+.seat-legend > div {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.legend-seat {
+    display: inline-block;
+
+    width: 14px;
+    height: 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 3px;
+
+    background: var(--white);
+}
+
+.legend-seat.selected {
+    background: var(--tedx-red);
+
+    border-color: var(--tedx-red);
+}
+
+.legend-seat.unavailable {
+    background: #e5e5e5;
+
+    border-color: #e5e5e5;
+}
+
+
+/* -----------------------------------------
+   SELECTED SEAT
+   ----------------------------------------- */
+
+.selected-seat-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 30px;
+
+    padding: 18px 22px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 8px;
+}
+
+.selected-seat-box span {
+    color: var(--text-grey);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+.selected-seat-box strong {
+    color: var(--black);
+
+    font-size: 14px;
+}
+
+
+/* -----------------------------------------
+   MOBILE
+   ----------------------------------------- */
+
+@media (max-width: 600px) {
+
+    .current-attendee {
+        margin-top: 35px;
+        margin-bottom: 30px;
+
+        padding: 16px 18px;
+    }
+
+    .seat-plan-wrapper {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .stage-label {
+        width: 70%;
+
+        margin-bottom: 40px;
+    }
+
+    .seat-row {
+        gap: 5px;
+
+        margin-bottom: 7px;
+    }
+
+    .seat-row-label {
+        margin-right: 5px;
+    }
+
+    .seat {
+        width: 30px;
+        height: 30px;
+
+        font-size: 10px;
+    }
+
+    .seat-legend {
+        flex-wrap: wrap;
+
+        gap: 15px;
+    }
+
+}
