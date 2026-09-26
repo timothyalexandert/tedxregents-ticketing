@@ -1345,3 +1345,307 @@ h1 {
 
     border-radius: 4px;
 }
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   ADD-ONS
+   ========================================================= */
+
+.addons-section {
+    width: 100%;
+    max-width: 900px;
+}
+
+.addons-section h1 {
+    margin-bottom: 12px;
+}
+
+.addons-section > .subtitle {
+    margin-bottom: 48px;
+}
+
+
+/* ==================== CATEGORY ==================== */
+
+.addon-category {
+    margin-bottom: 52px;
+}
+
+.addon-category-header {
+    margin-bottom: 22px;
+}
+
+.addon-category-header h2 {
+    margin: 0 0 7px;
+    font-size: 20px;
+    color: var(--black);
+}
+
+.addon-category-header p {
+    margin: 0;
+    color: var(--text-grey);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* ==================== GRID ==================== */
+
+.addon-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+
+/* ==================== CARD ==================== */
+
+.addon-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--white);
+}
+
+
+/* ==================== IMAGE ==================== */
+
+.addon-image {
+    width: 100%;
+    height: 190px;
+    background: var(--light-grey);
+}
+
+
+/* ==================== CARD CONTENT ==================== */
+
+.addon-card-content {
+    padding: 19px 20px 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+.addon-info h3 {
+    margin: 0 0 6px;
+
+    color: var(--black);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.addon-info p {
+    margin: 0;
+
+    color: var(--text-grey);
+    font-size: 13px;
+}
+
+
+/* ==================== QUANTITY ==================== */
+
+.addon-quantity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.addon-quantity button {
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 5px;
+
+    background: var(--white);
+    color: var(--black);
+
+    font-family: inherit;
+    font-size: 17px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.addon-quantity button:hover {
+    border-color: var(--black);
+}
+
+.addon-quantity span {
+    min-width: 22px;
+
+    text-align: center;
+
+    color: var(--black);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* ==================== FOOD ==================== */
+
+.food-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+
+/* ==================== OWNER ==================== */
+
+.addon-owner {
+    margin-top: 12px;
+    margin-bottom: 30px;
+
+    padding-top: 30px;
+
+    border-top: 1px solid var(--border);
+}
+
+.owner-label {
+    margin: 0 0 8px;
+
+    color: var(--tedx-red);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.addon-owner h2 {
+    margin: 0 0 8px;
+
+    color: var(--black);
+    font-size: 19px;
+}
+
+.owner-description {
+    margin: 0 0 18px;
+
+    color: var(--text-grey);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.addon-owner select {
+    width: 100%;
+
+    padding: 14px 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 6px;
+
+    background: var(--white);
+    color: var(--black);
+
+    font-family: inherit;
+    font-size: 14px;
+
+    outline: none;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.addon-owner select:focus {
+    border-color: var(--tedx-red);
+    box-shadow: 0 0 0 3px rgba(235, 0, 40, 0.08);
+}
+
+
+/* ==================== SUMMARY ==================== */
+
+.addon-summary {
+    margin-top: 10px;
+    margin-bottom: 18px;
+
+    padding: 20px 22px;
+
+    background: var(--dark-azure);
+    border-radius: 8px;
+
+    color: var(--white);
+}
+
+.addon-summary > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.addon-summary span {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.addon-summary strong {
+    font-size: 17px;
+    color: var(--white);
+}
+
+
+/* ==================== CONTINUE ==================== */
+
+.addons-section > .continue-button {
+    width: 100%;
+
+    padding: 15px 20px;
+
+    border: none;
+    border-radius: 6px;
+
+    background: var(--tedx-red);
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: opacity 0.2s ease;
+}
+
+.addons-section > .continue-button:hover {
+    opacity: 0.9;
+}
+
+
+/* ==================== MOBILE ==================== */
+
+@media (max-width: 700px) {
+
+    .addon-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .addon-image {
+        height: 180px;
+    }
+
+    .addon-card-content {
+        padding: 17px 18px;
+    }
+
+}
