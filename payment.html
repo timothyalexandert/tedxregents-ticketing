@@ -39,13 +39,28 @@
             Choose how you would like to pay for your order.
         </p>
 
-        <!-- TOTAL -->
 
-        <div class="payment-total">
-            <div>
-                <span>Total to pay</span>
-                <strong id="paymentTotal">Rp0</strong>
+        <!-- PRICE BREAKDOWN -->
+        
+        <div class="payment-price-section">
+        
+            <div class="payment-heading">
+                <h2>Price Breakdown</h2>
             </div>
+        
+            <div class="price-breakdown">
+        
+                <div id="ticketPriceBreakdown"></div>
+        
+                <div id="addonPriceBreakdown"></div>
+        
+                <div class="payment-total">
+                    <span>Total</span>
+                    <strong id="paymentTotal">Rp0</strong>
+                </div>
+        
+            </div>
+        
         </div>
 
         <!-- PAYMENT METHOD -->
@@ -281,8 +296,9 @@ function calculateTotal() {
         Number(quantities.watchParty) || 0;
 
 
-    /* Main Hall + VIP share
-       the first 10 Early Bird tickets */
+    /* =========================
+       TICKET PRICING
+    ========================= */
 
     const mainVipTotal =
         mainHallCount + vipCount;
@@ -290,20 +306,17 @@ function calculateTotal() {
     const mainVipEarlyBird =
         Math.min(mainVipTotal, 10);
 
-
     const mainHallEarlyBird =
         Math.min(
             mainHallCount,
             mainVipEarlyBird
         );
 
-
     const vipEarlyBird =
         Math.min(
             vipCount,
             mainVipEarlyBird - mainHallEarlyBird
         );
-
 
     const mainHallNormal =
         mainHallCount - mainHallEarlyBird;
@@ -312,9 +325,6 @@ function calculateTotal() {
         vipCount - vipEarlyBird;
 
 
-    /* Watch Party has its
-       own first 10 Early Bird */
-
     const watchPartyEarlyBird =
         Math.min(watchPartyCount, 10);
 
@@ -322,61 +332,230 @@ function calculateTotal() {
         watchPartyCount - watchPartyEarlyBird;
 
 
-    /* Ticket total */
-
-    const ticketTotal =
-
-        (mainHallEarlyBird *
-            ticketPrices.mainHallEarly)
-
-        +
-
-        (mainHallNormal *
-            ticketPrices.mainHallNormal)
-
-        +
-
-        (vipEarlyBird *
-            ticketPrices.vipEarly)
-
-        +
-
-        (vipNormal *
-            ticketPrices.vipNormal)
-
-        +
-
-        (watchPartyEarlyBird *
-            ticketPrices.watchPartyEarly)
-
-        +
-
-        (watchPartyNormal *
-            ticketPrices.watchPartyNormal);
+    const ticketPrices = {
+        mainHallEarly: 40000,
+        mainHallNormal: 45000,
+        vipEarly: 50000,
+        vipNormal: 55000,
+        watchPartyEarly: 25000,
+        watchPartyNormal: 30000
+    };
 
 
-    /* Add-on total */
+    let ticketTotal = 0;
+
+    const ticketBreakdown =
+        document.getElementById(
+            "ticketPriceBreakdown"
+        );
+
+    ticketBreakdown.innerHTML = "";
+
+
+    function addTicketLine(
+        label,
+        quantity,
+        price
+    ) {
+
+        if (quantity <= 0) return;
+
+        const row =
+            document.createElement("div");
+
+        row.className = "price-line";
+
+        row.innerHTML = `
+            <span>${label} × ${quantity}</span>
+            <strong>
+                Rp${(
+                    quantity * price
+                ).toLocaleString("id-ID")}
+            </strong>
+        `;
+
+        ticketBreakdown.appendChild(row);
+
+        ticketTotal +=
+            quantity * price;
+    }
+
+
+    addTicketLine(
+        "Main Hall — Early Bird",
+        mainHallEarlyBird,
+        ticketPrices.mainHallEarly
+    );
+
+    addTicketLine(
+        "Main Hall — Normal",
+        mainHallNormal,
+        ticketPrices.mainHallNormal
+    );
+
+    addTicketLine(
+        "VIP — Early Bird",
+        vipEarlyBird,
+        ticketPrices.vipEarly
+    );
+
+    addTicketLine(
+        "VIP — Normal",
+        vipNormal,
+        ticketPrices.vipNormal
+    );
+
+    addTicketLine(
+        "Watch Party — Early Bird",
+        watchPartyEarlyBird,
+        ticketPrices.watchPartyEarly
+    );
+
+    addTicketLine(
+        "Watch Party — Normal",
+        watchPartyNormal,
+        ticketPrices.watchPartyNormal
+    );
+
+
+    /* =========================
+       TICKET SUBTOTAL
+    ========================= */
+
+    const ticketSubtotal =
+        document.createElement("div");
+
+    ticketSubtotal.className =
+        "price-subtotal";
+
+    ticketSubtotal.innerHTML = `
+        <span>Tickets subtotal</span>
+        <strong>
+            Rp${ticketTotal.toLocaleString("id-ID")}
+        </strong>
+    `;
+
+    ticketBreakdown.appendChild(
+        ticketSubtotal
+    );
+
+
+    /* =========================
+       ADD-ONS
+    ========================= */
+
+    const addonPrices = {
+        toteBag: 60000,
+        notebook: 30000,
+        pen: 10000,
+        lanyard: 15000,
+        stickerPack: 3000,
+        food: 30000
+    };
+
+    const addonNames = {
+        toteBag: "Tote Bag",
+        notebook: "Notebook",
+        pen: "Pen",
+        lanyard: "Lanyard",
+        stickerPack: "Sticker Pack",
+        food: "Food"
+    };
+
 
     let addonTotal = 0;
+
+    const addonBreakdown =
+        document.getElementById(
+            "addonPriceBreakdown"
+        );
+
+    addonBreakdown.innerHTML = "";
+
 
     Object.keys(addons).forEach(key => {
 
         const quantity =
             Number(addons[key]) || 0;
 
-        const price =
-            addonPrices[key];
+        if (
+            quantity <= 0 ||
+            !addonPrices[key]
+        ) return;
 
-        if (!price) return;
+
+        const row =
+            document.createElement("div");
+
+        row.className =
+            "price-line addon-price-line";
+
+        row.innerHTML = `
+            <span>
+                ${addonNames[key]} × ${quantity}
+            </span>
+
+            <strong>
+                Rp${(
+                    addonPrices[key] * quantity
+                ).toLocaleString("id-ID")}
+            </strong>
+        `;
+
+        addonBreakdown.appendChild(row);
+
 
         addonTotal +=
-            quantity * price;
-
+            addonPrices[key] * quantity;
     });
 
 
-    return ticketTotal + addonTotal;
+    /* =========================
+       ADD-ON SUBTOTAL
+    ========================= */
+
+    if (addonTotal > 0) {
+
+        const addonSubtotal =
+            document.createElement("div");
+
+        addonSubtotal.className =
+            "price-subtotal";
+
+        addonSubtotal.innerHTML = `
+            <span>Add ons subtotal</span>
+            <strong>
+                Rp${addonTotal.toLocaleString("id-ID")}
+            </strong>
+        `;
+
+        addonBreakdown.appendChild(
+            addonSubtotal
+        );
+    }
+
+
+    /* =========================
+       GRAND TOTAL
+    ========================= */
+
+    const grandTotal =
+        ticketTotal + addonTotal;
+
+
+    document.getElementById(
+        "paymentTotal"
+    ).textContent =
+        "Rp" +
+        grandTotal.toLocaleString("id-ID");
+
+
+    return grandTotal;
 }
+
+
+const total =
+    calculateTotal();
 
 
 const total =
