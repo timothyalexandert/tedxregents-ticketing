@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,6 @@
 
 <main>
 
-    <!-- PROGRESS -->
     <div class="progress">
         <div class="progress-step">01 Tickets</div>
         <div class="progress-step">02 Details</div>
@@ -30,7 +30,6 @@
         <div class="progress-step">07 Payment</div>
     </div>
 
-
     <section class="addons-section">
 
         <p class="eyebrow">ADD-ONS</p>
@@ -38,27 +37,27 @@
         <h1>Anything extra?</h1>
 
         <p class="subtitle">
-            Add some merch or food to your order.
+            Add some merchandise or food to your order.
         </p>
 
 
-        <!-- ==================== MERCH ==================== -->
+        <!-- MERCHANDISE -->
 
         <div class="addon-category">
 
             <div class="addon-category-header">
-                <h2>Merch</h2>
-                <p>Take a little bit of TEDxRegents Secondary School Bali <strong>YOUTH</strong> home with you.</p>
+                <h2>Merchandise</h2>
+                <p>
+                    Take a little bit of TEDxRegents Secondary School Bali
+                    <strong>YOUTH</strong> home with you.
+                </p>
             </div>
 
             <div class="addon-grid">
 
-                <!-- TOTE BAG -->
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -68,9 +67,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('toteBag', -1)">−</button>
+                            <button type="button" onclick="changeAddon('toteBag', -1)">−</button>
                             <span id="toteBagQuantity">0</span>
-                            <button onclick="changeAddon('toteBag', 1)">+</button>
+                            <button type="button" onclick="changeAddon('toteBag', 1)">+</button>
                         </div>
 
                     </div>
@@ -78,12 +77,9 @@
                 </div>
 
 
-                <!-- NOTEBOOK -->
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -93,9 +89,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('notebook', -1)">−</button>
+                            <button type="button" onclick="changeAddon('notebook', -1)">−</button>
                             <span id="notebookQuantity">0</span>
-                            <button onclick="changeAddon('notebook', 1)">+</button>
+                            <button type="button" onclick="changeAddon('notebook', 1)">+</button>
                         </div>
 
                     </div>
@@ -103,12 +99,9 @@
                 </div>
 
 
-                <!-- PEN -->
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -118,9 +111,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('pen', -1)">−</button>
+                            <button type="button" onclick="changeAddon('pen', -1)">−</button>
                             <span id="penQuantity">0</span>
-                            <button onclick="changeAddon('pen', 1)">+</button>
+                            <button type="button" onclick="changeAddon('pen', 1)">+</button>
                         </div>
 
                     </div>
@@ -128,12 +121,9 @@
                 </div>
 
 
-                <!-- LANYARD -->
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -143,9 +133,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('lanyard', -1)">−</button>
+                            <button type="button" onclick="changeAddon('lanyard', -1)">−</button>
                             <span id="lanyardQuantity">0</span>
-                            <button onclick="changeAddon('lanyard', 1)">+</button>
+                            <button type="button" onclick="changeAddon('lanyard', 1)">+</button>
                         </div>
 
                     </div>
@@ -153,12 +143,9 @@
                 </div>
 
 
-                <!-- STICKER PACK -->
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -168,9 +155,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('stickerPack', -1)">−</button>
+                            <button type="button" onclick="changeAddon('stickerPack', -1)">−</button>
                             <span id="stickerPackQuantity">0</span>
-                            <button onclick="changeAddon('stickerPack', 1)">+</button>
+                            <button type="button" onclick="changeAddon('stickerPack', 1)">+</button>
                         </div>
 
                     </div>
@@ -182,22 +169,22 @@
         </div>
 
 
-        <!-- ==================== FOOD ==================== -->
+        <!-- FOOD -->
 
         <div class="addon-category">
 
             <div class="addon-category-header">
                 <h2>Food</h2>
-                <p>Grab some food to enjoy during the event.</p>
+                <p>
+                    Add food to enjoy during the event.
+                </p>
             </div>
 
             <div class="addon-grid food-grid">
 
                 <div class="addon-card">
 
-                    <div class="addon-image">
-                        <!-- Picture goes here later -->
-                    </div>
+                    <div class="addon-image"></div>
 
                     <div class="addon-card-content">
 
@@ -207,9 +194,9 @@
                         </div>
 
                         <div class="addon-quantity">
-                            <button onclick="changeAddon('food', -1)">−</button>
+                            <button type="button" onclick="changeAddon('food', -1)">−</button>
                             <span id="foodQuantity">0</span>
-                            <button onclick="changeAddon('food', 1)">+</button>
+                            <button type="button" onclick="changeAddon('food', 1)">+</button>
                         </div>
 
                     </div>
@@ -221,7 +208,7 @@
         </div>
 
 
-        <!-- ==================== UNDER WHOSE NAME ==================== -->
+        <!-- ADD-ONS UNDER -->
 
         <div class="addon-owner">
 
@@ -240,7 +227,7 @@
         </div>
 
 
-        <!-- ==================== SUMMARY ==================== -->
+        <!-- TOTAL -->
 
         <div class="addon-summary">
 
@@ -252,7 +239,11 @@
         </div>
 
 
-        <button class="continue-button" onclick="continueToReview()">
+        <button
+            type="button"
+            class="continue-button"
+            onclick="continueToReview()"
+        >
             Continue
         </button>
 
@@ -263,212 +254,164 @@
 
 <script>
 
-    /* ==================== ADD-ONS ==================== */
+const addonPrices = {
+    toteBag: 60000,
+    notebook: 30000,
+    pen: 10000,
+    lanyard: 15000,
+    stickerPack: 3000,
+    food: 30000
+};
 
-    const addonPrices = {
-        toteBag: 60000,
-        notebook: 30000,
-        pen: 10000,
-        lanyard: 15000,
-        stickerPack: 3000,
-        food: 30000
+
+let addons = {
+    toteBag: 0,
+    notebook: 0,
+    pen: 0,
+    lanyard: 0,
+    stickerPack: 0,
+    food: 0
+};
+
+
+const savedAddons =
+    JSON.parse(localStorage.getItem("addons"));
+
+if (savedAddons) {
+    addons = {
+        ...addons,
+        ...savedAddons
     };
+}
 
 
-    const addonNames = {
-        toteBag: "Tote Bag",
-        notebook: "Notebook",
-        pen: "Pen",
-        lanyard: "Lanyard",
-        stickerPack: "Sticker Pack",
-        food: "Food"
-    };
+function changeAddon(type, amount) {
+
+    addons[type] += amount;
+
+    if (addons[type] < 0) {
+        addons[type] = 0;
+    }
+
+    document.getElementById(
+        type + "Quantity"
+    ).textContent = addons[type];
+
+    updateAddonTotal();
+}
 
 
-    let addons = {
-        toteBag: 0,
-        notebook: 0,
-        pen: 0,
-        lanyard: 0,
-        stickerPack: 0,
-        food: 0
-    };
+function updateAddonTotal() {
+
+    let total = 0;
+
+    Object.keys(addons).forEach(type => {
+        total += addons[type] * addonPrices[type];
+    });
+
+    document.getElementById("addonTotal").textContent =
+        "Rp" + total.toLocaleString("id-ID");
+}
 
 
-    /* ==================== LOAD SAVED DATA ==================== */
+function loadAttendees() {
 
-    const savedAddons = JSON.parse(
-        localStorage.getItem("addons")
+    const attendees =
+        JSON.parse(
+            localStorage.getItem("attendees")
+        ) || [];
+
+    const select =
+        document.getElementById("addonOwner");
+
+
+    attendees.forEach((attendee, index) => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = index;
+
+        option.textContent =
+            `${attendee.name} — ${attendee.ticketType}`;
+
+        select.appendChild(option);
+
+    });
+
+
+    const savedOwner =
+        localStorage.getItem("addonOwner");
+
+    if (savedOwner !== null) {
+        select.value = savedOwner;
+    }
+
+}
+
+
+function continueToReview() {
+
+    const owner =
+        document.getElementById("addonOwner").value;
+
+
+    const hasAddons =
+        Object.values(addons).some(
+            quantity => quantity > 0
+        );
+
+
+    if (hasAddons && owner === "") {
+
+        alert(
+            "Please select an attendee for the add-ons."
+        );
+
+        return;
+    }
+
+
+    localStorage.setItem(
+        "addons",
+        JSON.stringify(addons)
     );
 
-    if (savedAddons) {
-        addons = {
-            ...addons,
-            ...savedAddons
-        };
-    }
+
+    localStorage.setItem(
+        "addonOwner",
+        owner
+    );
 
 
-    /* ==================== QUANTITY ==================== */
-
-    function changeAddon(type, amount) {
-
-        addons[type] += amount;
-
-        if (addons[type] < 0) {
-            addons[type] = 0;
-        }
-
-        document.getElementById(
-            type + "Quantity"
-        ).textContent = addons[type];
-
-        updateAddonTotal();
-    }
+    window.location.href = "review.html";
+}
 
 
-    /* ==================== TOTAL ==================== */
+function initialise() {
 
-    function updateAddonTotal() {
+    Object.keys(addons).forEach(type => {
 
-        let total = 0;
-
-        Object.keys(addons).forEach(type => {
-
-            total += addons[type] * addonPrices[type];
-
-        });
-
-        document.getElementById("addonTotal").textContent =
-            "Rp" + total.toLocaleString("id-ID");
-    }
-
-
-    /* ==================== ATTENDEES ==================== */
-
-    function loadAttendees() {
-
-        const attendees =
-            JSON.parse(
-                localStorage.getItem("attendees")
-            ) || [];
-
-        const select =
-            document.getElementById("addonOwner");
-
-        attendees.forEach((attendee, index) => {
-
-            const option =
-                document.createElement("option");
-
-            option.value = index;
-
-            option.textContent =
-                `${attendee.name} — ${attendee.ticketType}`;
-
-            select.appendChild(option);
-
-        });
-
-
-        /*
-         * Restore previously selected attendee
-         */
-
-        const savedOwner =
-            localStorage.getItem("addonOwner");
-
-        if (savedOwner !== null) {
-            select.value = savedOwner;
-        }
-
-    }
-
-
-    /* ==================== CONTINUE ==================== */
-
-    function continueToReview() {
-
-        const owner =
-            document.getElementById("addonOwner").value;
-
-
-        /*
-         * If there are add-ons, require an owner.
-         */
-
-        const hasAddons =
-            Object.values(addons).some(
-                quantity => quantity > 0
+        const element =
+            document.getElementById(
+                type + "Quantity"
             );
 
-
-        if (hasAddons && owner === "") {
-
-            alert(
-                "Please select an attendee for the add-ons."
-            );
-
-            return;
+        if (element) {
+            element.textContent = addons[type];
         }
 
+    });
 
-        /*
-         * Save add-ons
-         */
-
-        localStorage.setItem(
-            "addons",
-            JSON.stringify(addons)
-        );
+    updateAddonTotal();
+    loadAttendees();
+}
 
 
-        /*
-         * Save owner
-         */
-
-        localStorage.setItem(
-            "addonOwner",
-            owner
-        );
-
-
-        /*
-         * Continue
-         */
-
-        window.location.href = "review.html";
-
-    }
-
-
-    /* ==================== INITIALISE ==================== */
-
-    function initialise() {
-
-        Object.keys(addons).forEach(type => {
-
-            const element =
-                document.getElementById(
-                    type + "Quantity"
-                );
-
-            if (element) {
-                element.textContent =
-                    addons[type];
-            }
-
-        });
-
-        updateAddonTotal();
-        loadAttendees();
-
-    }
-
-
-    initialise();
+initialise();
 
 </script>
 
 </body>
 </html>
+```
