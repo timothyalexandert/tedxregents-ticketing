@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Review — TEDxRegents Secondary School Bali YOUTH</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="site-header">
+    <img
+        src="logo-white.png"
+        alt="TEDxRegents Secondary School Bali YOUTH"
+        class="site-logo"
+    >
+</header>
+
+
+<main>
+
+    <!-- PROGRESS -->
+
+    <div class="progress">
+        <span>01 Tickets</span>
+        <span>02 Details</span>
+        <span>03 Attendees</span>
+        <span>04 Seats</span>
+        <span>05 Add-ons</span>
+        <span class="active">06 Review</span>
+        <span>07 Payment</span>
+    </div>
+
+
+    <!-- INTRO -->
+
+    <section class="review-section">
+
+        <p class="eyebrow">REVIEW</p>
+
+        <h1>Check your order.</h1>
+
+        <p class="subtitle">
+            Make sure everything looks right before continuing to payment.
+        </p>
+
+
+        <!-- TICKETS -->
+
+        <div class="review-block">
+
+            <div class="review-block-header">
+                <h2>Tickets</h2>
+            </div>
+
+            <div id="reviewTickets"></div>
+
+        </div>
+
+
+        <!-- ORDERER -->
+
+        <div class="review-block">
+
+            <div class="review-block-header">
+                <h2>Your Details</h2>
+            </div>
+
+            <div id="reviewOrderer"></div>
+
+        </div>
+
+
+        <!-- ATTENDEES -->
+
+        <div class="review-block">
+
+            <div class="review-block-header">
+                <h2>Attendees</h2>
+            </div>
+
+            <div id="reviewAttendees"></div>
+
+        </div>
+
+
+        <!-- SEATS -->
+
+        <div class="review-block">
+
+            <div class="review-block-header">
+                <h2>Seats</h2>
+            </div>
+
+            <div id="reviewSeats"></div>
+
+        </div>
+
+
+        <!-- ADD-ONS -->
+
+        <div class="review-block">
+
+            <div class="review-block-header">
+                <h2>Add-ons</h2>
+            </div>
+
+            <div id="reviewAddons"></div>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="review-total">
+
+            <span>Total</span>
+
+            <strong id="reviewTotal">
+                Rp0
+            </strong>
+
+        </div>
+
+
+        <!-- CONTINUE -->
+
+        <button
+            type="button"
+            class="continue-button"
+            id="continueToPayment"
+        >
+            Continue to Payment
+        </button>
+
+    </section>
+
+</main>
+
+
+<script>
+
+    /* =========================================================
+       PRICES
+       ========================================================= */
+
+    const ticketPrices = {
+        "Main Hall": 40000,
+        "VIP": 50000,
+        "Watch Party": 25000
+    };
+
+    const addonPrices = {
+        "Tote Bag": 60000,
+        "Notebook": 30000,
+        "Pen": 10000,
+        "Lanyard": 15000,
+        "Sticker Pack": 3000,
+        "Food": 30000
+    };
+
+
+    /* =========================================================
+       HELPERS
+       ========================================================= */
+
+    function formatRupiah(amount) {
+        return "Rp" + amount.toLocaleString("id-ID");
+    }
+
+
+    function getTicketPrice(ticketType, index, quantities) {
+
+        /*
+         * Temporary Early Bird calculation.
+         *
+         * Main Hall + VIP share the first 10 tickets.
+         * Watch Party has its own first 10 tickets.
+         *
+         * Pretix will become the real source of pricing later.
+         */
+
+        let combinedIndex = 0;
+
+        for (const type of ["Main Hall", "VIP"]) {
+
+            if (type === ticketType) {
+                break;
+            }
+
+            combinedIndex += quantities[type] || 0;
+        }
+
+        if (ticketType === "Main Hall" || ticketType === "VIP") {
+
+            const position = combinedIndex + index;
+
+            if (position < 10) {
+                return ticketPrices[ticketType];
+            }
+
+            return ticketPrices[ticketType] + 5000;
+        }
+
+
+        if (ticketType === "Watch Party") {
+
+            if (index < 10) {
+                return ticketPrices[ticketType];
+            }
+
+            return ticketPrices[ticketType] + 5000;
+        }
+
+
+        return 0;
+    }
+
+
+    /* =========================================================
+       LOAD DATA
+       ========================================================= */
+
+    const quantities =
+        JSON.parse(localStorage.getItem("ticketQuantities")) || {};
+
+    const orderer =
+        JSON.parse(localStorage.getItem("ordererDetails")) || {};
+
+    const attendees =
+        JSON.parse(localStorage.getItem("attendees")) || [];
+
+    const selectedSeats =
+        JSON.parse(localStorage.getItem("selectedSeats")) || {};
+
+    const selectedWatchPartySeats =
+        JSON.parse(localStorage.getItem("selectedWatchPartySeats")) || {};
+
+    const addons =
+        JSON.parse(localStorage.getItem("addons")) || {};
+
+    const addonOwner =
+        localStorage.getItem("addonOwner") || "";
+
+
+    /* =========================================================
+       TICKETS
+       ========================================================= */
+
+    const reviewTickets =
+        document.getElementById("reviewTickets");
+
+    let ticketTotal = 0;
+
+    const ticketOrder = [
+        "Main Hall",
+        "VIP",
+        "Watch Party"
+    ];
+
+    ticketOrder.forEach(ticketType => {
+
+        const quantity = quantities[ticketType] || 0;
+
+        if (quantity === 0) {
+            return;
+        }
+
+        for (let i = 0; i < quantity; i++) {
+
+            const price =
+                getTicketPrice(
+                    ticketType,
+                    i,
+                    quantities
+                );
+
+            ticketTotal += price;
+
+            const row =
+                document.createElement("div");
+
+            row.className = "review-row";
+
+            row.innerHTML = `
+                <div>
+                    <strong>${ticketType}</strong>
+                    <span>Ticket ${i + 1}</span>
+                </div>
+
+                <strong>${formatRupiah(price)}</strong>
+            `;
+
+            reviewTickets.appendChild(row);
+        }
+    });
+
+
+    if (reviewTickets.children.length === 0) {
+
+        reviewTickets.innerHTML = `
+            <p class="review-empty">
+                No tickets selected.
+            </p>
+        `;
+    }
+
+
+    /* =========================================================
+       ORDERER
+       ========================================================= */
+
+    const reviewOrderer =
+        document.getElementById("reviewOrderer");
+
+    reviewOrderer.innerHTML = `
+        <div class="review-detail">
+            <strong>${orderer.fullName || "—"}</strong>
+            <span>${orderer.email || "—"}</span>
+            <span>${orderer.phone || "—"}</span>
+        </div>
+    `;
+
+
+    /* =========================================================
+       ATTENDEES
+       ========================================================= */
+
+    const reviewAttendees =
+        document.getElementById("reviewAttendees");
+
+    if (attendees.length === 0) {
+
+        reviewAttendees.innerHTML = `
+            <p class="review-empty">
+                No attendee information found.
+            </p>
+        `;
+
+    } else {
+
+        attendees.forEach((attendee, index) => {
+
+            const row =
+                document.createElement("div");
+
+            row.className = "review-row";
+
+            row.innerHTML = `
+                <div>
+                    <strong>
+                        ${attendee.fullName || "Unnamed attendee"}
+                    </strong>
+
+                    <span>
+                        ${attendee.ticketType || ""}
+                    </span>
+                </div>
+
+                <span>
+                    ${attendee.email || "—"}
+                </span>
+            `;
+
+            reviewAttendees.appendChild(row);
+        });
+    }
+
+
+    /* =========================================================
+       SEATS
+       ========================================================= */
+
+    const reviewSeats =
+        document.getElementById("reviewSeats");
+
+    if (attendees.length === 0) {
+
+        reviewSeats.innerHTML = `
+            <p class="review-empty">
+                No seats selected.
+            </p>
+        `;
+
+    } else {
+
+        attendees.forEach((attendee, index) => {
+
+            let seat = null;
+
+            if (attendee.ticketType === "Watch Party") {
+
+                seat =
+                    selectedWatchPartySeats[index];
+
+            } else {
+
+                seat =
+                    selectedSeats[index];
+            }
+
+            const row =
+                document.createElement("div");
+
+            row.className = "review-row";
+
+            row.innerHTML = `
+                <div>
+                    <strong>
+                        ${attendee.fullName || "Unnamed attendee"}
+                    </strong>
+
+                    <span>
+                        ${attendee.ticketType || ""}
+                    </span>
+                </div>
+
+                <strong>
+                    ${seat ? seat.display : "No seat selected"}
+                </strong>
+            `;
+
+            reviewSeats.appendChild(row);
+        });
+    }
+
+
+    /* =========================================================
+       ADD-ONS
+       ========================================================= */
+
+    const reviewAddons =
+        document.getElementById("reviewAddons");
+
+    let addonTotal = 0;
+
+    let hasAddons = false;
+
+    Object.entries(addons).forEach(([name, quantity]) => {
+
+        if (!quantity || quantity <= 0) {
+            return;
+        }
+
+        hasAddons = true;
+
+        const price =
+            addonPrices[name] || 0;
+
+        const total =
+            price * quantity;
+
+        addonTotal += total;
+
+        const row =
+            document.createElement("div");
+
+        row.className = "review-row";
+
+        row.innerHTML = `
+            <div>
+                <strong>${name}</strong>
+                <span>Quantity: ${quantity}</span>
+            </div>
+
+            <strong>${formatRupiah(total)}</strong>
+        `;
+
+        reviewAddons.appendChild(row);
+    });
+
+
+    if (!hasAddons) {
+
+        reviewAddons.innerHTML = `
+            <p class="review-empty">
+                No add-ons selected.
+            </p>
+        `;
+
+    } else {
+
+        const owner =
+            document.createElement("div");
+
+        owner.className = "review-addon-owner";
+
+        owner.innerHTML = `
+            Add-ons under:
+            <strong>${addonOwner || "—"}</strong>
+        `;
+
+        reviewAddons.appendChild(owner);
+    }
+
+
+    /* =========================================================
+       TOTAL
+       ========================================================= */
+
+    const total =
+        ticketTotal + addonTotal;
+
+    document.getElementById("reviewTotal").textContent =
+        formatRupiah(total);
+
+
+    /* =========================================================
+       CONTINUE
+       ========================================================= */
+
+    document
+        .getElementById("continueToPayment")
+        .addEventListener("click", () => {
+
+            localStorage.setItem(
+                "orderTotal",
+                total
+            );
+
+            window.location.href =
+                "payment.html";
+        });
+
+</script>
+
+</body>
+</html>
