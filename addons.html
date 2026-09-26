@@ -322,8 +322,43 @@ function loadAttendees() {
             localStorage.getItem("attendees")
         ) || [];
 
+    const ticketQuantities =
+        JSON.parse(
+            localStorage.getItem("ticketQuantities")
+        ) || {};
+
     const select =
         document.getElementById("addonOwner");
+
+
+    // Build ticket types in the same order
+    // as the attendees page
+
+    const ticketTypes = [];
+
+    for (
+        let i = 0;
+        i < (ticketQuantities.mainHall || 0);
+        i++
+    ) {
+        ticketTypes.push("Main Hall");
+    }
+
+    for (
+        let i = 0;
+        i < (ticketQuantities.vip || 0);
+        i++
+    ) {
+        ticketTypes.push("VIP");
+    }
+
+    for (
+        let i = 0;
+        i < (ticketQuantities.watchParty || 0);
+        i++
+    ) {
+        ticketTypes.push("Watch Party");
+    }
 
 
     attendees.forEach((attendee, index) => {
@@ -334,7 +369,7 @@ function loadAttendees() {
         option.value = index;
 
         option.textContent =
-            `${attendee.name} — ${attendee.ticketType}`;
+            `${attendee.name} — ${ticketTypes[index] || "Ticket"}`;
 
         select.appendChild(option);
 
