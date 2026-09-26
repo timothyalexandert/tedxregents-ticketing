@@ -1,3 +1,4 @@
+```html id="d8m2qa"
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +14,9 @@
 <body>
 
 <header>
-    <div class="logo">TEDxRegents Secondary School Bali <strong>YOUTH</strong></div>
+    <div class="logo">
+        TEDxRegents Secondary School Bali <strong>YOUTH</strong>
+    </div>
 </header>
 
 
@@ -97,126 +100,169 @@ function addAttendeeFields(ticketType, quantity) {
 
         attendeeNumber++;
 
-        const group = document.createElement("div");
-
-        group.className = "attendee-box";
-
 
         /*
+            Use normal boxes for 1–2 attendees.
+
             If there are more than 2 attendees,
-            make the cards collapsible.
+            use native collapsible <details>.
         */
 
         if (totalAttendees > 2) {
 
-            group.classList.add("collapsible");
+            const box = document.createElement("details");
+
+            box.className = "attendee-box";
 
             if (attendeeNumber === 1) {
-                group.classList.add("open");
+                box.open = true;
             }
 
-        }
+
+            box.innerHTML = `
+
+                <summary class="attendee-heading">
+
+                    <span>
+                        ATTENDEE ${attendeeNumber} — ${ticketType}
+                    </span>
+
+                    <span class="attendee-arrow">⌄</span>
+
+                </summary>
 
 
-        group.innerHTML = `
+                <div class="attendee-content">
 
-            <div
-                class="attendee-heading"
-                ${totalAttendees > 2
-                    ? `onclick="toggleAttendee(${attendeeNumber})"`
-                    : ""}
-            >
+                    <div class="form-group">
 
-                <div class="attendee-title">
-
-                    <span>ATTENDEE ${attendeeNumber}</span>
-
-                    <strong>${ticketType}</strong>
-
-                </div>
-
-
-                ${
-                    totalAttendees > 2
-                        ? `<span
-                                class="attendee-arrow"
-                                id="arrow${attendeeNumber}"
-                           >⌄</span>`
-                        : ""
-                }
-
-            </div>
-
-
-            <div
-                class="attendee-content"
-                id="attendeeContent${attendeeNumber}"
-            >
-
-                <div class="form-group">
-
-                    <label for="attendeeName${attendeeNumber}">
-                        Full name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="attendeeName${attendeeNumber}"
-                        placeholder="Enter full name"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <div class="email-label-row">
-
-                        <label for="attendeeEmail${attendeeNumber}">
-                            Email address
+                        <label for="attendeeName${attendeeNumber}">
+                            Full name
                         </label>
 
-                        <label class="same-orderer">
-
-                            <input
-                                type="checkbox"
-                                id="sameAsOrderer${attendeeNumber}"
-                                onchange="toggleOrdererEmail(${attendeeNumber})"
-                            >
-
-                            <span>Same as orderer</span>
-
-                        </label>
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
 
                     </div>
 
 
-                    <input
-                        type="email"
-                        id="attendeeEmail${attendeeNumber}"
-                        placeholder="you@example.com"
-                        required
-                    >
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label for="attendeeEmail${attendeeNumber}">
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrderer${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
 
                 </div>
 
-            </div>
-        `;
+            `;
 
-        attendeeFields.appendChild(group);
+            attendeeFields.appendChild(box);
+
+        } else {
+
+            const box = document.createElement("div");
+
+            box.className = "attendee-box";
+
+
+            box.innerHTML = `
+
+                <div class="attendee-heading">
+
+                    <span>
+                        ATTENDEE ${attendeeNumber} — ${ticketType}
+                    </span>
+
+                </div>
+
+
+                <div class="attendee-content">
+
+                    <div class="form-group">
+
+                        <label for="attendeeName${attendeeNumber}">
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label for="attendeeEmail${attendeeNumber}">
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrderer${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            `;
+
+            attendeeFields.appendChild(box);
+        }
     }
-}
-
-
-function toggleAttendee(number) {
-
-    const box =
-        document
-            .querySelectorAll(".attendee-box")[number - 1];
-
-    box.classList.toggle("open");
-
 }
 
 
