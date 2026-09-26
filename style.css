@@ -429,7 +429,7 @@ h1 {
 /* More breathing room before Attendee 1 */
 
 #attendeeFields {
-    margin-top: 90px !important;
+    margin-top: 200px !important;
 }
 
 
@@ -442,7 +442,13 @@ h1 {
 
     width: 100%;
 
-    margin: 0 0 42px 0 !important;
+    .attendee-box {
+    margin-bottom: 20px !important;
+}
+
+.attendee-box[open] {
+    margin-bottom: 42px !important;
+}
     padding: 0 !important;
 
     background: var(--white);
