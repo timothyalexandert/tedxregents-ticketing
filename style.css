@@ -730,12 +730,15 @@ h1 {
 
 /* FINAL ATTENDEE SPACING */
 
-#attendeeFields {
+.attendees-form {
     margin-top: 80px !important;
 }
 
-#attendeeFields .attendee-box {
+#attendeeFields {
     margin-top: 0 !important;
+}
+
+#attendeeFields .attendee-box {
     margin-bottom: 30px !important;
 }
 
