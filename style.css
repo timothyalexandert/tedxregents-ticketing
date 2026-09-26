@@ -421,13 +421,11 @@ h1 {
 
 
 
-```css id="7m4xq8"
-
-```css id="q8x1nf"
+```css id="m7v2qa"
 /* ATTENDEES */
 
 #attendeeFields {
-    margin-top: 50px;
+    margin-top: 64px;
 }
 
 
@@ -448,6 +446,8 @@ h1 {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 
     overflow: hidden;
+
+    transition: margin 0.2s ease;
 }
 
 
@@ -455,12 +455,13 @@ h1 {
 
 .attendee-heading {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
     width: 100%;
+    min-height: 64px;
 
-    padding: 28px 30px;
+    padding: 18px 28px;
 
     box-sizing: border-box;
 
@@ -471,7 +472,9 @@ h1 {
 
     letter-spacing: 0.08em;
 
-    border-bottom: 2px solid var(--border);
+    cursor: pointer;
+
+    border-bottom: none;
 }
 
 
@@ -479,7 +482,6 @@ h1 {
 
 summary {
     list-style: none;
-    cursor: pointer;
 }
 
 summary::-webkit-details-marker {
@@ -490,12 +492,27 @@ summary::-webkit-details-marker {
 /* Arrow */
 
 .attendee-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 22px;
+    height: 22px;
+
+    margin-left: 18px;
+
     color: var(--text-grey);
 
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 400;
 
+    line-height: 1;
+
     letter-spacing: 0;
+
+    transform: translateY(0);
 
     transition: transform 0.2s ease;
 }
@@ -506,15 +523,24 @@ summary::-webkit-details-marker {
 }
 
 
-/* Content inside attendee */
+/* Divider only appears when attendee is OPEN */
 
-.attendee-content {
-    padding: 34px 30px 6px;
+.attendee-box[open] .attendee-heading {
+    border-bottom: 3px solid var(--border);
 }
 
 
+/* Content */
+
+.attendee-content {
+    padding: 38px 30px 8px;
+}
+
+
+/* Form spacing */
+
 .attendee-box .form-group {
-    margin-bottom: 38px;
+    margin-bottom: 40px;
 }
 
 
@@ -522,12 +548,12 @@ summary::-webkit-details-marker {
 
 .email-label-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 
-    gap: 30px;
+    gap: 35px;
 
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 
@@ -543,9 +569,9 @@ summary::-webkit-details-marker {
     flex-direction: row !important;
     align-items: center;
 
-    gap: 8px;
+    gap: 9px;
 
-    padding: 6px 9px;
+    padding: 6px 10px;
 
     margin: 0 !important;
 
@@ -558,6 +584,8 @@ summary::-webkit-details-marker {
     font-size: 11px !important;
     font-weight: 500 !important;
 
+    line-height: 1.3 !important;
+
     white-space: nowrap;
 
     cursor: pointer;
@@ -569,6 +597,8 @@ summary::-webkit-details-marker {
 .same-orderer input {
     width: 14px;
     height: 14px;
+
+    flex-shrink: 0;
 
     margin: 0;
 
@@ -594,7 +624,7 @@ summary::-webkit-details-marker {
 @media (max-width: 600px) {
 
     #attendeeFields {
-        margin-top: 38px;
+        margin-top: 46px;
     }
 
     .attendee-box {
@@ -602,7 +632,9 @@ summary::-webkit-details-marker {
     }
 
     .attendee-heading {
-        padding: 24px 20px;
+        min-height: 58px;
+
+        padding: 16px 20px;
     }
 
     .attendee-content {
@@ -612,7 +644,7 @@ summary::-webkit-details-marker {
     .email-label-row {
         align-items: flex-start;
 
-        gap: 12px;
+        gap: 15px;
     }
 
     .same-orderer {
@@ -621,4 +653,3 @@ summary::-webkit-details-marker {
 
 }
 ```
-
