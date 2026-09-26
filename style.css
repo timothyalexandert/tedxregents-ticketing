@@ -420,19 +420,25 @@ h1 {
 }
 
 
+```css
 /* ATTENDEES */
 
-.attendee-group {
-    padding: 28px 0 10px;
+.attendee-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 30px 4px;
+    margin-top: 28px;
     margin-bottom: 28px;
-    border-top: 1px solid var(--border);
 }
 
 .attendee-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 26px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
 }
 
 .attendee-heading span {
@@ -448,10 +454,38 @@ h1 {
     font-weight: 600;
 }
 
-.attendee-group .form-group {
-    margin-bottom: 26px;
+.attendee-box .form-group {
+    margin-bottom: 28px;
 }
 
-.attendee-group .form-group:last-child {
-    margin-bottom: 0;
+.email-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
+
+.same-orderer {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 8px;
+    margin: 0 !important;
+    color: var(--text-grey) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+}
+
+.same-orderer input {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: var(--tedx-red);
+}
+
+.form-group input:disabled {
+    background: var(--light-grey);
+    color: var(--text-grey);
+    cursor: not-allowed;
+}
+```
