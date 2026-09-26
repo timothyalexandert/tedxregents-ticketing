@@ -701,9 +701,6 @@ h1 {
 
 @media (max-width: 600px) {
 
-    #attendeeFields {
-        margin-top: 60px !important;
-    }
 
 
     .attendee-box {
@@ -735,12 +732,11 @@ h1 {
 }
 ```
 .attendee-name {
-    color: var(--tedx-red);
+    color: var(--tedx-red) !important;
 }
 
 .attendee-name em {
-    color: var(--text-grey);
-    font-style: normal;
-    font-weight: 600;
-    letter-spacing: 0;
+    color: #777777 !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
 }
