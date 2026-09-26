@@ -695,12 +695,6 @@ h1 {
 @media (max-width: 600px) {
 
 
-
-    .attendee-box {
-        margin-bottom: 32px !important;
-    }
-
-
     .attendee-heading {
         padding: 16px 20px !important;
     }
@@ -732,4 +726,19 @@ h1 {
     color: #777777 !important;
     font-style: normal !important;
     font-weight: 600 !important;
+}
+
+/* FINAL ATTENDEE SPACING */
+
+#attendeeFields {
+    margin-top: 180px !important;
+}
+
+#attendeeFields .attendee-box {
+    margin-top: 0 !important;
+    margin-bottom: 30px !important;
+}
+
+#attendeeFields .attendee-box[open] {
+    margin-bottom: 42px !important;
 }
