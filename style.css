@@ -1658,16 +1658,8 @@ h1 {
    HEADER LOGO
    ========================================================= */
 
-.header-logo {
-    font-family: Helvetica, Arial, sans-serif;
-}
-
-.tedx-logo-red {
-    color: var(--tedx-red);
-}
-
-.header-logo strong {
-    color: var(--white);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+.site-logo {
+    height: 42px;
+    width: auto;
+    display: block;
 }
