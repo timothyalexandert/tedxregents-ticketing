@@ -49,8 +49,8 @@
 
         <!-- ORDERER -->
 
-        <div class="review-section-heading">
-            <h2>Orderer</h2>
+        <div class="review-section-heading review-heading">
+            <h2>Your Details</h2>
         </div>
         
         <div id="reviewOrderer"></div>
@@ -59,23 +59,10 @@
         <!-- ATTENDEES -->
 
         <div class="review-section-heading">
-            <h2>Attendees</h2>
+            <h2>Attendees Details</h2>
         </div>
 
         <div id="reviewAttendees"></div>
-
-
-        <!-- ADD-ONS -->
-
-        <div class="review-section-heading addons-review-heading">
-            <h2>Add-ons</h2>
-        </div>
-
-        <div class="review-block">
-
-            <div id="reviewAddons"></div>
-
-        </div>
 
 
         <!-- PRICE BREAKDOWN -->
@@ -84,20 +71,14 @@
             <h2>Price Breakdown</h2>
         </div>
 
-        <div class="price-breakdown">
+    <div class="price-breakdown">
 
-            <div id="ticketPriceBreakdown"></div>
+    <div id="ticketPriceBreakdown"></div>
 
-            <div id="addonPriceBreakdown"></div>
+    <div id="addonPriceBreakdown"></div>
 
-            <div class="price-divider"></div>
+</div>
 
-            <div class="price-line subtotal-line">
-                <span>Subtotal</span>
-                <strong id="subtotalPrice">Rp0</strong>
-            </div>
-
-        </div>
 
 
         <!-- TOTAL -->
@@ -254,7 +235,7 @@ const addonInfo = {
 /* =========================
    ORDERER DETAILS
 ========================= */
-    function displayOrderer() {
+function displayOrderer() {
 
     const container =
         document.getElementById("reviewOrderer");
@@ -263,33 +244,33 @@ const addonInfo = {
 
     container.innerHTML = `
 
-        <div class="review-block">
+        <div class="orderer-grid">
 
-            <div class="attendee-review-detail">
-                <span>Name</span>
+            <div class="review-detail">
+                <span>Full name</span>
                 <strong>
                     ${ordererDetails.name || "Not provided"}
                 </strong>
             </div>
 
-            <div class="attendee-review-detail">
-                <span>Email</span>
-                <strong>
-                    ${ordererDetails.email || "Not provided"}
-                </strong>
-            </div>
-
-            <div class="attendee-review-detail">
+            <div class="review-detail">
                 <span>Phone</span>
                 <strong>
                     ${ordererDetails.phone || "Not provided"}
                 </strong>
             </div>
 
+            <div class="review-detail email-detail">
+                <span>Email</span>
+                <strong>
+                    ${ordererDetails.email || "Not provided"}
+                </strong>
+            </div>
+
         </div>
     `;
 }
-
+    
 /* =========================
    ATTENDEE DETAILS
 ========================= */
@@ -303,58 +284,80 @@ function displayAttendees() {
 
     container.innerHTML = "";
 
+    const shouldCollapse =
+        attendees.length >= 3;
+
+
     attendees.forEach((attendee, index) => {
 
         const ticketType =
             ticketTypes[index] || "Ticket";
 
-        /*
-         * Seats are stored using attendee numbers:
-         * 1, 2, 3...
-         *
-         * Array indexes start at:
-         * 0, 1, 2...
-         *
-         * Therefore we use index + 1.
-         */
-
-        const attendeeNumber = index + 1;
+        const attendeeNumber =
+            index + 1;
 
         const seat =
             selectedSeats[attendeeNumber];
 
+
         const card =
-            document.createElement("div");
+            document.createElement(
+                shouldCollapse
+                    ? "details"
+                    : "div"
+            );
 
         card.className =
             "attendee-review-card";
 
-        card.innerHTML = `
 
-            <div class="attendee-review-details">
+        if (shouldCollapse) {
 
-                <div class="attendee-review-detail">
-                    <span>Name</span>
-                    <strong>
-                        ${attendee.name || "Not provided"}
-                    </strong>
-                </div>
+            const summary =
+                document.createElement("summary");
 
-                <div class="attendee-review-detail">
-                    <span>Email</span>
-                    <strong>
-                        ${attendee.email || "Not provided"}
-                    </strong>
-                </div>
+            summary.innerHTML = `
+                <span>
+                    ${attendee.name || "Attendee " + attendeeNumber}
+                </span>
 
-                <div class="attendee-review-detail">
+                <span class="attendee-toggle">
+                    View details
+                </span>
+            `;
+
+            card.appendChild(summary);
+        }
+
+
+        const content =
+            document.createElement("div");
+
+        content.className =
+            "attendee-review-content";
+
+
+        content.innerHTML = `
+
+            <div class="attendee-full-name">
+                <span>Full name</span>
+                <strong>
+                    ${attendee.name || "Not provided"}
+                </strong>
+            </div>
+
+            <div class="attendee-divider"></div>
+
+            <div class="attendee-info-grid">
+
+                <div class="attendee-info">
                     <span>Ticket</span>
                     <strong>
                         ${ticketType}
                     </strong>
                 </div>
 
-                <div class="attendee-review-detail">
+                <div class="attendee-info">
                     <span>Seat</span>
                     <strong>
                         ${
@@ -365,122 +368,31 @@ function displayAttendees() {
                     </strong>
                 </div>
 
+                <div class="attendee-info">
+                    <span>Phone</span>
+                    <strong>
+                        ${attendee.phone || "Not provided"}
+                    </strong>
+                </div>
+
+                <div class="attendee-info">
+                    <span>Email</span>
+                    <strong>
+                        ${attendee.email || "Not provided"}
+                    </strong>
+                </div>
+
             </div>
         `;
 
+
+        card.appendChild(content);
+
         container.appendChild(card);
+
     });
 }
 
-
-/* =========================
-   ADD-ONS
-========================= */
-
-function displayAddons() {
-
-    const container =
-        document.getElementById("reviewAddons");
-
-    if (!container) return;
-
-    container.innerHTML = "";
-
-    let hasAddons = false;
-
-    Object.keys(addons).forEach(key => {
-
-        const quantity =
-            Number(addons[key]) || 0;
-
-        if (quantity <= 0) return;
-
-        const info =
-            addonInfo[key];
-
-        if (!info) return;
-
-        hasAddons = true;
-
-        const row =
-            document.createElement("div");
-
-        row.className = "price-line";
-
-        row.innerHTML = `
-
-            <span>
-                ${info.name} × ${quantity}
-            </span>
-
-            <strong>
-                Rp${(
-                    info.price * quantity
-                ).toLocaleString("id-ID")}
-            </strong>
-
-        `;
-
-        container.appendChild(row);
-    });
-
-
-    /*
-     * Show who the add-ons belong to.
-     */
-
-    if (hasAddons) {
-
-        const ownerIndex =
-            Number(addonOwner);
-
-        const owner =
-            attendees[ownerIndex];
-
-        const ownerName =
-            owner
-                ? owner.name
-                : "Not specified";
-
-        const ownerTicket =
-            ticketTypes[ownerIndex]
-                || "";
-
-        const ownerRow =
-            document.createElement("div");
-
-        ownerRow.className =
-            "attendee-review-detail";
-
-        ownerRow.innerHTML = `
-
-            <span>Add-ons under</span>
-
-            <strong>
-                ${ownerName}
-                ${
-                    ownerTicket
-                        ? ` — ${ownerTicket}`
-                        : ""
-                }
-            </strong>
-
-        `;
-
-        container.insertBefore(
-            ownerRow,
-            container.firstChild
-        );
-    }
-
-
-    if (!hasAddons) {
-
-        container.innerHTML = `
-            <p>No add-ons selected.</p>
-        `;
-    }
-}
 
 
 /* =========================
@@ -488,6 +400,7 @@ function displayAddons() {
 ========================= */
 
 function calculatePrices() {
+
 
     const mainHallCount =
         Number(quantities.mainHall) || 0;
@@ -688,52 +601,97 @@ function calculatePrices() {
     });
 
 
-    /* =========================
-       ADD-ON BREAKDOWN
-    ========================= */
+  /* =========================
+   ADD-ON BREAKDOWN
+========================= */
 
-    const addonBreakdown =
-        document.getElementById(
-            "addonPriceBreakdown"
+const addonBreakdown =
+    document.getElementById(
+        "addonPriceBreakdown"
+    );
+
+if (addonBreakdown) {
+
+    addonBreakdown.innerHTML = "";
+
+    const ownerIndex =
+        Number(addonOwner);
+
+    const owner =
+        attendees[ownerIndex];
+
+    const ownerName =
+        owner
+            ? owner.name
+            : "Unassigned";
+
+
+    const selectedAddons = [];
+
+    Object.keys(addons).forEach(key => {
+
+        const quantity =
+            Number(addons[key]) || 0;
+
+        const info =
+            addonInfo[key];
+
+        if (!info || quantity <= 0) {
+            return;
+        }
+
+        selectedAddons.push({
+            name: info.name,
+            quantity: quantity,
+            price: info.price
+        });
+
+    });
+
+
+    if (selectedAddons.length > 0) {
+
+        const heading =
+            document.createElement("div");
+
+        heading.className =
+            "addon-owner-heading";
+
+        heading.textContent =
+            ownerName;
+
+        addonBreakdown.appendChild(
+            heading
         );
 
-    if (addonBreakdown) {
 
-        addonBreakdown.innerHTML = "";
-
-
-        Object.keys(addons).forEach(key => {
-
-            const quantity =
-                Number(addons[key]) || 0;
-
-            const info =
-                addonInfo[key];
-
-            if (!info || quantity <= 0) {
-                return;
-            }
+        selectedAddons.forEach(addon => {
 
             const row =
                 document.createElement("div");
 
-            row.className = "price-line";
+            row.className =
+                "price-line addon-price-line";
 
             row.innerHTML = `
                 <span>
-                    ${info.name} × ${quantity}
+                    ${addon.name} × ${addon.quantity}
                 </span>
 
                 <strong>
                     Rp${(
-                        quantity * info.price
+                        addon.price *
+                        addon.quantity
                     ).toLocaleString("id-ID")}
                 </strong>
             `;
 
             addonBreakdown.appendChild(row);
+
         });
+
     }
+}
 
 
     /* =========================
@@ -742,20 +700,6 @@ function calculatePrices() {
 
     const subtotal =
         ticketTotal + addonTotal;
-
-
-    const subtotalElement =
-        document.getElementById(
-            "subtotalPrice"
-        );
-
-    if (subtotalElement) {
-
-        subtotalElement.textContent =
-            "Rp" +
-            subtotal.toLocaleString("id-ID");
-    }
-
 
     const totalElement =
         document.getElementById(
@@ -788,8 +732,6 @@ function continueToPayment() {
 displayOrderer();
 
 displayAttendees();
-
-displayAddons();
 
 calculatePrices();
 
