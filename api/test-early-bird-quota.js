@@ -1,14 +1,7 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      success: false,
-      error: "Method not allowed. Use POST.",
-    });
-  }
-
   try {
     const response = await fetch(
-      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/quotas/6227773/",
+      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/quotas/6227773/?with_availability=true",
       {
         headers: {
           Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
