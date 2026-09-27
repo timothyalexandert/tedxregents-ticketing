@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   try {
     const response = await fetch(
-      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/seats/",
+      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/seats/?zone_name=Main%20Hall",
       {
         headers: {
           Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
