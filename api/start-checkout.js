@@ -7,13 +7,16 @@ const MAX_TICKETS = 10;
 const EARLY_BIRD_LIMIT = 10;
 const CHECKOUT_SECONDS = 15 * 60;
 
+// Pretix variation IDs
 const MAIN_HALL_EB = "1044379";
 const MAIN_HALL_REGULAR = "1044380";
 const VIP_EB = "1044381";
 const VIP_REGULAR = "1044382";
+
 const WATCH_PARTY_EB = "1044384";
 const WATCH_PARTY_REGULAR = "1044383";
 
+// Redis keys for the two Early Bird pools
 const MAIN_VIP_POOL = "tedx:eb:main-vip";
 const WATCH_POOL = "tedx:eb:watch";
 
@@ -30,27 +33,33 @@ function json(data, status = 200) {
 export default async function handler(req) {
     if (req.method !== "POST") {
         return json(
-            { success: false, error: "Method not allowed." },
+            {
+                success: false,
+                error: "Method not allowed."
+            },
             405
         );
     }
 
     try {
         const body = await req.json();
-
         const quantities = body.quantities;
 
         if (!quantities || typeof quantities !== "object") {
-            return json({
-                success: false,
-                error: "Missing ticket quantities."
-            }, 400);
+            return json(
+                {
+                    success: false,
+                    error: "Missing ticket quantities."
+                },
+                400
+            );
         }
 
         const mainHall = Number(quantities.mainHall) || 0;
         const vip = Number(quantities.vip) || 0;
         const watchParty = Number(quantities.watchParty) || 0;
 
+        // Validate quantities
         if (
             !Number.isInteger(mainHall) ||
             !Number.isInteger(vip) ||
@@ -59,49 +68,55 @@ export default async function handler(req) {
             vip < 0 ||
             watchParty < 0
         ) {
-            return json({
-                success: false,
-                error: "Invalid ticket quantities."
-            }, 400);
+            return json(
+                {
+                    success: false,
+                    error: "Invalid ticket quantities."
+                },
+                400
+            );
         }
 
         const totalTickets = mainHall + vip + watchParty;
 
         if (totalTickets < 1) {
-            return json({
-                success: false,
-                error: "Please select at least one ticket."
-            }, 400);
+            return json(
+                {
+                    success: false,
+                    error: "Please select at least one ticket."
+                },
+                400
+            );
         }
 
         if (totalTickets > MAX_TICKETS) {
-            return json({
-                success: false,
-                error: `You can purchase a maximum of ${MAX_TICKETS} tickets per order.`
-            }, 400);
+            return json(
+                {
+                    success: false,
+                    error: `You can purchase a maximum of ${MAX_TICKETS} tickets per order.`
+                },
+                400
+            );
         }
 
-        /*
-         * Generate the checkout ID on the server.
-         * This ID identifies the user's Early Bird reservation.
-         */
         const checkoutId = crypto.randomUUID();
 
         const now = Date.now();
         const expiresAt = now + CHECKOUT_SECONDS * 1000;
 
-        /*
-         * Main Hall + VIP share ONE Early Bird pool.
-         *
-         * Watch Party has its own Early Bird pool.
-         *
-         * Each individual Early Bird ticket gets its own
-         * temporary Redis entry. The entry expires automatically
-         * after 15 minutes.
-         */
         const mainVipRequested = mainHall + vip;
         const watchRequested = watchParty;
 
+        /*
+         * Atomically:
+         *
+         * 1. Remove expired EB reservations
+         * 2. Check remaining EB capacity
+         * 3. Allocate as many EB slots as possible
+         * 4. Store the checkout reservation
+         *
+         * Any tickets that don't receive EB become Regular.
+         */
         const allocationScript = `
             local mainPool = KEYS[1]
             local watchPool = KEYS[2]
@@ -113,12 +128,23 @@ export default async function handler(req) {
 
             local mainRequested = tonumber(ARGV[4])
             local watchRequested = tonumber(ARGV[5])
+            local reservationData = ARGV[6]
 
-            -- Remove expired Main Hall/VIP locks.
-            redis.call("ZREMRANGEBYSCORE", mainPool, "-inf", now)
+            -- Remove expired Main Hall/VIP reservations
+            redis.call(
+                "ZREMRANGEBYSCORE",
+                mainPool,
+                "-inf",
+                now
+            )
 
-            -- Remove expired Watch Party locks.
-            redis.call("ZREMRANGEBYSCORE", watchPool, "-inf", now)
+            -- Remove expired Watch Party reservations
+            redis.call(
+                "ZREMRANGEBYSCORE",
+                watchPool,
+                "-inf",
+                now
+            )
 
             local mainUsed = redis.call("ZCARD", mainPool)
             local watchUsed = redis.call("ZCARD", watchPool)
@@ -126,33 +152,56 @@ export default async function handler(req) {
             local mainAvailable = 10 - mainUsed
             local watchAvailable = 10 - watchUsed
 
-            if mainRequested > mainAvailable then
-                return {"ERROR", "MAIN_VIP"}
+            if mainAvailable < 0 then
+                mainAvailable = 0
             end
 
-            if watchRequested > watchAvailable then
-                return {"ERROR", "WATCH"}
+            if watchAvailable < 0 then
+                watchAvailable = 0
             end
 
-            local mainEb = mainRequested
-            local watchEb = watchRequested
+            -- Give as many EB tickets as are still available
+            local mainEb = math.min(
+                mainRequested,
+                mainAvailable
+            )
 
-            -- Create one Redis entry per Early Bird ticket.
+            local watchEb = math.min(
+                watchRequested,
+                watchAvailable
+            )
+
+            -- Create one temporary reservation entry
+            -- for every Early Bird ticket.
             for i = 1, mainEb do
-                local member = checkoutId .. ":main:" .. tostring(i)
-                redis.call("ZADD", mainPool, expiresAt, member)
+                local member =
+                    checkoutId .. ":main:" .. tostring(i)
+
+                redis.call(
+                    "ZADD",
+                    mainPool,
+                    expiresAt,
+                    member
+                )
             end
 
             for i = 1, watchEb do
-                local member = checkoutId .. ":watch:" .. tostring(i)
-                redis.call("ZADD", watchPool, expiresAt, member)
+                local member =
+                    checkoutId .. ":watch:" .. tostring(i)
+
+                redis.call(
+                    "ZADD",
+                    watchPool,
+                    expiresAt,
+                    member
+                )
             end
 
-            -- Save the reservation itself for the rest of checkout.
+            -- Store the complete checkout reservation
             redis.call(
                 "SET",
                 reservationKey,
-                ARGV[6],
+                reservationData,
                 "EX",
                 900
             )
@@ -164,23 +213,19 @@ export default async function handler(req) {
             }
         `;
 
-        const reservationData = JSON.stringify({
-            checkoutId,
-            createdAt: now,
-            expiresAt,
-            quantities: {
-                mainHall,
-                vip,
-                watchParty
-            }
-        });
+        const mainEbResultKey =
+            `tedx:checkout:${checkoutId}`;
 
+        /*
+         * We initially calculate the allocation here.
+         * The exact allocation is also stored in Redis below.
+         */
         const result = await redis.eval(
             allocationScript,
             [
                 MAIN_VIP_POOL,
                 WATCH_POOL,
-                `tedx:checkout:${checkoutId}`
+                mainEbResultKey
             ],
             [
                 now,
@@ -188,40 +233,39 @@ export default async function handler(req) {
                 checkoutId,
                 mainVipRequested,
                 watchRequested,
-                reservationData
+                JSON.stringify({
+                    checkoutId,
+                    createdAt: now,
+                    expiresAt,
+                    quantities: {
+                        mainHall,
+                        vip,
+                        watchParty
+                    }
+                })
             ]
         );
 
         if (!result || result[0] !== "OK") {
-            if (result?.[1] === "MAIN_VIP") {
-                return json({
+            return json(
+                {
                     success: false,
-                    error: "The Main Hall/VIP Early Bird tickets are currently sold out.",
-                    pool: "main-vip"
-                }, 409);
-            }
-
-            if (result?.[1] === "WATCH") {
-                return json({
-                    success: false,
-                    error: "The Watch Party Early Bird tickets are currently sold out.",
-                    pool: "watch-party"
-                }, 409);
-            }
-
-            return json({
-                success: false,
-                error: "Unable to reserve Early Bird tickets."
-            }, 409);
+                    error: "Unable to reserve Early Bird tickets."
+                },
+                409
+            );
         }
 
-        /*
-         * We allocate Main Hall before VIP inside the shared pool.
-         * This is only the pricing allocation — the customer still
-         * chooses their actual seat later.
-         */
-        const mainVipEarlyBird = mainVipRequested;
+        const mainVipEarlyBird = Number(result[1]);
+        const watchPartyEarlyBird = Number(result[2]);
 
+        /*
+         * Allocate Main Hall EB tickets first,
+         * then VIP EB tickets from the SAME pool.
+         *
+         * This is only the price allocation.
+         * Actual seats are selected later.
+         */
         const mainHallEarlyBird = Math.min(
             mainHall,
             mainVipEarlyBird
@@ -232,8 +276,14 @@ export default async function handler(req) {
             mainVipEarlyBird - mainHallEarlyBird
         );
 
+        const watchEarlyBird = Math.min(
+            watchParty,
+            watchPartyEarlyBird
+        );
+
         const tickets = [];
 
+        // Main Hall
         for (let i = 0; i < mainHall; i++) {
             const earlyBird = i < mainHallEarlyBird;
 
@@ -248,6 +298,7 @@ export default async function handler(req) {
             });
         }
 
+        // VIP
         for (let i = 0; i < vip; i++) {
             const earlyBird = i < vipEarlyBird;
 
@@ -262,8 +313,9 @@ export default async function handler(req) {
             });
         }
 
+        // Watch Party
         for (let i = 0; i < watchParty; i++) {
-            const earlyBird = i < watchRequested;
+            const earlyBird = i < watchEarlyBird;
 
             tickets.push({
                 type: "watchparty",
@@ -281,30 +333,48 @@ export default async function handler(req) {
             0
         );
 
+        /*
+         * Update the stored reservation with the EXACT
+         * ticket allocation that this checkout received.
+         */
+        await redis.set(
+            mainEbResultKey,
+            JSON.stringify({
+                checkoutId,
+                createdAt: now,
+                expiresAt,
+                quantities: {
+                    mainHall,
+                    vip,
+                    watchParty
+                },
+                tickets
+            }),
+            {
+                ex: CHECKOUT_SECONDS
+            }
+        );
+
         return json({
             success: true,
-
             checkoutId,
-
             createdAt: new Date(now).toISOString(),
-
             expiresAt: new Date(expiresAt).toISOString(),
-
             expiresInSeconds: CHECKOUT_SECONDS,
-
             tickets,
-
             totalTickets,
-
             totalPrice
         });
 
     } catch (error) {
         console.error("start-checkout error:", error);
 
-        return json({
-            success: false,
-            error: "Something went wrong while starting checkout."
-        }, 500);
+        return json(
+            {
+                success: false,
+                error: "Something went wrong while starting checkout."
+            },
+            500
+        );
     }
 }
