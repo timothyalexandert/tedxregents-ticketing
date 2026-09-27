@@ -1,71 +1,35 @@
 export default async function handler(req, res) {
-  const tests = [
-    {
-      name: "Main Hall Early Bird",
-      item: 1161768,
-      price: "40000.00",
-      seat: "9f3da54a-fcc5-4d21-a9e6-47105140f695", // Row 1 Seat 2
-    },
-    {
-      name: "Main Hall Normal",
-      item: 1161769,
-      price: "45000.00",
-      seat: "2db9bc29-d78d-4d89-b0a4-65ffeb1b8975", // Row 1 Seat 3
-    },
-    {
-      name: "VIP Early Bird",
-      item: 1161772,
-      price: "50000.00",
-      seat: "4eb07895-3368-4a19-9faf-566300e20681", // Row 1 Seat 4
-    },
-    {
-      name: "VIP Normal",
-      item: 1161773,
-      price: "55000.00",
-      seat: "1ad7c9a4-f829-4fe2-995b-7cebde472989", // Row 1 Seat 5
-    },
-  ];
-
-  const results = [];
-
   try {
-    for (const test of tests) {
-      const response = await fetch(
-        "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/cartpositions/",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            cart_id: `seat-test-${Date.now()}-${test.item}@api`,
-            item: test.item,
-            variation: null,
-            price: test.price,
-            seat: test.seat,
-            expires: new Date(
-              Date.now() + 15 * 60 * 1000
-            ).toISOString(),
-          }),
-        }
-      );
+    const cartId = `quota-test-${Date.now()}@api`;
 
-      const data = await response.json();
+    const response = await fetch(
+      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/cartpositions/",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cart_id: cartId,
+          item: 1162153,
+          variation: 1044379,
+          price: "40000.00",
+          seat: "9f3da54a-fcc5-4d21-a9e6-47105140f695",
+          expires: new Date(
+            Date.now() + 15 * 60 * 1000
+          ).toISOString(),
+        }),
+      }
+    );
 
-      results.push({
-        ticket: test.name,
-        success: response.ok,
-        status: response.status,
-        data,
-      });
-    }
+    const data = await response.json();
 
-    return res.status(200).json({
-      success: true,
-      message: "Main Hall ticket compatibility test completed.",
-      results,
+    return res.status(response.status).json({
+      success: response.ok,
+      cart_id: cartId,
+      result: data,
     });
   } catch (error) {
     return res.status(500).json({
