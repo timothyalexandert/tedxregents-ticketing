@@ -5,9 +5,9 @@ export default async function handler(req, res) {
     const payload = {
       cart_id: cartId,
       item: 1162153,
-      variation: 1044379,
-      price: "40000.00",
-      seat: "05884c07-ce3e-42b8-8285-c31ae93a33e7",
+      variation: 1044381,
+      price: "50000.00",
+      seat: "e1f3d828-2bb8-49e6-8eb7-296004b1aa82",
       expires: new Date(
         Date.now() + 15 * 60 * 1000
       ).toISOString(),
