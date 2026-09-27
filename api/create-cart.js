@@ -1,11 +1,4 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({
-      success: false,
-      error: "Method not allowed. Use POST.",
-    });
-  }
-
   const tests = [
     {
       name: "Main Hall Early Bird",
@@ -52,7 +45,9 @@ export default async function handler(req, res) {
             variation: null,
             price: test.price,
             seat: test.seat,
-            expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+            expires: new Date(
+              Date.now() + 15 * 60 * 1000
+            ).toISOString(),
           }),
         }
       );
