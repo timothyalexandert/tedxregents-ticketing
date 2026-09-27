@@ -21,6 +21,7 @@ export default async function handler(req, res) {
           item: 1161768,
           variation: null,
           price: "40000.00",
+          seat: "e1f3d828-2bb8-49e6-8eb7-296004b1aa82",
           expires: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
         }),
       }
@@ -37,7 +38,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: "Test ticket successfully reserved!",
+      message: "Main Hall seat successfully reserved!",
       cart: data,
     });
   } catch (error) {
