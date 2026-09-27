@@ -16,8 +16,7 @@ export default async function handler(req, res) {
           item: 1162153,
           variation: 1044379,
           price: "40000.00",
-          seat: "9f3da54a-fcc5-4d21-a9e6-47105140f695",
-          expires: new Date(
+          seat: "05884c07-ce3e-42b8-8285-c31ae93a33e7",
             Date.now() + 15 * 60 * 1000
           ).toISOString(),
         }),
