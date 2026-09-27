@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   try {
     const response = await fetch(
-      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/quotas/6227773/?with_availability=true",
+      "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027/quotas/6227773/availability/",
       {
         headers: {
           Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
@@ -14,16 +14,7 @@ export default async function handler(req, res) {
 
     return res.status(response.status).json({
       success: response.ok,
-      quota: {
-        id: data.id,
-        name: data.name,
-        size: data.size,
-        available: data.available,
-        available_number: data.available_number,
-        closed: data.closed,
-        close_when_sold_out: data.close_when_sold_out,
-        variations: data.variations,
-      },
+      quota: data,
     });
   } catch (error) {
     return res.status(500).json({
