@@ -60,7 +60,6 @@ export default async function handler(req) {
         const vip = Number(quantities.vip) || 0;
         const watchParty = Number(quantities.watchParty) || 0;
 
-        // Validate quantities
         if (
             !Number.isInteger(mainHall) ||
             !Number.isInteger(vip) ||
@@ -108,226 +107,124 @@ export default async function handler(req) {
 
         const now = Date.now();
         const expiresAt =
-            now +
-            CHECKOUT_SECONDS * 1000;
+            now + CHECKOUT_SECONDS * 1000;
+
+        /*
+         * Read current Early Bird reservations.
+         *
+         * We use Redis sorted sets where each reservation
+         * expires automatically when its score is reached.
+         */
+
+        await redis.zremrangebyscore(
+            MAIN_VIP_POOL,
+            0,
+            now
+        );
+
+        await redis.zremrangebyscore(
+            WATCH_POOL,
+            0,
+            now
+        );
+
+        const mainVipUsed =
+            await redis.zcard(MAIN_VIP_POOL);
+
+        const watchUsed =
+            await redis.zcard(WATCH_POOL);
+
+        const mainVipAvailable =
+            Math.max(
+                0,
+                EARLY_BIRD_LIMIT - mainVipUsed
+            );
+
+        const watchAvailable =
+            Math.max(
+                0,
+                EARLY_BIRD_LIMIT - watchUsed
+            );
+
+        /*
+         * Allocate Early Bird slots.
+         *
+         * Main Hall + VIP share one pool.
+         * Watch Party has its own pool.
+         */
 
         const mainVipRequested =
             mainHall + vip;
 
-        const watchRequested =
-            watchParty;
+        const mainVipEarlyBird =
+            Math.min(
+                mainVipRequested,
+                mainVipAvailable
+            );
+
+        const watchEarlyBird =
+            Math.min(
+                watchParty,
+                watchAvailable
+            );
 
         /*
-         * Redis Lua script.
-         *
-         * This operation is atomic:
-         *
-         * 1. Remove expired reservations
-         * 2. Count remaining EB slots
-         * 3. Allocate as many EB slots as possible
-         * 4. Create the temporary reservation
-         *
-         * Main Hall + VIP share one pool.
-         * Watch Party has a separate pool.
+         * Reserve the Early Bird slots.
          */
-        const allocationScript = `
-            local mainPool = KEYS[1]
-            local watchPool = KEYS[2]
-            local reservationKey = KEYS[3]
 
-            local now = tonumber(ARGV[1])
-            local expiresAt = tonumber(ARGV[2])
-            local checkoutId = ARGV[3]
-
-            local mainRequested = tonumber(ARGV[4])
-            local watchRequested = tonumber(ARGV[5])
-            local reservationData = ARGV[6]
-
-            -- Remove expired Main Hall/VIP reservations
-            redis.call(
-                "ZREMRANGEBYSCORE",
-                mainPool,
-                "-inf",
-                now
-            )
-
-            -- Remove expired Watch Party reservations
-            redis.call(
-                "ZREMRANGEBYSCORE",
-                watchPool,
-                "-inf",
-                now
-            )
-
-            local mainUsed =
-                redis.call("ZCARD", mainPool)
-
-            local watchUsed =
-                redis.call("ZCARD", watchPool)
-
-            local mainAvailable =
-                10 - mainUsed
-
-            local watchAvailable =
-                10 - watchUsed
-
-            if mainAvailable < 0 then
-                mainAvailable = 0
-            end
-
-            if watchAvailable < 0 then
-                watchAvailable = 0
-            end
-
-            -- Give as many EB tickets as are available.
-            local mainEb =
-                math.min(
-                    mainRequested,
-                    mainAvailable
-                )
-
-            local watchEb =
-                math.min(
-                    watchRequested,
-                    watchAvailable
-                )
-
-            -- Reserve Main Hall/VIP EB slots.
-            for i = 1, mainEb do
-                local member =
-                    checkoutId ..
-                    ":main:" ..
-                    tostring(i)
-
-                redis.call(
-                    "ZADD",
-                    mainPool,
-                    expiresAt,
-                    member
-                )
-            end
-
-            -- Reserve Watch Party EB slots.
-            for i = 1, watchEb do
-                local member =
-                    checkoutId ..
-                    ":watch:" ..
-                    tostring(i)
-
-                redis.call(
-                    "ZADD",
-                    watchPool,
-                    expiresAt,
-                    member
-                )
-            end
-
-            -- Store checkout reservation.
-            redis.call(
-                "SET",
-                reservationKey,
-                reservationData,
-                "EX",
-                900
-            )
-
-            return {
-                "OK",
-                tostring(mainEb),
-                tostring(watchEb)
-            }
-        `;
-
-        const reservationKey =
-            `tedx:checkout:${checkoutId}`;
-
-        const initialReservation = JSON.stringify({
-            checkoutId,
-            createdAt: now,
-            expiresAt,
-            quantities: {
-                mainHall,
-                vip,
-                watchParty
-            }
-        });
-
-        const result = await redis.eval(
-            allocationScript,
-            [
-                MAIN_VIP_POOL,
-                WATCH_POOL,
-                reservationKey
-            ],
-            [
-                now,
-                expiresAt,
-                checkoutId,
-                mainVipRequested,
-                watchRequested,
-                initialReservation
-            ]
-        );
-
-        if (
-            !result ||
-            result[0] !== "OK"
+        for (
+            let i = 1;
+            i <= mainVipEarlyBird;
+            i++
         ) {
-            return json(
+            await redis.zadd(
+                MAIN_VIP_POOL,
                 {
-                    success: false,
-                    error:
-                        "Unable to reserve Early Bird tickets."
-                },
-                409
+                    score: expiresAt,
+                    member:
+                        `${checkoutId}:main:${i}`
+                }
             );
         }
 
-        const mainVipEarlyBird =
-            Number(result[1]);
-
-        const watchPartyEarlyBird =
-            Number(result[2]);
+        for (
+            let i = 1;
+            i <= watchEarlyBird;
+            i++
+        ) {
+            await redis.zadd(
+                WATCH_POOL,
+                {
+                    score: expiresAt,
+                    member:
+                        `${checkoutId}:watch:${i}`
+                }
+            );
+        }
 
         /*
-         * PROPORTIONAL ALLOCATION
-         *
-         * Main Hall and VIP share the same EB pool.
-         *
-         * Example:
-         *
-         * 2 Main Hall + 3 VIP
-         * 2 EB slots remaining
-         *
-         * Main Hall share = 40%
-         * VIP share = 60%
-         *
-         * Exact:
-         * Main Hall = 0.8
-         * VIP = 1.2
-         *
-         * Largest remainder:
-         * Main Hall = 1
-         * VIP = 1
+         * Distribute Main Hall/VIP Early Bird slots
+         * proportionally when the shared pool is partially
+         * available.
          */
 
         let mainHallEarlyBird = 0;
         let vipEarlyBird = 0;
 
         if (mainVipEarlyBird > 0) {
+
             if (mainHall === 0) {
+
                 vipEarlyBird =
-                    Math.min(
-                        vip,
-                        mainVipEarlyBird
-                    );
+                    mainVipEarlyBird;
+
             } else if (vip === 0) {
+
                 mainHallEarlyBird =
-                    Math.min(
-                        mainHall,
-                        mainVipEarlyBird
-                    );
+                    mainVipEarlyBird;
+
             } else {
+
                 const totalMainVip =
                     mainHall + vip;
 
@@ -365,6 +262,7 @@ export default async function handler(req) {
                     vipEarlyBird;
 
                 while (remaining > 0) {
+
                     if (
                         vipRemainder >
                         mainRemainder
@@ -377,7 +275,6 @@ export default async function handler(req) {
                     remaining--;
                 }
 
-                // Safety limits
                 mainHallEarlyBird =
                     Math.min(
                         mainHallEarlyBird,
@@ -392,20 +289,19 @@ export default async function handler(req) {
             }
         }
 
-        const watchEarlyBird =
-            Math.min(
-                watchParty,
-                watchPartyEarlyBird
-            );
+        /*
+         * Build the exact ticket allocation.
+         */
 
         const tickets = [];
 
-        // Main Hall tickets
+        // Main Hall
         for (
             let i = 0;
             i < mainHall;
             i++
         ) {
+
             const earlyBird =
                 i < mainHallEarlyBird;
 
@@ -422,12 +318,13 @@ export default async function handler(req) {
             });
         }
 
-        // VIP tickets
+        // VIP
         for (
             let i = 0;
             i < vip;
             i++
         ) {
+
             const earlyBird =
                 i < vipEarlyBird;
 
@@ -444,12 +341,13 @@ export default async function handler(req) {
             });
         }
 
-        // Watch Party tickets
+        // Watch Party
         for (
             let i = 0;
             i < watchParty;
             i++
         ) {
+
             const earlyBird =
                 i < watchEarlyBird;
 
@@ -474,10 +372,12 @@ export default async function handler(req) {
             );
 
         /*
-         * Save the FINAL ticket allocation.
-         *
-         * This is what later checkout steps will use.
+         * Save the exact checkout allocation.
          */
+
+        const reservationKey =
+            `tedx:checkout:${checkoutId}`;
+
         await redis.set(
             reservationKey,
             JSON.stringify({
@@ -520,6 +420,7 @@ export default async function handler(req) {
         });
 
     } catch (error) {
+
         console.error(
             "start-checkout error:",
             error
