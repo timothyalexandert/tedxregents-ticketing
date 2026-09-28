@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -212,16 +213,6 @@ function updateSummary() {
     const vip = quantities.vip;
     const watchParty = quantities.watchParty;
 
-    /*
-        TEMPORARY calculation for testing.
-
-        Main Hall + VIP share the first 10 Early Bird tickets.
-        Watch Party has its own first 10 Early Bird tickets.
-
-        The real calculation will eventually be handled
-        by Pretix/backend.
-    */
-
     const mainVipTotal = mainHall + vip;
 
     const mainVipEarlyBird = Math.min(mainVipTotal, 10);
@@ -287,7 +278,11 @@ async function continueToDetails() {
         return;
     }
 
-    // Create loading overlay
+
+    /*
+     * Create loading overlay.
+     */
+
     const overlay =
         document.createElement("div");
 
@@ -309,6 +304,7 @@ async function continueToDetails() {
 
     document.body.appendChild(overlay);
 
+
     try {
 
         const response =
@@ -329,8 +325,10 @@ async function continueToDetails() {
                 }
             );
 
+
         const data =
             await response.json();
+
 
         if (
             !response.ok ||
@@ -341,6 +339,7 @@ async function continueToDetails() {
                 "Unable to start your order."
             );
         }
+
 
         /*
          * Save the exact backend allocation.
@@ -353,14 +352,13 @@ async function continueToDetails() {
 
         sessionStorage.setItem(
             "ticketQuantities",
-            JSON.stringify(
-                quantities
-            )
+            JSON.stringify(quantities)
         );
+
 
         /*
          * Convert backend expiry time
-         * into a readable local time.
+         * into local time.
          */
 
         const expiry =
@@ -377,48 +375,45 @@ async function continueToDetails() {
                 }
             );
 
+
         /*
-         * Replace loading screen
-         * with confirmation screen.
+         * Check whether the backend actually
+         * allocated any Early Bird tickets.
          */
 
         const hasEarlyBird =
-    data.tickets.some(
-        ticket => ticket.early_bird === true
-    );
-
-const priceMessage = hasEarlyBird
-    ? "Your Early Bird ticket price is held for 15 mins"
-    : "Your ticket price is held for 15 mins";
+            data.tickets.some(
+                ticket =>
+                    ticket.early_bird === true
+            );
 
 
-            overlay.innerHTML = `
-                <div class="order-modal">
-            
-                    <div class="order-check">✓</div>
-            
-                    <h2>
-                        Ticket is held
-                    </h2>
-            
-                    <p>
-                        ${priceMessage}
-                    </p>
-            
-                    <p class="order-expiry">
-                        Until <strong>${expiryText}</strong>
-                    </p>
-            
-                    <button
-                        type="button"
-                        class="order-next-button"
-                        id="order-next-button"
-                    >
-                        Next
-                    </button>
-            
-                </div>
-            `;
+        const priceMessage =
+            hasEarlyBird
+                ? "Your Early Bird ticket price is held for 15 mins"
+                : "Your ticket price is held for 15 mins";
+
+
+        /*
+         * Show confirmation modal.
+         */
+
+        overlay.innerHTML = `
+            <div class="order-modal">
+
+                <div class="order-check">✓</div>
+
+                <h2>
+                    Ticket is held
+                </h2>
+
+                <p>
+                    ${priceMessage}
+                </p>
+
+                <p class="order-expiry">
+                    Until <strong>${expiryText}</strong>
+                </p>
 
                 <button
                     type="button"
@@ -430,6 +425,7 @@ const priceMessage = hasEarlyBird
 
             </div>
         `;
+
 
         /*
          * Next button continues to Details.
@@ -449,9 +445,11 @@ const priceMessage = hasEarlyBird
                 }
             );
 
+
     } catch (error) {
 
         console.error(error);
+
 
         overlay.innerHTML = `
             <div class="order-modal">
@@ -480,6 +478,7 @@ const priceMessage = hasEarlyBird
             </div>
         `;
 
+
         document
             .getElementById(
                 "order-retry-button"
@@ -487,9 +486,12 @@ const priceMessage = hasEarlyBird
             .addEventListener(
                 "click",
                 () => {
+
                     overlay.remove();
+
                 }
             );
+
     }
 }
 
@@ -497,3 +499,4 @@ const priceMessage = hasEarlyBird
 
 </body>
 </html>
+```
