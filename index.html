@@ -912,24 +912,16 @@ async function continueToDetails() {
         ===================================== */
 
         sessionStorage.setItem(
-
             "checkout",
-
             JSON.stringify(data)
 
         );
 
 
-        sessionStorage.setItem(
-
+        localStorage.setItem(
             "ticketQuantities",
-
-            JSON.stringify(
-                quantities
-            )
-
+            JSON.stringify(quantities)
         );
-
 
         /* =====================================
            GET BACKEND EXPIRY TIME
