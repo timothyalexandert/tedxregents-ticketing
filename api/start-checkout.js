@@ -7,6 +7,10 @@ const MAX_TICKETS = 10;
 const EARLY_BIRD_LIMIT = 10;
 const CHECKOUT_SECONDS = 15 * 60;
 
+// Pretix item IDs
+const MAIN_HALL_ITEM = 1162153;
+const WATCH_PARTY_ITEM = 1162179;
+
 // Pretix variation IDs
 const MAIN_HALL_EB = "1044379";
 const MAIN_HALL_REGULAR = "1044380";
@@ -17,17 +21,65 @@ const VIP_REGULAR = "1044382";
 const WATCH_PARTY_EB = "1044384";
 const WATCH_PARTY_REGULAR = "1044383";
 
-// Redis keys
+// Pretix quota IDs
+const MAIN_HALL_EB_QUOTA = 6227773;
+const WATCH_PARTY_EB_QUOTA = 6227039;
+
+// Redis Early Bird pools
 const MAIN_VIP_POOL = "tedx:eb:main-vip";
 const WATCH_POOL = "tedx:eb:watch";
 
+const PRETIX_BASE =
+    "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027";
+
+
 function sendJson(res, data, status = 200) {
+
     return res.status(status).json(data);
+
 }
+
+
+async function getPretixQuotaAvailability(quotaId) {
+
+    const response =
+        await fetch(
+            `${PRETIX_BASE}/quotas/${quotaId}/availability/`,
+            {
+                headers: {
+                    Authorization:
+                        `Token ${process.env.PRETIX_API_TOKEN}`,
+
+                    Accept:
+                        "application/json"
+                }
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data?.detail ||
+            `Could not check Pretix quota ${quotaId}.`
+        );
+
+    }
+
+
+    return data;
+
+}
+
 
 export default async function handler(req, res) {
 
     if (req.method !== "POST") {
+
         return sendJson(
             res,
             {
@@ -36,17 +88,21 @@ export default async function handler(req, res) {
             },
             405
         );
+
     }
+
 
     try {
 
         const quantities =
             req.body?.quantities;
 
+
         if (
             !quantities ||
             typeof quantities !== "object"
         ) {
+
             return sendJson(
                 res,
                 {
@@ -55,7 +111,9 @@ export default async function handler(req, res) {
                 },
                 400
             );
+
         }
+
 
         const mainHall =
             Number(quantities.mainHall) || 0;
@@ -66,7 +124,11 @@ export default async function handler(req, res) {
         const watchParty =
             Number(quantities.watchParty) || 0;
 
-        // Validate quantities
+
+        // --------------------------------------------------
+        // 1. VALIDATE QUANTITIES
+        // --------------------------------------------------
+
         if (
             !Number.isInteger(mainHall) ||
             !Number.isInteger(vip) ||
@@ -75,6 +137,7 @@ export default async function handler(req, res) {
             vip < 0 ||
             watchParty < 0
         ) {
+
             return sendJson(
                 res,
                 {
@@ -83,14 +146,18 @@ export default async function handler(req, res) {
                 },
                 400
             );
+
         }
+
 
         const totalTickets =
             mainHall +
             vip +
             watchParty;
 
+
         if (totalTickets < 1) {
+
             return sendJson(
                 res,
                 {
@@ -100,9 +167,12 @@ export default async function handler(req, res) {
                 },
                 400
             );
+
         }
 
+
         if (totalTickets > MAX_TICKETS) {
+
             return sendJson(
                 res,
                 {
@@ -112,20 +182,55 @@ export default async function handler(req, res) {
                 },
                 400
             );
+
         }
 
-        const checkoutId =
-            crypto.randomUUID();
 
-        const now = Date.now();
+        // --------------------------------------------------
+        // 2. GET CURRENT PRETIX EB AVAILABILITY
+        // --------------------------------------------------
 
-        const expiresAt =
-            now +
-            CHECKOUT_SECONDS * 1000;
+        const [
+            mainHallEBQuota,
+            watchPartyEBQuota
+        ] = await Promise.all([
 
-        /*
-         * Remove expired Early Bird reservations.
-         */
+            getPretixQuotaAvailability(
+                MAIN_HALL_EB_QUOTA
+            ),
+
+            getPretixQuotaAvailability(
+                WATCH_PARTY_EB_QUOTA
+            )
+
+        ]);
+
+
+        const pretixMainVipEBAvailable =
+            Math.max(
+                0,
+                Number(
+                    mainHallEBQuota.available_number
+                ) || 0
+            );
+
+
+        const pretixWatchEBAvailable =
+            Math.max(
+                0,
+                Number(
+                    watchPartyEBQuota.available_number
+                ) || 0
+            );
+
+
+        // --------------------------------------------------
+        // 3. REMOVE EXPIRED REDIS HOLDS
+        // --------------------------------------------------
+
+        const now =
+            Date.now();
+
 
         await redis.zremrangebyscore(
             MAIN_VIP_POOL,
@@ -133,47 +238,78 @@ export default async function handler(req, res) {
             now
         );
 
+
         await redis.zremrangebyscore(
             WATCH_POOL,
             0,
             now
         );
 
-        /*
-         * Count currently held Early Bird slots.
-         */
+
+        // --------------------------------------------------
+        // 4. COUNT OUR ACTIVE REDIS EB HOLDS
+        // --------------------------------------------------
 
         const mainVipUsed =
             await redis.zcard(
                 MAIN_VIP_POOL
             );
 
+
         const watchUsed =
             await redis.zcard(
                 WATCH_POOL
             );
 
-        const mainVipAvailable =
+
+        const redisMainVipAvailable =
             Math.max(
                 0,
                 EARLY_BIRD_LIMIT -
                     mainVipUsed
             );
 
-        const watchAvailable =
+
+        const redisWatchAvailable =
             Math.max(
                 0,
                 EARLY_BIRD_LIMIT -
                     watchUsed
             );
 
+
         /*
-         * Main Hall + VIP share ONE
-         * Early Bird pool.
+         * The effective availability is limited by BOTH:
+         *
+         * 1. Pretix's actual EB quota
+         * 2. Our own 15-minute price holds
+         *
+         * This prevents our Redis system from promising
+         * more EB tickets than Pretix can actually accept.
          */
 
+        const mainVipAvailable =
+            Math.min(
+                pretixMainVipEBAvailable,
+                redisMainVipAvailable
+            );
+
+
+        const watchAvailable =
+            Math.min(
+                pretixWatchEBAvailable,
+                redisWatchAvailable
+            );
+
+
+        // --------------------------------------------------
+        // 5. DETERMINE EARLY BIRD ALLOCATION
+        // --------------------------------------------------
+
         const mainVipRequested =
-            mainHall + vip;
+            mainHall +
+            vip;
+
 
         const mainVipEarlyBird =
             Math.min(
@@ -181,10 +317,6 @@ export default async function handler(req, res) {
                 mainVipAvailable
             );
 
-        /*
-         * Watch Party has its own
-         * Early Bird pool.
-         */
 
         const watchEarlyBird =
             Math.min(
@@ -192,9 +324,19 @@ export default async function handler(req, res) {
                 watchAvailable
             );
 
-        /*
-         * Reserve the Early Bird slots.
-         */
+
+        // --------------------------------------------------
+        // 6. RESERVE REDIS EB SLOTS
+        // --------------------------------------------------
+
+        const checkoutId =
+            crypto.randomUUID();
+
+
+        const expiresAt =
+            now +
+            CHECKOUT_SECONDS * 1000;
+
 
         for (
             let i = 1;
@@ -206,11 +348,14 @@ export default async function handler(req, res) {
                 MAIN_VIP_POOL,
                 {
                     score: expiresAt,
+
                     member:
                         `${checkoutId}:main:${i}`
                 }
             );
+
         }
+
 
         for (
             let i = 1;
@@ -222,26 +367,23 @@ export default async function handler(req, res) {
                 WATCH_POOL,
                 {
                     score: expiresAt,
+
                     member:
                         `${checkoutId}:watch:${i}`
                 }
             );
+
         }
 
-        /*
-         * Decide how the shared Main Hall/VIP
-         * Early Bird slots are distributed.
-         *
-         * If the full pool is available,
-         * this normally gives all requested
-         * tickets Early Bird pricing.
-         *
-         * If only some slots remain,
-         * allocation is proportional.
-         */
+
+        // --------------------------------------------------
+        // 7. DISTRIBUTE MAIN HALL + VIP EB
+        // --------------------------------------------------
 
         let mainHallEarlyBird = 0;
+
         let vipEarlyBird = 0;
+
 
         if (mainVipEarlyBird > 0) {
 
@@ -250,15 +392,21 @@ export default async function handler(req, res) {
                 vipEarlyBird =
                     mainVipEarlyBird;
 
-            } else if (vip === 0) {
+            }
+
+            else if (vip === 0) {
 
                 mainHallEarlyBird =
                     mainVipEarlyBird;
 
-            } else {
+            }
+
+            else {
 
                 const totalMainVip =
-                    mainHall + vip;
+                    mainHall +
+                    vip;
+
 
                 const mainExact =
                     (
@@ -267,6 +415,7 @@ export default async function handler(req, res) {
                     ) *
                     mainVipEarlyBird;
 
+
                 const vipExact =
                     (
                         vip /
@@ -274,24 +423,34 @@ export default async function handler(req, res) {
                     ) *
                     mainVipEarlyBird;
 
+
                 mainHallEarlyBird =
-                    Math.floor(mainExact);
+                    Math.floor(
+                        mainExact
+                    );
+
 
                 vipEarlyBird =
-                    Math.floor(vipExact);
+                    Math.floor(
+                        vipExact
+                    );
+
 
                 let remaining =
                     mainVipEarlyBird -
                     mainHallEarlyBird -
                     vipEarlyBird;
 
+
                 const mainRemainder =
                     mainExact -
                     mainHallEarlyBird;
 
+
                 const vipRemainder =
                     vipExact -
                     vipEarlyBird;
+
 
                 while (remaining > 0) {
 
@@ -299,13 +458,22 @@ export default async function handler(req, res) {
                         vipRemainder >
                         mainRemainder
                     ) {
+
                         vipEarlyBird++;
-                    } else {
-                        mainHallEarlyBird++;
+
                     }
 
+                    else {
+
+                        mainHallEarlyBird++;
+
+                    }
+
+
                     remaining--;
+
                 }
+
 
                 mainHallEarlyBird =
                     Math.min(
@@ -313,25 +481,27 @@ export default async function handler(req, res) {
                         mainHall
                     );
 
+
                 vipEarlyBird =
                     Math.min(
                         vipEarlyBird,
                         vip
                     );
+
             }
+
         }
 
-        /*
-         * Build the exact ticket allocation.
-         *
-         * This allocation is saved in Redis
-         * and should be used by later checkout
-         * steps rather than recalculating prices.
-         */
+
+        // --------------------------------------------------
+        // 8. BUILD EXACT TICKET ALLOCATION
+        // --------------------------------------------------
 
         const tickets = [];
 
+
         // Main Hall
+
         for (
             let i = 0;
             i < mainHall;
@@ -341,20 +511,38 @@ export default async function handler(req, res) {
             const earlyBird =
                 i < mainHallEarlyBird;
 
+
             tickets.push({
-                type: "mainhall",
-                vip: false,
-                early_bird: earlyBird,
-                variation: earlyBird
-                    ? MAIN_HALL_EB
-                    : MAIN_HALL_REGULAR,
-                price: earlyBird
-                    ? 40000
-                    : 45000
+
+                type:
+                    "mainhall",
+
+                vip:
+                    false,
+
+                item:
+                    MAIN_HALL_ITEM,
+
+                early_bird:
+                    earlyBird,
+
+                variation:
+                    earlyBird
+                        ? MAIN_HALL_EB
+                        : MAIN_HALL_REGULAR,
+
+                price:
+                    earlyBird
+                        ? 40000
+                        : 45000
+
             });
+
         }
 
+
         // VIP
+
         for (
             let i = 0;
             i < vip;
@@ -364,20 +552,38 @@ export default async function handler(req, res) {
             const earlyBird =
                 i < vipEarlyBird;
 
+
             tickets.push({
-                type: "mainhall",
-                vip: true,
-                early_bird: earlyBird,
-                variation: earlyBird
-                    ? VIP_EB
-                    : VIP_REGULAR,
-                price: earlyBird
-                    ? 50000
-                    : 55000
+
+                type:
+                    "mainhall",
+
+                vip:
+                    true,
+
+                item:
+                    MAIN_HALL_ITEM,
+
+                early_bird:
+                    earlyBird,
+
+                variation:
+                    earlyBird
+                        ? VIP_EB
+                        : VIP_REGULAR,
+
+                price:
+                    earlyBird
+                        ? 50000
+                        : 55000
+
             });
+
         }
 
+
         // Watch Party
+
         for (
             let i = 0;
             i < watchParty;
@@ -387,18 +593,35 @@ export default async function handler(req, res) {
             const earlyBird =
                 i < watchEarlyBird;
 
+
             tickets.push({
-                type: "watchparty",
-                vip: false,
-                early_bird: earlyBird,
-                variation: earlyBird
-                    ? WATCH_PARTY_EB
-                    : WATCH_PARTY_REGULAR,
-                price: earlyBird
-                    ? 25000
-                    : 30000
+
+                type:
+                    "watchparty",
+
+                vip:
+                    false,
+
+                item:
+                    WATCH_PARTY_ITEM,
+
+                early_bird:
+                    earlyBird,
+
+                variation:
+                    earlyBird
+                        ? WATCH_PARTY_EB
+                        : WATCH_PARTY_REGULAR,
+
+                price:
+                    earlyBird
+                        ? 25000
+                        : 30000
+
             });
+
         }
+
 
         const totalPrice =
             tickets.reduce(
@@ -407,45 +630,66 @@ export default async function handler(req, res) {
                 0
             );
 
-        /*
-         * Save the checkout reservation.
-         */
+
+        // --------------------------------------------------
+        // 9. SAVE CHECKOUT SESSION
+        // --------------------------------------------------
 
         const reservationKey =
             `tedx:checkout:${checkoutId}`;
 
+
         await redis.set(
+
             reservationKey,
+
             JSON.stringify({
+
                 checkoutId,
-                createdAt: now,
+
+                createdAt:
+                    now,
+
                 expiresAt,
 
                 quantities: {
+
                     mainHall,
+
                     vip,
+
                     watchParty
+
                 },
 
                 tickets,
 
                 totalTickets,
+
                 totalPrice
+
             }),
+
             {
-                ex: CHECKOUT_SECONDS
+                ex:
+                    CHECKOUT_SECONDS
             }
+
         );
 
-        /*
-         * Return everything the frontend
-         * needs for the next steps.
-         */
+
+        // --------------------------------------------------
+        // 10. RETURN TO FRONTEND
+        // --------------------------------------------------
 
         return sendJson(
+
             res,
+
             {
-                success: true,
+
+                success:
+                    true,
 
                 checkoutId,
 
@@ -467,24 +711,40 @@ export default async function handler(req, res) {
                 totalTickets,
 
                 totalPrice
+
             }
+
         );
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "start-checkout error:",
             error
         );
 
+
         return sendJson(
+
             res,
+
             {
-                success: false,
+
+                success:
+                    false,
+
                 error:
+                    error.message ||
                     "Something went wrong while starting checkout."
+
             },
+
             500
+
         );
+
     }
+
 }
