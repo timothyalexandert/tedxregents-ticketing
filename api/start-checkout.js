@@ -2,31 +2,21 @@ import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
-export default async function handler(req) {
+export default async function handler(req, res) {
     if (req.method !== "POST") {
-        return new Response(
-            JSON.stringify({
-                success: false,
-                error: "Method not allowed."
-            }),
-            {
-                status: 405,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+        return res.status(405).json({
+            success: false,
+            error: "Method not allowed."
+        });
     }
 
     try {
         console.log("STEP 1: API reached");
 
-        const testKey = "tedx:test:connection";
-
         console.log("STEP 2: About to write Redis");
 
         await redis.set(
-            testKey,
+            "tedx:test:connection",
             "connection works",
             { ex: 60 }
         );
@@ -34,26 +24,20 @@ export default async function handler(req) {
         console.log("STEP 3: Redis write succeeded");
 
         const value =
-            await redis.get(testKey);
+            await redis.get(
+                "tedx:test:connection"
+            );
 
         console.log(
             "STEP 4: Redis read succeeded:",
             value
         );
 
-        return new Response(
-            JSON.stringify({
-                success: true,
-                message: "Redis connection works!",
-                value
-            }),
-            {
-                status: 200,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+        return res.status(200).json({
+            success: true,
+            message: "Redis connection works!",
+            value
+        });
 
     } catch (error) {
 
@@ -62,17 +46,9 @@ export default async function handler(req) {
             error
         );
 
-        return new Response(
-            JSON.stringify({
-                success: false,
-                error: String(error)
-            }),
-            {
-                status: 500,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
+        return res.status(500).json({
+            success: false,
+            error: String(error)
+        });
     }
 }
