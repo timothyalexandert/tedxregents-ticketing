@@ -275,7 +275,7 @@ function updateSummary() {
 }
 
 
-function continueToDetails() {
+async function continueToDetails() {
 
     const totalTickets =
         quantities.mainHall +
@@ -287,15 +287,57 @@ function continueToDetails() {
         return;
     }
 
-    localStorage.setItem(
-        "ticketQuantities",
-        JSON.stringify(quantities)
-    );
+    const button = document.querySelector(".continue-button");
 
-    window.location.href = "details.html";
+    // Prevent double-clicking
+    button.disabled = true;
+    button.textContent = "Starting checkout...";
+
+    try {
+
+        const response = await fetch("/api/start-checkout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                quantities: quantities
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Unable to start checkout."
+            );
+        }
+
+        // Save the exact Early Bird allocation
+        sessionStorage.setItem(
+            "checkout",
+            JSON.stringify(data)
+        );
+
+        // Save the selected quantities
+        sessionStorage.setItem(
+            "ticketQuantities",
+            JSON.stringify(quantities)
+        );
+
+        // Continue to Details
+        window.location.href = "details.html";
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            error.message ||
+            "Something went wrong. Please try again."
+        );
+
+        button.disabled = false;
+        button.textContent = "Continue";
+    }
 }
-
-</script>
-
-</body>
-</html>
