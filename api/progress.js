@@ -77,7 +77,7 @@ function hasOrdererDetails() {
         }
 
         return (
-            String(details.fullName || "").trim() !== "" &&
+            String(details.name || "").trim() !== "" &&
             String(details.email || "").trim() !== "" &&
             String(details.phone || "").trim() !== ""
         );
