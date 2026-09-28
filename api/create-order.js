@@ -178,10 +178,32 @@ export default async function handler(req, res) {
         ordererDetails.email || ""
       ).trim();
 
-    const ordererPhone =
+    let ordererPhone =
       String(
         ordererDetails.phone || ""
       ).trim();
+    
+    ordererPhone =
+      ordererPhone.replace(
+        /[\s()-]/g,
+        ""
+      );
+    
+    if (
+      ordererPhone.startsWith("08")
+    ) {
+      ordererPhone =
+        "+62" +
+        ordererPhone.slice(1);
+    }
+    
+    if (
+      ordererPhone.startsWith("62")
+    ) {
+      ordererPhone =
+        "+" +
+        ordererPhone;
+    }
 
     if (
       !ordererName ||
@@ -467,9 +489,7 @@ export default async function handler(req, res) {
         "manual",
 
       payment_info:
-        JSON.stringify(
-          paymentInfo
-        ),
+        paymentInfo,
 
       comment:
         `Orderer: ${ordererName}`,
