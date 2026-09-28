@@ -7,7 +7,7 @@ const TICKETING_PAGES = {
     addons: "add-ons.html",
     review: "review.html",
     payment: "payment.html",
-    confirmation: "confirmation.html"
+    confirmation: "success.html"
 };
 
 
@@ -428,6 +428,60 @@ function protectPage() {
     }
 
 
+    /*
+     * Success / confirmation page:
+     * only accessible after payment.
+     * Otherwise return to Tickets.
+     */
+
+    if (
+        currentPage === "confirmation"
+    ) {
+
+        if (!hasPayment()) {
+
+            window.location.replace(
+                TICKETING_PAGES.tickets
+            );
+
+        }
+
+        return;
+
+    }
+
+
+    /*
+     * Watch Party seating only exists
+     * when Watch Party tickets were selected.
+     */
+
+    if (
+        currentPage === "watchPartySeats"
+    ) {
+
+        const quantities =
+            getTicketQuantities();
+
+        if (
+            Number(
+                quantities.watchParty || 0
+            ) === 0
+        ) {
+
+            window.location.replace(
+                TICKETING_PAGES[
+                    getFurthestCompletedPage()
+                ]
+            );
+
+            return;
+
+        }
+
+    }
+
+
     const furthest =
         getFurthestCompletedPage();
 
@@ -487,7 +541,7 @@ function addBackButton() {
     /*
      * No Back button on:
      * Tickets
-     * Confirmation
+     * Confirmation / Success
      */
 
     if (
@@ -543,12 +597,6 @@ function addBackButton() {
 
 
         case "addons":
-
-            /*
-             * If Watch Party tickets exist,
-             * their seating page is the actual
-             * previous step.
-             */
 
             if (
                 Number(
