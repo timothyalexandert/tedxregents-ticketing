@@ -287,58 +287,190 @@ async function continueToDetails() {
         return;
     }
 
-    const button = document.querySelector(".continue-button");
+    // Create loading overlay
+    const overlay =
+        document.createElement("div");
 
-    // Prevent double-clicking
-    button.disabled = true;
-    button.textContent = "Starting checkout...";
+    overlay.id = "order-overlay";
+
+    overlay.innerHTML = `
+        <div class="order-modal">
+
+            <div class="order-spinner"></div>
+
+            <h2>Starting order...</h2>
+
+            <p>
+                Securing your ticket price...
+            </p>
+
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
 
     try {
 
-        const response = await fetch("/api/start-checkout", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                quantities: quantities
-            })
-        });
+        const response =
+            await fetch(
+                "/api/start-checkout",
+                {
+                    method: "POST",
 
-        const data = await response.json();
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        if (!response.ok || !data.success) {
+                    body: JSON.stringify({
+                        quantities:
+                            quantities
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
             throw new Error(
-                data.error || "Unable to start checkout."
+                data.error ||
+                "Unable to start your order."
             );
         }
 
-        // Save the exact Early Bird allocation
+        /*
+         * Save the exact backend allocation.
+         */
+
         sessionStorage.setItem(
             "checkout",
             JSON.stringify(data)
         );
 
-        // Save the selected quantities
         sessionStorage.setItem(
             "ticketQuantities",
-            JSON.stringify(quantities)
+            JSON.stringify(
+                quantities
+            )
         );
 
-        // Continue to Details
-        window.location.href = "details.html";
+        /*
+         * Convert backend expiry time
+         * into a readable local time.
+         */
+
+        const expiry =
+            new Date(
+                data.expiresAt
+            );
+
+        const expiryText =
+            expiry.toLocaleTimeString(
+                [],
+                {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                }
+            );
+
+        /*
+         * Replace loading screen
+         * with confirmation screen.
+         */
+
+        overlay.innerHTML = `
+            <div class="order-modal">
+
+                <div class="order-check">✓</div>
+
+                <h2>
+                    Early Bird price held
+                </h2>
+
+                <p>
+                    Your Early Bird price is held
+                    for <strong>15 minutes</strong>.
+                </p>
+
+                <p class="order-expiry">
+                    Your price is held until
+                    <strong>${expiryText}</strong>.
+                </p>
+
+                <button
+                    type="button"
+                    class="order-next-button"
+                    id="order-next-button"
+                >
+                    Next
+                </button>
+
+            </div>
+        `;
+
+        /*
+         * Next button continues to Details.
+         */
+
+        document
+            .getElementById(
+                "order-next-button"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "details.html";
+
+                }
+            );
 
     } catch (error) {
 
         console.error(error);
 
-        alert(
-            error.message ||
-            "Something went wrong. Please try again."
-        );
+        overlay.innerHTML = `
+            <div class="order-modal">
 
-        button.disabled = false;
-        button.textContent = "Continue";
+                <div class="order-error">!</div>
+
+                <h2>
+                    Unable to start order
+                </h2>
+
+                <p>
+                    ${
+                        error.message ||
+                        "Something went wrong. Please try again."
+                    }
+                </p>
+
+                <button
+                    type="button"
+                    class="order-next-button"
+                    id="order-retry-button"
+                >
+                    Try again
+                </button>
+
+            </div>
+        `;
+
+        document
+            .getElementById(
+                "order-retry-button"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    overlay.remove();
+                }
+            );
     }
 }
 
