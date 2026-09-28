@@ -10,13 +10,14 @@ const CHECKOUT_SECONDS = 15 * 60;
 // Pretix variation IDs
 const MAIN_HALL_EB = "1044379";
 const MAIN_HALL_REGULAR = "1044380";
+
 const VIP_EB = "1044381";
 const VIP_REGULAR = "1044382";
 
 const WATCH_PARTY_EB = "1044384";
 const WATCH_PARTY_REGULAR = "1044383";
 
-// Redis keys for the two Early Bird pools
+// Redis keys
 const MAIN_VIP_POOL = "tedx:eb:main-vip";
 const WATCH_POOL = "tedx:eb:watch";
 
@@ -77,7 +78,10 @@ export default async function handler(req) {
             );
         }
 
-        const totalTickets = mainHall + vip + watchParty;
+        const totalTickets =
+            mainHall +
+            vip +
+            watchParty;
 
         if (totalTickets < 1) {
             return json(
@@ -93,7 +97,8 @@ export default async function handler(req) {
             return json(
                 {
                     success: false,
-                    error: `You can purchase a maximum of ${MAX_TICKETS} tickets per order.`
+                    error:
+                        `You can purchase a maximum of ${MAX_TICKETS} tickets per order.`
                 },
                 400
             );
@@ -102,20 +107,28 @@ export default async function handler(req) {
         const checkoutId = crypto.randomUUID();
 
         const now = Date.now();
-        const expiresAt = now + CHECKOUT_SECONDS * 1000;
+        const expiresAt =
+            now +
+            CHECKOUT_SECONDS * 1000;
 
-        const mainVipRequested = mainHall + vip;
-        const watchRequested = watchParty;
+        const mainVipRequested =
+            mainHall + vip;
+
+        const watchRequested =
+            watchParty;
 
         /*
-         * Atomically:
+         * Redis Lua script.
          *
-         * 1. Remove expired EB reservations
-         * 2. Check remaining EB capacity
+         * This operation is atomic:
+         *
+         * 1. Remove expired reservations
+         * 2. Count remaining EB slots
          * 3. Allocate as many EB slots as possible
-         * 4. Store the checkout reservation
+         * 4. Create the temporary reservation
          *
-         * Any tickets that don't receive EB become Regular.
+         * Main Hall + VIP share one pool.
+         * Watch Party has a separate pool.
          */
         const allocationScript = `
             local mainPool = KEYS[1]
@@ -146,11 +159,17 @@ export default async function handler(req) {
                 now
             )
 
-            local mainUsed = redis.call("ZCARD", mainPool)
-            local watchUsed = redis.call("ZCARD", watchPool)
+            local mainUsed =
+                redis.call("ZCARD", mainPool)
 
-            local mainAvailable = 10 - mainUsed
-            local watchAvailable = 10 - watchUsed
+            local watchUsed =
+                redis.call("ZCARD", watchPool)
+
+            local mainAvailable =
+                10 - mainUsed
+
+            local watchAvailable =
+                10 - watchUsed
 
             if mainAvailable < 0 then
                 mainAvailable = 0
@@ -160,22 +179,25 @@ export default async function handler(req) {
                 watchAvailable = 0
             end
 
-            -- Give as many EB tickets as are still available
-            local mainEb = math.min(
-                mainRequested,
-                mainAvailable
-            )
+            -- Give as many EB tickets as are available.
+            local mainEb =
+                math.min(
+                    mainRequested,
+                    mainAvailable
+                )
 
-            local watchEb = math.min(
-                watchRequested,
-                watchAvailable
-            )
+            local watchEb =
+                math.min(
+                    watchRequested,
+                    watchAvailable
+                )
 
-            -- Create one temporary reservation entry
-            -- for every Early Bird ticket.
+            -- Reserve Main Hall/VIP EB slots.
             for i = 1, mainEb do
                 local member =
-                    checkoutId .. ":main:" .. tostring(i)
+                    checkoutId ..
+                    ":main:" ..
+                    tostring(i)
 
                 redis.call(
                     "ZADD",
@@ -185,9 +207,12 @@ export default async function handler(req) {
                 )
             end
 
+            -- Reserve Watch Party EB slots.
             for i = 1, watchEb do
                 local member =
-                    checkoutId .. ":watch:" .. tostring(i)
+                    checkoutId ..
+                    ":watch:" ..
+                    tostring(i)
 
                 redis.call(
                     "ZADD",
@@ -197,7 +222,7 @@ export default async function handler(req) {
                 )
             end
 
-            -- Store the complete checkout reservation
+            -- Store checkout reservation.
             redis.call(
                 "SET",
                 reservationKey,
@@ -213,19 +238,26 @@ export default async function handler(req) {
             }
         `;
 
-        const mainEbResultKey =
+        const reservationKey =
             `tedx:checkout:${checkoutId}`;
 
-        /*
-         * We initially calculate the allocation here.
-         * The exact allocation is also stored in Redis below.
-         */
+        const initialReservation = JSON.stringify({
+            checkoutId,
+            createdAt: now,
+            expiresAt,
+            quantities: {
+                mainHall,
+                vip,
+                watchParty
+            }
+        });
+
         const result = await redis.eval(
             allocationScript,
             [
                 MAIN_VIP_POOL,
                 WATCH_POOL,
-                mainEbResultKey
+                reservationKey
             ],
             [
                 now,
@@ -233,59 +265,149 @@ export default async function handler(req) {
                 checkoutId,
                 mainVipRequested,
                 watchRequested,
-                JSON.stringify({
-                    checkoutId,
-                    createdAt: now,
-                    expiresAt,
-                    quantities: {
-                        mainHall,
-                        vip,
-                        watchParty
-                    }
-                })
+                initialReservation
             ]
         );
 
-        if (!result || result[0] !== "OK") {
+        if (
+            !result ||
+            result[0] !== "OK"
+        ) {
             return json(
                 {
                     success: false,
-                    error: "Unable to reserve Early Bird tickets."
+                    error:
+                        "Unable to reserve Early Bird tickets."
                 },
                 409
             );
         }
 
-        const mainVipEarlyBird = Number(result[1]);
-        const watchPartyEarlyBird = Number(result[2]);
+        const mainVipEarlyBird =
+            Number(result[1]);
+
+        const watchPartyEarlyBird =
+            Number(result[2]);
 
         /*
-         * Allocate Main Hall EB tickets first,
-         * then VIP EB tickets from the SAME pool.
+         * PROPORTIONAL ALLOCATION
          *
-         * This is only the price allocation.
-         * Actual seats are selected later.
+         * Main Hall and VIP share the same EB pool.
+         *
+         * Example:
+         *
+         * 2 Main Hall + 3 VIP
+         * 2 EB slots remaining
+         *
+         * Main Hall share = 40%
+         * VIP share = 60%
+         *
+         * Exact:
+         * Main Hall = 0.8
+         * VIP = 1.2
+         *
+         * Largest remainder:
+         * Main Hall = 1
+         * VIP = 1
          */
-        const mainHallEarlyBird = Math.min(
-            mainHall,
-            mainVipEarlyBird
-        );
 
-        const vipEarlyBird = Math.min(
-            vip,
-            mainVipEarlyBird - mainHallEarlyBird
-        );
+        let mainHallEarlyBird = 0;
+        let vipEarlyBird = 0;
 
-        const watchEarlyBird = Math.min(
-            watchParty,
-            watchPartyEarlyBird
-        );
+        if (mainVipEarlyBird > 0) {
+            if (mainHall === 0) {
+                vipEarlyBird =
+                    Math.min(
+                        vip,
+                        mainVipEarlyBird
+                    );
+            } else if (vip === 0) {
+                mainHallEarlyBird =
+                    Math.min(
+                        mainHall,
+                        mainVipEarlyBird
+                    );
+            } else {
+                const totalMainVip =
+                    mainHall + vip;
+
+                const mainExact =
+                    (
+                        mainHall /
+                        totalMainVip
+                    ) *
+                    mainVipEarlyBird;
+
+                const vipExact =
+                    (
+                        vip /
+                        totalMainVip
+                    ) *
+                    mainVipEarlyBird;
+
+                mainHallEarlyBird =
+                    Math.floor(mainExact);
+
+                vipEarlyBird =
+                    Math.floor(vipExact);
+
+                let remaining =
+                    mainVipEarlyBird -
+                    mainHallEarlyBird -
+                    vipEarlyBird;
+
+                const mainRemainder =
+                    mainExact -
+                    mainHallEarlyBird;
+
+                const vipRemainder =
+                    vipExact -
+                    vipEarlyBird;
+
+                while (remaining > 0) {
+                    if (
+                        vipRemainder >
+                        mainRemainder
+                    ) {
+                        vipEarlyBird++;
+                    } else {
+                        mainHallEarlyBird++;
+                    }
+
+                    remaining--;
+                }
+
+                // Safety limits
+                mainHallEarlyBird =
+                    Math.min(
+                        mainHallEarlyBird,
+                        mainHall
+                    );
+
+                vipEarlyBird =
+                    Math.min(
+                        vipEarlyBird,
+                        vip
+                    );
+            }
+        }
+
+        const watchEarlyBird =
+            Math.min(
+                watchParty,
+                watchPartyEarlyBird
+            );
 
         const tickets = [];
 
-        // Main Hall
-        for (let i = 0; i < mainHall; i++) {
-            const earlyBird = i < mainHallEarlyBird;
+        // Main Hall tickets
+        for (
+            let i = 0;
+            i < mainHall;
+            i++
+        ) {
+            const earlyBird =
+                i < mainHallEarlyBird;
 
             tickets.push({
                 type: "mainhall",
@@ -294,13 +416,20 @@ export default async function handler(req) {
                 variation: earlyBird
                     ? MAIN_HALL_EB
                     : MAIN_HALL_REGULAR,
-                price: earlyBird ? 40000 : 45000
+                price: earlyBird
+                    ? 40000
+                    : 45000
             });
         }
 
-        // VIP
-        for (let i = 0; i < vip; i++) {
-            const earlyBird = i < vipEarlyBird;
+        // VIP tickets
+        for (
+            let i = 0;
+            i < vip;
+            i++
+        ) {
+            const earlyBird =
+                i < vipEarlyBird;
 
             tickets.push({
                 type: "mainhall",
@@ -309,13 +438,20 @@ export default async function handler(req) {
                 variation: earlyBird
                     ? VIP_EB
                     : VIP_REGULAR,
-                price: earlyBird ? 50000 : 55000
+                price: earlyBird
+                    ? 50000
+                    : 55000
             });
         }
 
-        // Watch Party
-        for (let i = 0; i < watchParty; i++) {
-            const earlyBird = i < watchEarlyBird;
+        // Watch Party tickets
+        for (
+            let i = 0;
+            i < watchParty;
+            i++
+        ) {
+            const earlyBird =
+                i < watchEarlyBird;
 
             tickets.push({
                 type: "watchparty",
@@ -324,21 +460,26 @@ export default async function handler(req) {
                 variation: earlyBird
                     ? WATCH_PARTY_EB
                     : WATCH_PARTY_REGULAR,
-                price: earlyBird ? 25000 : 30000
+                price: earlyBird
+                    ? 25000
+                    : 30000
             });
         }
 
-        const totalPrice = tickets.reduce(
-            (sum, ticket) => sum + ticket.price,
-            0
-        );
+        const totalPrice =
+            tickets.reduce(
+                (sum, ticket) =>
+                    sum + ticket.price,
+                0
+            );
 
         /*
-         * Update the stored reservation with the EXACT
-         * ticket allocation that this checkout received.
+         * Save the FINAL ticket allocation.
+         *
+         * This is what later checkout steps will use.
          */
         await redis.set(
-            mainEbResultKey,
+            reservationKey,
             JSON.stringify({
                 checkoutId,
                 createdAt: now,
@@ -357,22 +498,38 @@ export default async function handler(req) {
 
         return json({
             success: true,
+
             checkoutId,
-            createdAt: new Date(now).toISOString(),
-            expiresAt: new Date(expiresAt).toISOString(),
-            expiresInSeconds: CHECKOUT_SECONDS,
+
+            createdAt:
+                new Date(now).toISOString(),
+
+            expiresAt:
+                new Date(
+                    expiresAt
+                ).toISOString(),
+
+            expiresInSeconds:
+                CHECKOUT_SECONDS,
+
             tickets,
+
             totalTickets,
+
             totalPrice
         });
 
     } catch (error) {
-        console.error("start-checkout error:", error);
+        console.error(
+            "start-checkout error:",
+            error
+        );
 
         return json(
             {
                 success: false,
-                error: "Something went wrong while starting checkout."
+                error:
+                    "Something went wrong while starting checkout."
             },
             500
         );
