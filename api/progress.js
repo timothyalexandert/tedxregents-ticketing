@@ -534,145 +534,67 @@ function protectPage() {
 
 function addBackButton() {
 
-    const currentPage =
-        getCurrentPage();
-
-
-    /*
-     * No Back button on:
-     * Tickets
-     * Confirmation / Success
-     */
+    const currentPage = getCurrentPage();
 
     if (
         !currentPage ||
         currentPage === "tickets" ||
         currentPage === "confirmation"
     ) {
-
         return;
-
     }
 
+    const previousPages = {
+        details: "tickets",
+        attendees: "details",
+        seats: "attendees",
+        watchPartySeats: "seats",
+        addons: "seats",
+        review: "addons",
+        payment: "review"
+    };
 
-    const quantities =
-        getTicketQuantities();
+    const previousPage =
+        previousPages[currentPage];
 
-
-    let previousPage;
-
-
-    switch (currentPage) {
-
-        case "details":
-
-            previousPage =
-                "tickets";
-
-            break;
-
-
-        case "attendees":
-
-            previousPage =
-                "details";
-
-            break;
-
-
-        case "seats":
-
-            previousPage =
-                "attendees";
-
-            break;
-
-
-        case "watchPartySeats":
-
-            previousPage =
-                "seats";
-
-            break;
-
-
-        case "addons":
-
-            if (
-                Number(
-                    quantities.watchParty || 0
-                ) > 0
-            ) {
-
-                previousPage =
-                    "watchPartySeats";
-
-            } else {
-
-                previousPage =
-                    "seats";
-
-            }
-
-            break;
-
-
-        case "review":
-
-            previousPage =
-                "addons";
-
-            break;
-
-
-        case "payment":
-
-            previousPage =
-                "review";
-
-            break;
-
-
-        default:
-
-            return;
-
+    if (!previousPage) {
+        return;
     }
 
-
-    /*
-     * Prevent duplicate Back buttons.
-     */
+    /* Prevent duplicates */
 
     if (
-        document.querySelector(
-            ".ticketing-back-button"
+        document.getElementById(
+            "ticketingBackButton"
         )
     ) {
-
         return;
-
     }
 
+    /* Create button */
 
     const backButton =
         document.createElement("button");
 
+    backButton.id =
+        "ticketingBackButton";
 
     backButton.type =
         "button";
 
-
-    backButton.className =
-        "ticketing-back-button";
-
-
     backButton.textContent =
         "← Back";
 
+    /* Make it VERY visible */
+
+    backButton.style.display =
+        "block";
+
+    backButton.style.width =
+        "auto";
 
     backButton.style.background =
-        "none";
+        "transparent";
 
     backButton.style.border =
         "none";
@@ -681,13 +603,16 @@ function addBackButton() {
         "0";
 
     backButton.style.margin =
-        "0 0 18px 0";
+        "0 0 20px 0";
 
-    backButton.style.font =
+    backButton.style.fontFamily =
         "inherit";
 
     backButton.style.fontSize =
         "14px";
+
+    backButton.style.fontWeight =
+        "400";
 
     backButton.style.color =
         "#777";
@@ -698,10 +623,17 @@ function addBackButton() {
     backButton.style.cursor =
         "pointer";
 
+    backButton.style.position =
+        "relative";
+
+    backButton.style.zIndex =
+        "9999";
+
+    /* Go back */
 
     backButton.addEventListener(
         "click",
-        function() {
+        function () {
 
             window.location.href =
                 TICKETING_PAGES[
@@ -711,38 +643,16 @@ function addBackButton() {
         }
     );
 
-
-    /*
-     * Put Back inside <main>,
-     * immediately before the page content.
-     */
+    /* Put it at the very top of MAIN */
 
     const main =
-        document.querySelector(
-            "main"
-        );
+        document.querySelector("main");
 
-
-    if (!main) {
-        return;
-    }
-
-
-    const firstElement =
-        main.firstElementChild;
-
-
-    if (firstElement) {
+    if (main) {
 
         main.insertBefore(
             backButton,
-            firstElement
-        );
-
-    } else {
-
-        main.appendChild(
-            backButton
+            main.firstChild
         );
 
     }
@@ -758,9 +668,6 @@ function addBackButton() {
 
     protectPage();
 
-    setTimeout(
-        addBackButton,
-        0
-    );
+    addBackButton();
 
 })();
