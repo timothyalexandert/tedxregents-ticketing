@@ -66,12 +66,18 @@
 
 <script>
 
+const savedTicketQuantities =
+    localStorage.getItem("ticketQuantities");
+
+
 const ticketQuantities =
-    JSON.parse(localStorage.getItem("ticketQuantities")) || {
-        mainHall: 0,
-        vip: 0,
-        watchParty: 0
-    };
+    savedTicketQuantities
+        ? JSON.parse(savedTicketQuantities)
+        : {
+            mainHall: 0,
+            vip: 0,
+            watchParty: 0
+        };
 
 
 const ordererDetails =
@@ -94,7 +100,16 @@ const totalAttendees =
     ticketQuantities.vip +
     ticketQuantities.watchParty;
 
+console.log(
+    "Ticket quantities:",
+    ticketQuantities
+);
 
+console.log(
+    "Total attendees:",
+    totalAttendees
+);
+    
 /* =========================
    ADD ATTENDEE FIELDS
 ========================= */
