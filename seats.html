@@ -297,36 +297,7 @@ const temporarySeats = {
 };
 
 
-/* Create 100 temporary Main Hall seats */
 
-for (let row = 0; row < 8; row++) {
-
-    const letter =
-        String.fromCharCode(65 + row);
-
-    for (let seat = 1; seat <= 12; seat++) {
-
-        temporarySeats.mainHall.push({
-            row: letter,
-            seat: seat
-        });
-
-    }
-
-}
-
-/*
-    Add the remaining 4 seats to make 100.
-*/
-
-for (let seat = 1; seat <= 4; seat++) {
-
-    temporarySeats.mainHall.push({
-        row: "I",
-        seat: seat
-    });
-
-}
 
 
 /* Create 100 temporary Watch Party seats */
