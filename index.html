@@ -382,24 +382,43 @@ async function continueToDetails() {
          * with confirmation screen.
          */
 
-        overlay.innerHTML = `
-            <div class="order-modal">
+        const hasEarlyBird =
+    data.tickets.some(
+        ticket => ticket.early_bird === true
+    );
 
-                <div class="order-check">✓</div>
+const priceMessage = hasEarlyBird
+    ? "Your Early Bird ticket price is held for 15 mins"
+    : "Your ticket price is held for 15 mins";
 
-                <h2>
-                    Early Bird price held
-                </h2>
 
-                <p>
-                    Your Early Bird price is held
-                    for <strong>15 minutes</strong>.
-                </p>
-
-                <p class="order-expiry">
-                    Your price is held until
-                    <strong>${expiryText}</strong>.
-                </p>
+            overlay.innerHTML = `
+                <div class="order-modal">
+            
+                    <div class="order-check">✓</div>
+            
+                    <h2>
+                        Ticket is held
+                    </h2>
+            
+                    <p>
+                        ${priceMessage}
+                    </p>
+            
+                    <p class="order-expiry">
+                        Until <strong>${expiryText}</strong>
+                    </p>
+            
+                    <button
+                        type="button"
+                        class="order-next-button"
+                        id="order-next-button"
+                    >
+                        Next
+                    </button>
+            
+                </div>
+            `;
 
                 <button
                     type="button"
