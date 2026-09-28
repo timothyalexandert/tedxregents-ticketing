@@ -798,12 +798,17 @@ async function continueFromWatchPartySeats() {
 
 
     try {
-
+    
         await createPretixCart();
-
-
+    
+        sessionStorage.setItem(
+            "watchPartySeatsCompleted",
+            "true"
+        );
+    
         window.location.href =
             "addons.html";
+        
 
     } catch (error) {
 
