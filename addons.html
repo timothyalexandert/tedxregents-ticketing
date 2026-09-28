@@ -418,8 +418,12 @@ function continueToReview() {
         "addonOwner",
         owner
     );
-
-
+    
+    sessionStorage.setItem(
+        "addonsCompleted",
+        "true"
+    );
+    
     window.location.href = "review.html";
 }
 
@@ -445,7 +449,9 @@ function initialise() {
 
 
 initialise();
-
+    
+<script src="progress.js"></script>
+    
 </script>
 
 </body>
