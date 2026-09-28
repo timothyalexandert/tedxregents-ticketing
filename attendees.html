@@ -523,8 +523,12 @@ document
             "attendees",
             JSON.stringify(attendees)
         );
-
-
+        
+        sessionStorage.setItem(
+            "attendeesCompleted",
+            "true"
+        );
+        
         window.location.href =
             "seats.html";
 
