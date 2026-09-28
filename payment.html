@@ -748,8 +748,18 @@ confirmButton.addEventListener(
 
         /* Continue */
 
-        window.location.href =
-            "success.html";
+/* Mark payment step as completed */
+
+            sessionStorage.setItem(
+                "paymentCompleted",
+                "true"
+            );
+            
+            
+            /* Continue */
+            
+            window.location.href =
+                "success.html";
 
     }
 );
