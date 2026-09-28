@@ -1,59 +1,20 @@
-const TICKETS = {
-  mainhall: {
-    item: 1162153,
+import { Redis } from "@upstash/redis";
 
-    earlyBird: {
-      variation: 1044379,
-      price: "40000.00",
-    },
-
-    regular: {
-      variation: 1044380,
-      price: "45000.00",
-    },
-
-    vipEarlyBird: {
-      variation: 1044381,
-      price: "50000.00",
-    },
-
-    vipRegular: {
-      variation: 1044382,
-      price: "55000.00",
-    },
-  },
-
-  watchparty: {
-    item: 1162179,
-
-    earlyBird: {
-      variation: 1044384,
-      price: "25000.00",
-    },
-
-    regular: {
-      variation: 1044383,
-      price: "30000.00",
-    },
-  },
-};
+const redis = new Redis({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
 
 const MAX_TICKETS_PER_ORDER = 10;
-
-const MAINHALL_EB_LIMIT = 10;
-const WATCHPARTY_EB_LIMIT = 10;
-
-const MAINHALL_ITEM = 1162153;
-const WATCHPARTY_ITEM = 1162179;
-
-const MAINHALL_EB_VARIATIONS = [1044379, 1044381];
-const WATCHPARTY_EB_VARIATIONS = [1044384];
 
 const PRETIX_BASE =
   "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027";
 
 export default async function handler(req, res) {
-  // Only allow POST
+  // --------------------------------------------------
+  // 1. ONLY ALLOW POST
+  // --------------------------------------------------
+
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
@@ -64,219 +25,126 @@ export default async function handler(req, res) {
   try {
     const body = req.body;
 
-    if (!body || !Array.isArray(body.tickets)) {
+    // --------------------------------------------------
+    // 2. BASIC VALIDATION
+    // --------------------------------------------------
+
+    if (!body || typeof body !== "object") {
       return res.status(400).json({
         success: false,
-        error: "tickets must be an array.",
+        error: "Invalid request body.",
       });
     }
 
-    const tickets = body.tickets;
+    const { checkoutId, seats } = body;
 
-    // --------------------------------------------------
-    // 1. BASIC VALIDATION
-    // --------------------------------------------------
-
-    if (tickets.length === 0) {
+    if (
+      typeof checkoutId !== "string" ||
+      checkoutId.trim() === ""
+    ) {
       return res.status(400).json({
         success: false,
-        error: "At least one ticket is required.",
+        error: "checkoutId is required.",
       });
     }
 
-    if (tickets.length > MAX_TICKETS_PER_ORDER) {
+    if (!Array.isArray(seats) || seats.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "seats must be a non-empty array.",
+      });
+    }
+
+    if (seats.length > MAX_TICKETS_PER_ORDER) {
       return res.status(400).json({
         success: false,
         error: `Maximum ${MAX_TICKETS_PER_ORDER} tickets per order.`,
       });
     }
 
-    for (const ticket of tickets) {
-      if (!ticket || typeof ticket !== "object") {
-        return res.status(400).json({
-          success: false,
-          error: "Invalid ticket data.",
-        });
-      }
-
-      if (
-        ticket.type !== "mainhall" &&
-        ticket.type !== "watchparty"
-      ) {
-        return res.status(400).json({
-          success: false,
-          error: "Invalid ticket type.",
-        });
-      }
-
-      if (
-        typeof ticket.seat !== "string" ||
-        ticket.seat.trim() === ""
-      ) {
-        return res.status(400).json({
-          success: false,
-          error: "Every ticket must have a seat.",
-        });
-      }
-
-      if (
-        ticket.type === "mainhall" &&
-        typeof ticket.vip !== "boolean"
-      ) {
-        return res.status(400).json({
-          success: false,
-          error: "Main Hall tickets must specify vip: true or false.",
-        });
-      }
-
-      if (
-        ticket.type === "watchparty" &&
-        ticket.vip !== undefined
-      ) {
-        return res.status(400).json({
-          success: false,
-          error: "Watch Party tickets cannot be VIP.",
-        });
-      }
-    }
-
     // --------------------------------------------------
-    // 2. COUNT TICKETS IN EACH EARLY-BIRD POOL
+    // 3. GET THE CHECKOUT RESERVATION FROM REDIS
     // --------------------------------------------------
 
-    const mainHallTickets = tickets.filter(
-      (ticket) => ticket.type === "mainhall"
-    );
+    const checkoutKey = `tedx:checkout:${checkoutId}`;
 
-    const watchPartyTickets = tickets.filter(
-      (ticket) => ticket.type === "watchparty"
-    );
+    const checkout = await redis.get(checkoutKey);
 
-    // --------------------------------------------------
-    // 3. GET CURRENT API CART POSITIONS
-    // --------------------------------------------------
-
-    const cartResponse = await fetch(
-      `${PRETIX_BASE}/cartpositions/?limit=100`,
-      {
-        headers: {
-          Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
-          Accept: "application/json",
-        },
-      }
-    );
-
-    const cartData = await cartResponse.json();
-
-    if (!cartResponse.ok) {
-      return res.status(502).json({
+    if (!checkout) {
+      return res.status(400).json({
         success: false,
-        error: "Could not check current ticket reservations.",
-        pretix: cartData,
+        error:
+          "This checkout has expired or could not be found. Please start again.",
       });
     }
 
-    const now = Date.now();
+    // --------------------------------------------------
+    // 4. VALIDATE CHECKOUT DATA
+    // --------------------------------------------------
 
-    const activePositions = (cartData.results || []).filter(
-      (position) => {
-        if (!position.expires) return false;
+    if (
+      !checkout ||
+      !Array.isArray(checkout.tickets) ||
+      checkout.tickets.length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid checkout reservation.",
+      });
+    }
 
-        return new Date(position.expires).getTime() > now;
+    const reservedTickets = checkout.tickets;
+
+    if (reservedTickets.length !== seats.length) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "The number of selected seats does not match the number of tickets.",
+      });
+    }
+
+    // --------------------------------------------------
+    // 5. VALIDATE SEATS
+    // --------------------------------------------------
+
+    const cleanedSeats = seats.map((seat) => {
+      if (typeof seat !== "string" || seat.trim() === "") {
+        return null;
       }
+
+      return seat.trim();
+    });
+
+    if (cleanedSeats.some((seat) => seat === null)) {
+      return res.status(400).json({
+        success: false,
+        error: "Every ticket must have a valid seat.",
+      });
+    }
+
+    // Prevent the same seat being submitted twice.
+    const uniqueSeats = new Set(cleanedSeats);
+
+    if (uniqueSeats.size !== cleanedSeats.length) {
+      return res.status(400).json({
+        success: false,
+        error: "The same seat cannot be selected more than once.",
+      });
+    }
+
+    // --------------------------------------------------
+    // 6. ATTACH SEATS TO THE EXACT RESERVED TICKETS
+    // --------------------------------------------------
+
+    const resolvedTickets = reservedTickets.map(
+      (ticket, index) => ({
+        ...ticket,
+        seat: cleanedSeats[index],
+      })
     );
 
     // --------------------------------------------------
-    // 4. COUNT ACTIVE EARLY-BIRD RESERVATIONS
-    // --------------------------------------------------
-
-    const mainHallEarlyBirdCount = activePositions.filter(
-      (position) =>
-        position.item === MAINHALL_ITEM &&
-        MAINHALL_EB_VARIATIONS.includes(position.variation)
-    ).length;
-
-    const watchPartyEarlyBirdCount = activePositions.filter(
-      (position) =>
-        position.item === WATCHPARTY_ITEM &&
-        WATCHPARTY_EB_VARIATIONS.includes(position.variation)
-    ).length;
-
-    // --------------------------------------------------
-    // 5. DETERMINE WHICH TICKETS GET EARLY BIRD
-    // --------------------------------------------------
-
-    let mainHallEBRemaining =
-      MAINHALL_EB_LIMIT - mainHallEarlyBirdCount;
-
-    let watchPartyEBRemaining =
-      WATCHPARTY_EB_LIMIT - watchPartyEarlyBirdCount;
-
-    if (mainHallEBRemaining < 0) {
-      mainHallEBRemaining = 0;
-    }
-
-    if (watchPartyEBRemaining < 0) {
-      watchPartyEBRemaining = 0;
-    }
-
-    const resolvedTickets = [];
-
-    // Main Hall + VIP share the SAME Early Bird pool
-    for (const ticket of mainHallTickets) {
-      const config = TICKETS.mainhall;
-
-      let selected;
-
-      if (mainHallEBRemaining > 0) {
-        selected = ticket.vip
-          ? config.vipEarlyBird
-          : config.earlyBird;
-
-        mainHallEBRemaining--;
-      } else {
-        selected = ticket.vip
-          ? config.vipRegular
-          : config.regular;
-      }
-
-      resolvedTickets.push({
-        ...ticket,
-        item: config.item,
-        variation: selected.variation,
-        price: selected.price,
-        ticket_type: ticket.vip ? "vip" : "mainhall",
-        early_bird:
-          selected === config.vipEarlyBird ||
-          selected === config.earlyBird,
-      });
-    }
-
-    // Watch Party has its OWN Early Bird pool
-    for (const ticket of watchPartyTickets) {
-      const config = TICKETS.watchparty;
-
-      let selected;
-
-      if (watchPartyEBRemaining > 0) {
-        selected = config.earlyBird;
-        watchPartyEBRemaining--;
-      } else {
-        selected = config.regular;
-      }
-
-      resolvedTickets.push({
-        ...ticket,
-        item: config.item,
-        variation: selected.variation,
-        price: selected.price,
-        ticket_type: "watchparty",
-        early_bird: selected === config.earlyBird,
-      });
-    }
-
-    // --------------------------------------------------
-    // 6. CREATE ONE CART ID
+    // 7. CREATE ONE PRETIX CART ID
     // --------------------------------------------------
 
     const cartId =
@@ -289,7 +157,7 @@ export default async function handler(req, res) {
     ).toISOString();
 
     // --------------------------------------------------
-    // 7. CREATE CART POSITIONS
+    // 8. CREATE PRETIX CART POSITIONS
     // --------------------------------------------------
 
     const createdPositions = [];
@@ -330,13 +198,16 @@ export default async function handler(req, res) {
       }
 
       if (!response.ok) {
-        // If one ticket fails, remove the positions
-        // that were already created for this cart.
+        // ------------------------------------------------
+        // CLEAN UP ANY POSITIONS ALREADY CREATED
+        // ------------------------------------------------
+
         for (const created of createdPositions) {
           await fetch(
             `${PRETIX_BASE}/cartpositions/${created.id}/`,
             {
               method: "DELETE",
+
               headers: {
                 Authorization: `Token ${process.env.PRETIX_API_TOKEN}`,
                 Accept: "application/json",
@@ -348,7 +219,11 @@ export default async function handler(req, res) {
         return res.status(response.status).json({
           success: false,
           error: "Could not reserve all selected seats.",
-          failed_ticket: ticket,
+          failed_ticket: {
+            type: ticket.ticket_type,
+            seat: ticket.seat,
+            early_bird: ticket.early_bird,
+          },
           pretix: data,
         });
       }
@@ -357,11 +232,13 @@ export default async function handler(req, res) {
     }
 
     // --------------------------------------------------
-    // 8. SUCCESS
+    // 9. SUCCESS
     // --------------------------------------------------
 
     return res.status(201).json({
       success: true,
+
+      checkout_id: checkoutId,
 
       cart_id: cartId,
 
@@ -373,7 +250,8 @@ export default async function handler(req, res) {
         variation: ticket.variation,
         price: ticket.price,
         seat: ticket.seat,
-        cart_position_id: createdPositions[index]?.id,
+        cart_position_id:
+          createdPositions[index]?.id,
       })),
 
       pretix_positions: createdPositions,
