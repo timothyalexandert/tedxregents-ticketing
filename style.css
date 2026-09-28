@@ -2811,21 +2811,31 @@ h1 {
 
 
 /* index.html button */ 
+/* ================================
+   ORDER MODAL
+================================ */
 
 #order-overlay {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100vw !important;
+    height: 100vh !important;
 
-    z-index: 9999;
+    background: rgba(15, 23, 42, 0.45);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 999999 !important;
+
     padding: 24px;
     box-sizing: border-box;
 }
@@ -2833,23 +2843,33 @@ h1 {
 .order-modal {
     width: min(420px, 100%);
     background: #ffffff;
+
     border-radius: 20px;
+
     padding: 40px 30px;
+
     text-align: center;
 
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-
     box-sizing: border-box;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.20);
+
+    margin: auto;
 }
 
 .order-modal h2 {
     margin: 18px 0 10px;
+
     font-size: 26px;
+    line-height: 1.2;
 }
 
 .order-modal p {
     margin: 8px 0;
-    color: #666;
+
+    color: #666666;
+
     line-height: 1.5;
 }
 
@@ -2857,12 +2877,18 @@ h1 {
     margin-top: 16px !important;
 }
 
+
+/* LOADING SPINNER */
+
 .order-spinner {
     width: 42px;
     height: 42px;
+
     margin: 0 auto;
 
     border: 4px solid #eeeeee;
+
+    /* TEDx red */
     border-top-color: #e62b1e;
 
     border-radius: 50%;
@@ -2876,14 +2902,20 @@ h1 {
     }
 }
 
+
+/* CONFIRMATION CHECK */
+
 .order-check {
     width: 56px;
     height: 56px;
+
     margin: 0 auto;
 
     border-radius: 50%;
 
-    background: #e62b1e;
+    /* DARK BLUE */
+    background: #14213d;
+
     color: #ffffff;
 
     display: flex;
@@ -2894,15 +2926,20 @@ h1 {
     font-weight: 600;
 }
 
+
+/* ERROR */
+
 .order-error {
     width: 56px;
     height: 56px;
+
     margin: 0 auto;
 
     border-radius: 50%;
 
     background: #f1f1f1;
-    color: #e62b1e;
+
+    color: #14213d;
 
     display: flex;
     align-items: center;
@@ -2912,16 +2949,23 @@ h1 {
     font-weight: bold;
 }
 
+
+/* NEXT BUTTON */
+
 .order-next-button {
     width: 100%;
+
     margin-top: 26px;
 
     padding: 15px 20px;
 
     border: none;
+
     border-radius: 10px;
 
+    /* TEDx red */
     background: #e62b1e;
+
     color: #ffffff;
 
     font-size: 16px;
@@ -2933,3 +2977,4 @@ h1 {
 .order-next-button:hover {
     opacity: 0.9;
 }
+
