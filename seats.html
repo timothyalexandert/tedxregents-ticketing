@@ -289,14 +289,119 @@ let currentAttendeeIndex = 0;
 */
 
 const temporarySeats = {
-
     mainHall: [],
-
     watchParty: []
-
+};
+    
+const pretixSeatStatus = {
+    mainHall: {},
+    watchParty: {}
 };
 
+async function loadPretixSeatStatus() {
 
+    try {
+
+        const response =
+            await fetch("/api/seats");
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+            throw new Error(
+                data.error ||
+                "Could not load seat availability."
+            );
+        }
+
+
+        const processSeats =
+            (seats, venue) => {
+
+                seats.forEach(seat => {
+
+                    const row =
+                        Number(seat.row_name);
+
+                    const seatNumber =
+                        Number(seat.seat_number);
+
+
+                    if (
+                        !Number.isInteger(row) ||
+                        !Number.isInteger(seatNumber)
+                    ) {
+                        return;
+                    }
+
+
+                    const rowLetter =
+                        String.fromCharCode(
+                            64 + row
+                        );
+
+
+                    const temporaryId =
+                        `${venue}-${rowLetter}-${seatNumber}`;
+
+
+                    const unavailable =
+                        Boolean(
+                            seat.blocked ||
+                            seat.orderposition ||
+                            seat.cartposition ||
+                            seat.voucher
+                        );
+
+
+                    pretixSeatStatus[venue][
+                        temporaryId
+                    ] = {
+                        unavailable:
+                            unavailable,
+
+                        seatGuid:
+                            seat.seat_guid
+                    };
+
+                });
+
+            };
+
+
+        processSeats(
+            data.mainHall || [],
+            "mainHall"
+        );
+
+
+        processSeats(
+            data.watchParty || [],
+            "watchParty"
+        );
+
+
+        console.log(
+            "Pretix seat status loaded:",
+            pretixSeatStatus
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Could not load Pretix seat status:",
+            error
+        );
+
+    }
+
+}
+    
 /* =========================================
    CREATE 100 TEMPORARY MAIN HALL SEATS
    =========================================
@@ -353,24 +458,6 @@ for (let row = 0; row < 10; row++) {
 
 
 
-
-/* Create 100 temporary Watch Party seats */
-
-for (let row = 0; row < 10; row++) {
-
-    const letter =
-        String.fromCharCode(65 + row);
-
-    for (let seat = 1; seat <= 10; seat++) {
-
-        temporarySeats.watchParty.push({
-            row: letter,
-            seat: seat
-        });
-
-    }
-
-}
 
 
 /* =========================================
@@ -568,12 +655,6 @@ function renderSeats() {
                 "theatre-seat";
 
 
-            button.setAttribute(
-                "aria-label",
-                `Row ${row}, Seat ${seat.seat}`
-            );
-
-
             const seatId =
                 `mainHall-${row}-${seat.seat}`;
 
@@ -582,17 +663,61 @@ function renderSeats() {
                 seatId;
 
 
+            button.setAttribute(
+                "aria-label",
+                `Row ${row}, Seat ${seat.seat}`
+            );
+
+
             button.innerHTML = `
                 <span>${seat.seat}</span>
             `;
 
 
             /*
-                Check if another attendee
-                already selected this seat.
-            */
+             * Check Pretix availability.
+             *
+             * A seat is unavailable if it is:
+             * - blocked
+             * - already ordered
+             * - currently held in a cart
+             * - attached to a voucher
+             */
 
-            let taken = false;
+            const seatStatus =
+                pretixSeatStatus.mainHall[seatId];
+
+
+            if (
+                seatStatus &&
+                seatStatus.unavailable
+            ) {
+
+                button.disabled = true;
+
+                button.classList.add(
+                    "taken"
+                );
+
+                button.innerHTML = `
+                    <span>×</span>
+                `;
+
+                button.setAttribute(
+                    "aria-label",
+                    `Row ${row}, Seat ${seat.seat}, Taken`
+                );
+
+            }
+
+
+            /*
+             * Check if another attendee
+             * in THIS order selected this seat.
+             */
+
+            let takenByAnotherAttendee =
+                false;
 
 
             Object.keys(selectedSeats)
@@ -610,25 +735,35 @@ function renderSeats() {
                         ]?.id === seatId
                     ) {
 
-                        taken = true;
+                        takenByAnotherAttendee =
+                            true;
 
                     }
 
                 });
 
 
-            if (taken) {
+            if (
+                takenByAnotherAttendee
+            ) {
 
-                button.classList.add("taken");
+                button.classList.add(
+                    "taken"
+                );
 
                 button.disabled = true;
+
+                button.innerHTML = `
+                    <span>×</span>
+                `;
 
             }
 
 
             /*
-                Check current attendee
-            */
+             * Check whether this seat
+             * belongs to the current attendee.
+             */
 
             const current =
                 mainHallAttendees[
@@ -650,26 +785,39 @@ function renderSeats() {
             }
 
 
-            button.addEventListener(
-                "click",
-                function() {
+            /*
+             * Only allow clicking
+             * genuinely available seats.
+             */
 
-                    selectSeat(
-                        seatId,
-                        row,
-                        seat.seat
-                    );
+            if (!button.disabled) {
 
-                }
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        selectSeat(
+                            seatId,
+                            row,
+                            seat.seat
+                        );
+
+                    }
+                );
+
+            }
+
+
+            rowElement.appendChild(
+                button
             );
-
-
-            rowElement.appendChild(button);
 
         });
 
 
-        container.appendChild(rowElement);
+        container.appendChild(
+            rowElement
+        );
 
     });
 
@@ -948,22 +1096,43 @@ async function continueFromSeats() {
    INITIALISE
    ========================================= */
 
-if (mainHallAttendees.length === 0) {
+async function initialiseSeats() {
 
-    document.getElementById(
-        "venueTitle"
-    ).textContent =
-        "No Main Hall seats needed.";
+    if (mainHallAttendees.length === 0) {
 
-} else {
+        document.getElementById(
+            "venueTitle"
+        ).textContent =
+            "No Main Hall seats needed.";
 
-    renderAttendees();
+    } else {
 
-    renderSeats();
+        await loadPretixSeatStatus();
 
-    updateCurrentAttendee();
+        renderAttendees();
+
+        renderSeats();
+
+        updateCurrentAttendee();
+
+    }
+
+
+    if (
+        ticketQuantities.watchParty === 0
+    ) {
+
+        document.getElementById(
+            "nextVenueNotice"
+        ).style.display =
+            "none";
+
+    }
 
 }
+
+
+initialiseSeats();
 
 
 /* Hide next-venue notice if there
