@@ -297,6 +297,60 @@ const temporarySeats = {
 };
 
 
+/* =========================================
+   CREATE 100 TEMPORARY MAIN HALL SEATS
+   =========================================
+
+   Temporary 10 × 10 layout.
+*/
+
+for (let row = 0; row < 10; row++) {
+
+    const letter =
+        String.fromCharCode(65 + row);
+
+    for (let seat = 1; seat <= 10; seat++) {
+
+        temporarySeats.mainHall.push({
+
+            row: letter,
+
+            seat: seat
+
+        });
+
+    }
+
+}
+
+
+/* =========================================
+   CREATE 100 TEMPORARY WATCH PARTY SEATS
+   =========================================
+
+   Temporary 10 × 10 layout.
+*/
+
+for (let row = 0; row < 10; row++) {
+
+    const letter =
+        String.fromCharCode(65 + row);
+
+    for (let seat = 1; seat <= 10; seat++) {
+
+        temporarySeats.watchParty.push({
+
+            row: letter,
+
+            seat: seat
+
+        });
+
+    }
+
+}
+
+
 
 
 
