@@ -1033,12 +1033,17 @@ async function continueFromSeats() {
     */
 
     if (ticketQuantities.watchParty > 0) {
-
+    
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+    
         window.location.href =
             "watch-party-seats.html";
-
+    
         return;
-
+    
     }
 
 
@@ -1064,8 +1069,12 @@ async function continueFromSeats() {
     try {
 
         await createPretixCart();
-
-
+        
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+        
         window.location.href =
             "addons.html";
 
