@@ -714,12 +714,124 @@ function allMainHallSeatsSelected() {
 
 }
 
+    /* =========================================
+   GET CHECKOUT ID
+   ========================================= */
+
+function getCheckoutId() {
+
+    const checkoutData =
+        JSON.parse(
+            sessionStorage.getItem("checkout")
+        );
+
+    if (!checkoutData) {
+        return null;
+    }
+
+    return (
+        checkoutData.checkoutId ||
+        checkoutData.checkout_id ||
+        null
+    );
+}
+
+
+/* =========================================
+   CREATE PRETIX CART
+   ========================================= */
+
+async function createPretixCart() {
+
+    const checkoutId =
+        getCheckoutId();
+
+    if (!checkoutId) {
+
+        throw new Error(
+            "Your checkout could not be found. Please start again."
+        );
+
+    }
+
+
+    /*
+        Keep the attendee-number order.
+
+        Attendees are:
+        Main Hall
+        VIP
+        Watch Party
+    */
+
+    const seats =
+        Object.keys(selectedSeats)
+            .sort(
+                (a, b) =>
+                    Number(a) - Number(b)
+            )
+            .map(
+                attendeeNumber =>
+                    selectedSeats[
+                        attendeeNumber
+                    ].id
+            );
+
+
+    const response =
+        await fetch(
+            "/api/create-cart",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    checkoutId:
+                        checkoutId,
+
+                    seats:
+                        seats
+
+                })
+
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (!response.ok || !data.success) {
+
+        throw new Error(
+            data.error ||
+            "Could not reserve your seats."
+        );
+
+    }
+
+
+    sessionStorage.setItem(
+        "pretixCart",
+        JSON.stringify(data)
+    );
+
+
+    return data;
+
+}  
 
 /* =========================================
    CONTINUE
    ========================================= */
 
-function continueFromSeats() {
+async function continueFromSeats() {
 
     if (!allMainHallSeatsSelected()) {
 
@@ -740,7 +852,10 @@ function continueFromSeats() {
 
     /*
         If Watch Party tickets exist,
-        go to Watch Party seating.
+        do NOT create the Pretix cart yet.
+
+        Watch Party seating still needs
+        to be selected first.
     */
 
     if (ticketQuantities.watchParty > 0) {
@@ -754,11 +869,52 @@ function continueFromSeats() {
 
 
     /*
-        Otherwise skip directly to add-ons.
+        No Watch Party tickets.
+
+        Main Hall/VIP seating is complete,
+        so create the Pretix cart now.
     */
 
-    window.location.href =
-        "addons.html";
+    const button =
+        document.querySelector(
+            ".continue-button"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Securing seats...";
+
+
+    try {
+
+        await createPretixCart();
+
+
+        window.location.href =
+            "addons.html";
+
+    } catch (error) {
+
+        console.error(
+            "Create cart error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Could not reserve your seats. Please try again."
+        );
+
+
+        button.disabled = false;
+
+        button.textContent =
+            "Continue";
+
+    }
 
 }
 
