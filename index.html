@@ -101,16 +101,16 @@
 
                 <div class="ticket-bottom">
 
-                    <div class="price">
+                    <div class="price" id="mainHallPrice">
 
-                        <strong>
+                        <strong id="mainHallCurrentPrice">
                             Rp40,000
                         </strong>
-
-                        <span class="old-price">
+                    
+                        <span class="old-price" id="mainHallOldPrice">
                             Rp45,000
                         </span>
-
+                    
                     </div>
 
 
@@ -169,16 +169,16 @@
 
                 <div class="ticket-bottom">
 
-                    <div class="price">
+                    <div class="price" id="vipPrice">
 
-                        <strong>
+                        <strong id="vipCurrentPrice">
                             Rp50,000
                         </strong>
-
-                        <span class="old-price">
+                    
+                        <span class="old-price" id="vipOldPrice">
                             Rp55,000
                         </span>
-
+                    
                     </div>
 
 
@@ -237,16 +237,16 @@
 
                 <div class="ticket-bottom">
 
-                    <div class="price">
+                    <div class="price" id="watchPartyPrice">
 
-                        <strong>
+                        <strong id="watchPartyCurrentPrice">
                             Rp25,000
                         </strong>
-
-                        <span class="old-price">
+                    
+                        <span class="old-price" id="watchPartyOldPrice">
                             Rp30,000
                         </span>
-
+                    
                     </div>
 
 
@@ -328,6 +328,215 @@
 
 <script>
 
+    /* =========================================
+   PRETIX AVAILABILITY
+========================================= */
+
+    let availability = {
+        mainHall: {
+            available: true,
+            availableNumber: 100
+        },
+    
+        mainHallEarlyBird: {
+            available: true,
+            availableNumber: 10
+        },
+    
+        watchParty: {
+            available: true,
+            availableNumber: 100
+        },
+    
+        watchPartyEarlyBird: {
+            available: true,
+            availableNumber: 10
+        }
+    };
+
+    /* =========================================
+   LOAD PRETIX AVAILABILITY
+========================================= */
+
+async function loadAvailability() {
+
+    try {
+
+        const response =
+            await fetch("/api/availability");
+
+        const data =
+            await response.json();
+
+        if (
+            !response.ok ||
+            !data.success
+        ) {
+            throw new Error(
+                data.error ||
+                "Unable to load ticket availability."
+            );
+        }
+
+        availability = data;
+
+        updateDisplayedPrices();
+
+        updateSummary();
+
+    } catch (error) {
+
+        console.error(
+            "Availability error:",
+            error
+        );
+
+        /*
+         * If availability cannot be loaded,
+         * keep the existing displayed prices.
+         *
+         * The backend remains the final authority.
+         */
+
+    }
+
+}
+
+    /* =========================================
+   UPDATE DISPLAYED TICKET PRICES
+========================================= */
+
+function updateDisplayedPrices() {
+
+    /*
+     * MAIN HALL
+     *
+     * Main Hall + VIP share the
+     * same Early Bird quota.
+     */
+
+    const mainHallEBAvailable =
+        availability.mainHallEarlyBird
+            .availableNumber > 0;
+
+
+    const mainHallCurrentPrice =
+        document.getElementById(
+            "mainHallCurrentPrice"
+        );
+
+    const mainHallOldPrice =
+        document.getElementById(
+            "mainHallOldPrice"
+        );
+
+
+    if (mainHallEBAvailable) {
+
+        mainHallCurrentPrice.textContent =
+            "Rp40,000";
+
+        mainHallOldPrice.textContent =
+            "Rp45,000";
+
+        mainHallOldPrice.style.display =
+            "";
+
+    } else {
+
+        mainHallCurrentPrice.textContent =
+            "Rp45,000";
+
+        mainHallOldPrice.style.display =
+            "none";
+
+    }
+
+
+    /*
+     * VIP
+     *
+     * Uses the EXACT SAME
+     * Main Hall Early Bird quota.
+     */
+
+    const vipCurrentPrice =
+        document.getElementById(
+            "vipCurrentPrice"
+        );
+
+    const vipOldPrice =
+        document.getElementById(
+            "vipOldPrice"
+        );
+
+
+    if (mainHallEBAvailable) {
+
+        vipCurrentPrice.textContent =
+            "Rp50,000";
+
+        vipOldPrice.textContent =
+            "Rp55,000";
+
+        vipOldPrice.style.display =
+            "";
+
+    } else {
+
+        vipCurrentPrice.textContent =
+            "Rp55,000";
+
+        vipOldPrice.style.display =
+            "none";
+
+    }
+
+
+    /*
+     * WATCH PARTY
+     *
+     * Has its OWN Early Bird quota.
+     */
+
+    const watchPartyEBAvailable =
+        availability.watchPartyEarlyBird
+            .availableNumber > 0;
+
+
+    const watchPartyCurrentPrice =
+        document.getElementById(
+            "watchPartyCurrentPrice"
+        );
+
+    const watchPartyOldPrice =
+        document.getElementById(
+            "watchPartyOldPrice"
+        );
+
+
+    if (watchPartyEBAvailable) {
+
+        watchPartyCurrentPrice.textContent =
+            "Rp25,000";
+
+        watchPartyOldPrice.textContent =
+            "Rp30,000";
+
+        watchPartyOldPrice.style.display =
+            "";
+
+    } else {
+
+        watchPartyCurrentPrice.textContent =
+            "Rp30,000";
+
+        watchPartyOldPrice.style.display =
+            "none";
+
+    }
+
+}
 
 /* =========================================
    TICKET QUANTITIES
@@ -395,27 +604,36 @@ function updateSummary() {
 
 
     /*
-     * Main Hall + VIP share
-     * the first 10 Early Bird tickets.
+     * MAIN HALL + VIP
+     *
+     * They share the same Early Bird pool.
      */
 
     const mainVipTotal =
         mainHall + vip;
 
 
+    const mainVipEBAvailable =
+        Math.max(
+            0,
+            availability.mainHallEarlyBird
+                .availableNumber
+        );
+
+
     const mainVipEarlyBird =
         Math.min(
             mainVipTotal,
-            10
+            mainVipEBAvailable
         );
 
 
     /*
-     * The frontend display calculation
-     * is only an estimate.
+     * Backend allocation order:
+     * Main Hall tickets first,
+     * then VIP tickets.
      *
-     * The backend makes the final
-     * Early Bird allocation.
+     * This mirrors start-checkout.js.
      */
 
     const mainHallEarlyBird =
@@ -444,14 +662,23 @@ function updateSummary() {
 
 
     /*
-     * Watch Party has its own
-     * first 10 Early Bird tickets.
+     * WATCH PARTY
+     *
+     * Has its own Early Bird pool.
      */
+
+    const watchPartyEBAvailable =
+        Math.max(
+            0,
+            availability.watchPartyEarlyBird
+                .availableNumber
+        );
+
 
     const watchPartyEarlyBird =
         Math.min(
             watchParty,
-            10
+            watchPartyEBAvailable
         );
 
 
@@ -461,7 +688,7 @@ function updateSummary() {
 
 
     /*
-     * Calculate displayed total.
+     * Calculate total.
      */
 
     const totalPrice =
@@ -891,6 +1118,10 @@ async function continueToDetails() {
 
 }
 
+
+
+loadAvailability();
+    
 </script>
 
 </body>
