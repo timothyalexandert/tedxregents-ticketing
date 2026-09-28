@@ -1065,12 +1065,37 @@ confirmButton.addEventListener(
                 !response.ok ||
                 !data.success
             ) {
-
-                throw new Error(
-                    data.error ||
-                    "Could not create your order."
+            
+                console.error(
+                    "Pretix order response:",
+                    data
                 );
-
+            
+                let errorMessage =
+                    data.error ||
+                    "Could not create your order.";
+            
+                if (data.pretix) {
+            
+                    console.error(
+                        "Pretix error details:",
+                        data.pretix
+                    );
+            
+                    if (data.pretix.detail) {
+            
+                        errorMessage +=
+                            "\n\nPretix: " +
+                            data.pretix.detail;
+            
+                    }
+            
+                }
+            
+                throw new Error(
+                    errorMessage
+                );
+            
             }
 
 
