@@ -551,22 +551,19 @@ export default async function handler(req, res) {
 
 
         if (!response.ok) {
-        console.error(
-          "Pretix order creation failed:",
-          pretixData
-        );
-      
-        return res.status(400).json({
-          success: false,
-          error:
-            pretixData?.detail ||
-            pretixData?.message ||
-            "Pretix could not create the order.",
-          pretix:
-            pretixData,
-        });
-      }
-
+          console.error(
+            "Pretix order creation failed:",
+            JSON.stringify(pretixData, null, 2)
+          );
+        
+          return res.status(response.status).json({
+            success: false,
+            error:
+              "Pretix rejected the order: " +
+              JSON.stringify(pretixData),
+            pretix: pretixData,
+          });
+        }
 
     /* =====================================
        SAVE ORDER IN REDIS
