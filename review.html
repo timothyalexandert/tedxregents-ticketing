@@ -1079,6 +1079,11 @@ function calculatePrices() {
 
 function continueToPayment() {
 
+    sessionStorage.setItem(
+        "reviewCompleted",
+        "true"
+    );
+
     window.location.href =
         "payment.html";
 
