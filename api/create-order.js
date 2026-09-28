@@ -550,29 +550,22 @@ export default async function handler(req, res) {
     }
 
 
-    if (!response.ok) {
-
-      console.error(
-        "Pretix order creation failed:",
-        pretixData
-      );
-
-      return res.status(
-        response.status
-      ).json({
-
-        success: false,
-
-        error:
-          pretixData?.detail ||
-          "Pretix could not create the order.",
-
-        pretix:
-          pretixData,
-
-      });
-
-    }
+        if (!response.ok) {
+        console.error(
+          "Pretix order creation failed:",
+          pretixData
+        );
+      
+        return res.status(400).json({
+          success: false,
+          error:
+            pretixData?.detail ||
+            pretixData?.message ||
+            "Pretix could not create the order.",
+          pretix:
+            pretixData,
+        });
+      }
 
 
     /* =====================================
