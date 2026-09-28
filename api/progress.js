@@ -640,12 +640,31 @@ function addBackButton() {
     }
 
 
+    /*
+     * Prevent duplicate Back buttons.
+     */
+
+    if (
+        document.querySelector(
+            ".ticketing-back-button"
+        )
+    ) {
+
+        return;
+
+    }
+
+
     const backButton =
         document.createElement("button");
 
 
     backButton.type =
         "button";
+
+
+    backButton.className =
+        "ticketing-back-button";
 
 
     backButton.textContent =
@@ -694,42 +713,36 @@ function addBackButton() {
 
 
     /*
-     * Put Back immediately before header.
+     * Put Back inside <main>,
+     * immediately before the page content.
      */
 
-    const header =
+    const main =
         document.querySelector(
-            "header"
+            "main"
         );
 
 
-    if (header) {
-
-        header.parentNode.insertBefore(
-            backButton,
-            header
-        );
-
+    if (!main) {
         return;
-
     }
 
 
-    /*
-     * Fallback.
-     */
+    const firstElement =
+        main.firstElementChild;
 
-    const heading =
-        document.querySelector(
-            "h1, h2"
+
+    if (firstElement) {
+
+        main.insertBefore(
+            backButton,
+            firstElement
         );
 
+    } else {
 
-    if (heading) {
-
-        heading.parentNode.insertBefore(
-            backButton,
-            heading
+        main.appendChild(
+            backButton
         );
 
     }
