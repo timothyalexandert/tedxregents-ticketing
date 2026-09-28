@@ -478,15 +478,10 @@ export default async function handler(req, res) {
        ===================================== */
 
     const orderPayload = {
-
-      email:
-        ordererEmail,
-
-      phone:
-        ordererPhone,
-
-      payment_provider:
-        "manual",
+  email:
+    ordererEmail,
+  payment_provider:
+    "manual",
 
       payment_info:
         paymentInfo,
