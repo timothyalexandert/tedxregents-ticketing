@@ -11,42 +11,57 @@ const TICKETING_PAGES = {
 };
 
 
-/*
- * --------------------------------------------------
- * COMPLETION CHECKS
- * --------------------------------------------------
- */
+/* =========================================
+   HELPERS
+   ========================================= */
 
-function hasTicketSelection() {
+function getTicketQuantities() {
 
     try {
 
-        const quantities =
-            JSON.parse(
-                localStorage.getItem(
-                    "ticketQuantities"
-                )
-            );
-
-        if (!quantities) {
-            return false;
-        }
-
-        const total =
-            Number(quantities.mainHall || 0) +
-            Number(quantities.vip || 0) +
-            Number(quantities.watchParty || 0);
-
-        return total > 0;
+        return JSON.parse(
+            localStorage.getItem("ticketQuantities")
+        ) || {
+            mainHall: 0,
+            vip: 0,
+            watchParty: 0
+        };
 
     } catch {
 
-        return false;
+        return {
+            mainHall: 0,
+            vip: 0,
+            watchParty: 0
+        };
 
     }
 
 }
 
+
+/* =========================================
+   CHECK TICKETS
+   ========================================= */
+
+function hasTicketSelection() {
+
+    const quantities =
+        getTicketQuantities();
+
+    const total =
+        Number(quantities.mainHall || 0) +
+        Number(quantities.vip || 0) +
+        Number(quantities.watchParty || 0);
+
+    return total > 0;
+
+}
+
+
+/* =========================================
+   CHECK DETAILS
+   ========================================= */
 
 function hasOrdererDetails() {
 
@@ -54,9 +69,7 @@ function hasOrdererDetails() {
 
         const details =
             JSON.parse(
-                localStorage.getItem(
-                    "ordererDetails"
-                )
+                localStorage.getItem("ordererDetails")
             );
 
         if (!details) {
@@ -78,15 +91,17 @@ function hasOrdererDetails() {
 }
 
 
+/* =========================================
+   CHECK ATTENDEES
+   ========================================= */
+
 function hasAttendees() {
 
     try {
 
         const attendees =
             JSON.parse(
-                localStorage.getItem(
-                    "attendees"
-                )
+                localStorage.getItem("attendees")
             );
 
         if (!Array.isArray(attendees)) {
@@ -116,60 +131,55 @@ function hasAttendees() {
 }
 
 
-function hasRequiredSeats() {
+/* =========================================
+   CHECK MAIN HALL / VIP SEATS
+   ========================================= */
+
+function hasMainHallSeats() {
 
     try {
 
         const quantities =
-            JSON.parse(
-                localStorage.getItem(
-                    "ticketQuantities"
-                )
-            );
+            getTicketQuantities();
 
         const selectedSeats =
             JSON.parse(
-                localStorage.getItem(
-                    "selectedSeats"
-                )
-            );
-
-        if (!quantities || !selectedSeats) {
-            return false;
-        }
+                localStorage.getItem("selectedSeats")
+            ) || {};
 
 
-        const mainHallRequired =
+        const required =
             Number(quantities.mainHall || 0) +
             Number(quantities.vip || 0);
 
-        const watchPartyRequired =
-            Number(quantities.watchParty || 0);
+
+        if (required === 0) {
+            return true;
+        }
 
 
-        const selected =
-            Object.values(selectedSeats)
-                .filter(Boolean);
+        let selected = 0;
 
 
-        const mainHallSelected =
-            selected.filter(seat =>
+        for (let i = 1; i <= 100; i++) {
+
+            const seat =
+                selectedSeats[String(i)];
+
+            if (
+                seat &&
                 String(seat.id || "")
                     .startsWith("mainHall-")
-            ).length;
+            ) {
+
+                selected++;
+
+            }
+
+        }
 
 
-        const watchPartySelected =
-            selected.filter(seat =>
-                String(seat.id || "")
-                    .startsWith("watchParty-")
-            ).length;
-
-
-        return (
-            mainHallSelected >= mainHallRequired &&
-            watchPartySelected >= watchPartyRequired
-        );
+        return selected >= required;
 
     } catch {
 
@@ -180,14 +190,72 @@ function hasRequiredSeats() {
 }
 
 
-function hasAddons() {
+/* =========================================
+   CHECK WATCH PARTY SEATS
+   ========================================= */
 
-    /*
-     * Add-ons are optional.
-     *
-     * We therefore consider this step completed
-     * when the user has reached/saved the add-ons step.
-     */
+function hasWatchPartySeats() {
+
+    try {
+
+        const quantities =
+            getTicketQuantities();
+
+        const required =
+            Number(
+                quantities.watchParty || 0
+            );
+
+
+        if (required === 0) {
+            return true;
+        }
+
+
+        const selectedSeats =
+            JSON.parse(
+                localStorage.getItem("selectedSeats")
+            ) || {};
+
+
+        let selected = 0;
+
+
+        for (let i = 1; i <= 100; i++) {
+
+            const seat =
+                selectedSeats[String(i)];
+
+
+            if (
+                seat &&
+                String(seat.id || "")
+                    .startsWith("watchParty-")
+            ) {
+
+                selected++;
+
+            }
+
+        }
+
+
+        return selected >= required;
+
+    } catch {
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================
+   CHECK ADD-ONS
+   ========================================= */
+
+function hasAddons() {
 
     return (
         sessionStorage.getItem(
@@ -197,6 +265,10 @@ function hasAddons() {
 
 }
 
+
+/* =========================================
+   CHECK REVIEW
+   ========================================= */
 
 function hasReview() {
 
@@ -209,6 +281,10 @@ function hasReview() {
 }
 
 
+/* =========================================
+   CHECK PAYMENT
+   ========================================= */
+
 function hasPayment() {
 
     return (
@@ -220,79 +296,58 @@ function hasPayment() {
 }
 
 
-/*
- * --------------------------------------------------
- * FIND FURTHEST COMPLETED PAGE
- * --------------------------------------------------
- */
+/* =========================================
+   FIND FURTHEST VALID PAGE
+   ========================================= */
 
 function getFurthestCompletedPage() {
 
     if (!hasTicketSelection()) {
-
         return "tickets";
-
     }
 
 
     if (!hasOrdererDetails()) {
-
         return "details";
-
     }
 
 
     if (!hasAttendees()) {
-
         return "attendees";
-
     }
 
 
-    if (!hasRequiredSeats()) {
-
+    if (!hasMainHallSeats()) {
         return "seats";
-
     }
+
+
+    const quantities =
+        getTicketQuantities();
 
 
     if (
-        Number(
-            JSON.parse(
-                localStorage.getItem(
-                    "ticketQuantities"
-                )
-            )?.watchParty || 0
-        ) > 0
+        Number(quantities.watchParty || 0) > 0 &&
+        !hasWatchPartySeats()
     ) {
 
-        /*
-         * Watch Party attendees also need seats.
-         */
-
-        return "addons";
+        return "watchPartySeats";
 
     }
 
 
     if (!hasAddons()) {
-
         return "addons";
-
     }
 
 
     if (!hasReview()) {
-
         return "review";
-
     }
 
 
     if (!hasPayment()) {
-
         return "payment";
-
     }
 
 
@@ -301,11 +356,9 @@ function getFurthestCompletedPage() {
 }
 
 
-/*
- * --------------------------------------------------
- * PAGE ACCESS
- * --------------------------------------------------
- */
+/* =========================================
+   FIND CURRENT PAGE
+   ========================================= */
 
 function getCurrentPage() {
 
@@ -320,7 +373,9 @@ function getCurrentPage() {
         path === "" ||
         path === "index.html"
     ) {
+
         return "tickets";
+
     }
 
 
@@ -344,6 +399,10 @@ function getCurrentPage() {
 
 }
 
+
+/* =========================================
+   PROTECT PAGE
+   ========================================= */
 
 function protectPage() {
 
@@ -399,8 +458,7 @@ function protectPage() {
 
 
     /*
-     * If the user hasn't reached this page,
-     * send them to the furthest valid page.
+     * Don't allow users to jump ahead.
      */
 
     if (
@@ -416,11 +474,9 @@ function protectPage() {
 }
 
 
-/*
- * --------------------------------------------------
- * BACK BUTTON
- * --------------------------------------------------
- */
+/* =========================================
+   BACK BUTTON
+   ========================================= */
 
 function addBackButton() {
 
@@ -430,8 +486,8 @@ function addBackButton() {
 
     /*
      * No Back button on:
-     * - Tickets
-     * - Confirmation
+     * Tickets
+     * Confirmation
      */
 
     if (
@@ -445,46 +501,99 @@ function addBackButton() {
     }
 
 
-    /*
-     * Determine the previous page.
-     */
-
-    const previousPages = {
-
-        details: "tickets",
-
-        attendees: "details",
-
-        seats: "attendees",
-
-        watchPartySeats: "seats",
-
-        addons: "seats",
-
-        review: "addons",
-
-        payment: "review"
-
-    };
+    const quantities =
+        getTicketQuantities();
 
 
-    const previousPage =
-        previousPages[currentPage];
+    let previousPage;
 
 
-    if (!previousPage) {
-        return;
+    switch (currentPage) {
+
+        case "details":
+
+            previousPage =
+                "tickets";
+
+            break;
+
+
+        case "attendees":
+
+            previousPage =
+                "details";
+
+            break;
+
+
+        case "seats":
+
+            previousPage =
+                "attendees";
+
+            break;
+
+
+        case "watchPartySeats":
+
+            previousPage =
+                "seats";
+
+            break;
+
+
+        case "addons":
+
+            /*
+             * If Watch Party tickets exist,
+             * their seating page is the actual
+             * previous step.
+             */
+
+            if (
+                Number(
+                    quantities.watchParty || 0
+                ) > 0
+            ) {
+
+                previousPage =
+                    "watchPartySeats";
+
+            } else {
+
+                previousPage =
+                    "seats";
+
+            }
+
+            break;
+
+
+        case "review":
+
+            previousPage =
+                "addons";
+
+            break;
+
+
+        case "payment":
+
+            previousPage =
+                "review";
+
+            break;
+
+
+        default:
+
+            return;
+
     }
 
 
-    /*
-     * Create the button.
-     */
-
     const backButton =
-        document.createElement(
-            "button"
-        );
+        document.createElement("button");
 
 
     backButton.type =
@@ -537,7 +646,7 @@ function addBackButton() {
 
 
     /*
-     * Put the button before the page header.
+     * Put Back immediately before header.
      */
 
     const header =
@@ -559,8 +668,7 @@ function addBackButton() {
 
 
     /*
-     * Fallback:
-     * insert before the first heading.
+     * Fallback.
      */
 
     const heading =
@@ -581,20 +689,13 @@ function addBackButton() {
 }
 
 
-/*
- * --------------------------------------------------
- * INITIALISE
- * --------------------------------------------------
- */
+/* =========================================
+   INITIALISE
+   ========================================= */
 
 (function() {
 
     protectPage();
-
-    /*
-     * Small delay so that a redirect happens
-     * before the page visually builds.
-     */
 
     setTimeout(
         addBackButton,
