@@ -6,6 +6,7 @@ const redis = new Redis({
 });
 
 const MAX_TICKETS_PER_ORDER = 10;
+const CART_SECONDS = 15 * 60;
 
 const PRETIX_BASE =
   "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027";
@@ -22,37 +23,27 @@ const SEAT_ZONES = {
 
 async function getPretixSeats(zoneName) {
 
-  const response =
-    await fetch(
-      `${PRETIX_BASE}/seats/?zone_name=${encodeURIComponent(zoneName)}`,
-      {
-        headers: {
-          Authorization:
-            `Token ${process.env.PRETIX_API_TOKEN}`,
+  const response = await fetch(
+    `${PRETIX_BASE}/seats/?zone_name=${encodeURIComponent(zoneName)}`,
+    {
+      headers: {
+        Authorization:
+          `Token ${process.env.PRETIX_API_TOKEN}`,
+        Accept: "application/json",
+      },
+    }
+  );
 
-          Accept:
-            "application/json",
-        },
-      }
-    );
-
-
-  const data =
-    await response.json();
-
+  const data = await response.json();
 
   if (!response.ok) {
-
     throw new Error(
       data?.detail ||
       `Could not load ${zoneName} seats from Pretix.`
     );
-
   }
 
-
   return data.results || [];
-
 }
 
 
@@ -65,24 +56,12 @@ function findPretixSeat(
   pretixSeats
 ) {
 
-  /*
-      Expected temporary IDs:
-
-      mainHall-A-1
-      mainHall-J-10
-
-      watchParty-A-1
-      watchParty-J-10
-  */
-
   const parts =
     temporarySeatId.split("-");
-
 
   if (parts.length !== 3) {
     return null;
   }
-
 
   const venue =
     parts[0];
@@ -93,35 +72,17 @@ function findPretixSeat(
   const seatNumber =
     parts[2];
 
-
   if (
     !["mainHall", "watchParty"]
       .includes(venue)
   ) {
-
     return null;
-
   }
-
-
-  /*
-      Our temporary visual rows are:
-
-      A = Pretix row 1
-      B = Pretix row 2
-      ...
-      J = Pretix row 10
-
-      We also allow Pretix to use
-      letters directly if its row names
-      are already A-J.
-  */
 
   const numericRow =
     String(
       rowLetter.charCodeAt(0) - 64
     );
-
 
   return (
     pretixSeats.find(seat => {
@@ -130,17 +91,14 @@ function findPretixSeat(
         String(seat.seat_number) ===
         String(seatNumber);
 
-
       const sameNumericRow =
         String(seat.row_name) ===
         numericRow;
-
 
       const sameLetterRow =
         String(seat.row_name)
           .toUpperCase() ===
         rowLetter.toUpperCase();
-
 
       return (
         sameSeat &&
@@ -153,7 +111,6 @@ function findPretixSeat(
 
     }) || null
   );
-
 }
 
 
@@ -164,33 +121,25 @@ function findPretixSeat(
 export default async function handler(req, res) {
 
   if (req.method !== "POST") {
-
     return res.status(405).json({
       success: false,
       error: "Method not allowed. Use POST.",
     });
-
   }
-
 
   try {
 
-    const body =
-      req.body;
-
+    const body = req.body;
 
     if (
       !body ||
       typeof body !== "object"
     ) {
-
       return res.status(400).json({
         success: false,
         error: "Invalid request body.",
       });
-
     }
-
 
     const {
       checkoutId,
@@ -206,12 +155,10 @@ export default async function handler(req, res) {
       typeof checkoutId !== "string" ||
       checkoutId.trim() === ""
     ) {
-
       return res.status(400).json({
         success: false,
         error: "checkoutId is required.",
       });
-
     }
 
 
@@ -223,87 +170,71 @@ export default async function handler(req, res) {
       !Array.isArray(seats) ||
       seats.length === 0
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           "seats must be a non-empty array.",
       });
-
     }
-
 
     if (
       seats.length >
       MAX_TICKETS_PER_ORDER
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           `Maximum ${MAX_TICKETS_PER_ORDER} tickets per order.`,
       });
-
     }
 
 
     /* =====================================
-       LOAD CHECKOUT FROM REDIS
+       LOAD CHECKOUT
        ===================================== */
 
     const checkoutKey =
       `tedx:checkout:${checkoutId}`;
 
-
     const checkout =
       await redis.get(checkoutKey);
 
-
     if (!checkout) {
-
       return res.status(400).json({
         success: false,
         error:
           "This checkout has expired or could not be found. Please start again.",
       });
-
     }
-
 
     if (
       !Array.isArray(checkout.tickets) ||
       checkout.tickets.length === 0
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           "Invalid checkout reservation.",
       });
-
     }
-
 
     const reservedTickets =
       checkout.tickets;
-
 
     if (
       reservedTickets.length !==
       seats.length
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           "The number of selected seats does not match the number of tickets.",
       });
-
     }
 
 
     /* =====================================
-       CLEAN TEMPORARY SEAT IDs
+       CLEAN SEATS
        ===================================== */
 
     const cleanedSeats =
@@ -313,55 +244,47 @@ export default async function handler(req, res) {
           typeof seat !== "string" ||
           seat.trim() === ""
         ) {
-
           return null;
-
         }
 
         return seat.trim();
 
       });
 
-
     if (
       cleanedSeats.some(
         seat => seat === null
       )
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           "Every ticket must have a valid seat.",
       });
-
     }
 
 
     /* =====================================
-       CHECK DUPLICATE SEATS
+       CHECK DUPLICATES
        ===================================== */
 
     const uniqueSeats =
       new Set(cleanedSeats);
 
-
     if (
       uniqueSeats.size !==
       cleanedSeats.length
     ) {
-
       return res.status(400).json({
         success: false,
         error:
           "The same seat cannot be selected more than once.",
       });
-
     }
 
 
     /* =====================================
-       LOAD REAL PRETIX SEATS
+       LOAD PRETIX SEATS
        ===================================== */
 
     const needsMainHall =
@@ -370,32 +293,34 @@ export default async function handler(req, res) {
           seat.startsWith("mainHall-")
       );
 
-
     const needsWatchParty =
       cleanedSeats.some(
         seat =>
           seat.startsWith("watchParty-")
       );
 
+    const [
+      pretixMainHallSeats,
+      pretixWatchPartySeats
+    ] = await Promise.all([
 
-    const pretixMainHallSeats =
       needsMainHall
-        ? await getPretixSeats(
+        ? getPretixSeats(
             SEAT_ZONES.mainHall
           )
-        : [];
+        : Promise.resolve([]),
 
-
-    const pretixWatchPartySeats =
       needsWatchParty
-        ? await getPretixSeats(
+        ? getPretixSeats(
             SEAT_ZONES.watchParty
           )
-        : [];
+        : Promise.resolve([])
+
+    ]);
 
 
     /* =====================================
-       MAP TEMPORARY IDs → PRETIX GUIDS
+       RESOLVE REAL SEATS
        ===================================== */
 
     const resolvedSeats =
@@ -404,28 +329,21 @@ export default async function handler(req, res) {
 
           let pretixSeats = [];
 
-
           if (
             temporarySeatId
               .startsWith("mainHall-")
           ) {
-
             pretixSeats =
               pretixMainHallSeats;
-
           }
-
 
           if (
             temporarySeatId
               .startsWith("watchParty-")
           ) {
-
             pretixSeats =
               pretixWatchPartySeats;
-
           }
-
 
           const realSeat =
             findPretixSeat(
@@ -433,18 +351,13 @@ export default async function handler(req, res) {
               pretixSeats
             );
 
-
           if (!realSeat) {
-
             throw new Error(
               `Seat ${temporarySeatId} could not be matched to an available Pretix seat.`
             );
-
           }
 
-
           return {
-
             temporaryId:
               temporarySeatId,
 
@@ -456,7 +369,6 @@ export default async function handler(req, res) {
 
             seatNumber:
               realSeat.seat_number,
-
           };
 
         }
@@ -464,7 +376,7 @@ export default async function handler(req, res) {
 
 
     /* =====================================
-       CREATE PRETIX CART
+       CREATE CART
        ===================================== */
 
     const cartId =
@@ -472,13 +384,11 @@ export default async function handler(req, res) {
         .toString(36)
         .slice(2, 10)}@api`;
 
-
     const expires =
       new Date(
         Date.now() +
-        15 * 60 * 1000
+        CART_SECONDS * 1000
       ).toISOString();
-
 
     const createdPositions = [];
 
@@ -496,10 +406,8 @@ export default async function handler(req, res) {
       const ticket =
         reservedTickets[index];
 
-
       const resolvedSeat =
         resolvedSeats[index];
-
 
       const payload = {
 
@@ -531,7 +439,6 @@ export default async function handler(req, res) {
             method: "POST",
 
             headers: {
-
               Authorization:
                 `Token ${process.env.PRETIX_API_TOKEN}`,
 
@@ -540,12 +447,10 @@ export default async function handler(req, res) {
 
               "Content-Type":
                 "application/json",
-
             },
 
             body:
               JSON.stringify(payload),
-
           }
         );
 
@@ -553,25 +458,19 @@ export default async function handler(req, res) {
       const text =
         await response.text();
 
-
       let data;
 
-
       try {
-
         data =
           JSON.parse(text);
-
       } catch {
-
         data =
           text;
-
       }
 
 
       /* ===================================
-         CLEAN UP IF POSITION FAILS
+         CLEANUP ON FAILURE
          =================================== */
 
       if (!response.ok) {
@@ -587,20 +486,16 @@ export default async function handler(req, res) {
               method: "DELETE",
 
               headers: {
-
                 Authorization:
                   `Token ${process.env.PRETIX_API_TOKEN}`,
 
                 Accept:
                   "application/json",
-
               },
-
             }
           );
 
         }
-
 
         return res.status(
           response.status
@@ -612,7 +507,6 @@ export default async function handler(req, res) {
             "Could not reserve all selected seats.",
 
           failed_ticket: {
-
             type:
               ticket.ticket_type,
 
@@ -624,12 +518,10 @@ export default async function handler(req, res) {
 
             early_bird:
               ticket.early_bird,
-
           },
 
           pretix:
             data,
-
         });
 
       }
@@ -638,6 +530,38 @@ export default async function handler(req, res) {
       createdPositions.push(data);
 
     }
+
+
+    /* =====================================
+       SAVE CART IN REDIS
+       ===================================== */
+
+    const cartKey =
+      `tedx:cart:${checkoutId}`;
+
+    await redis.set(
+      cartKey,
+      {
+        checkoutId,
+        cartId,
+        expires,
+        seats: resolvedSeats,
+        positions: createdPositions.map(
+          position => ({
+            id: position.id,
+            cartId:
+              position.cart_id,
+          })
+        ),
+        tickets: reservedTickets,
+        createdAt:
+          new Date().toISOString(),
+      },
+      {
+        ex:
+          CART_SECONDS,
+      }
+    );
 
 
     /* =====================================
@@ -700,7 +624,6 @@ export default async function handler(req, res) {
       "Create cart error:",
       error
     );
-
 
     return res.status(500).json({
 
