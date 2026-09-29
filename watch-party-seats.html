@@ -1,787 +1,718 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Party Seating — TEDxRegents Secondary School Bali YOUTH</title>
 
-    <title>Watch Party Seats — TEDxRegents Secondary School Bali YOUTH</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        .seat-section {
-            margin-bottom: 40px;
-        }
-
-        .seat-section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .seat-section-subtitle {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .seat-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .seat {
-            aspect-ratio: 1;
-            border: 1px solid #d8d8d8;
-            border-radius: 7px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: 0.15s ease;
-        }
-
-        .seat:hover:not(.unavailable):not(.selected) {
-            border-color: #191919;
-        }
-
-        .seat.selected {
-            background: #191919;
-            color: #fff;
-            border-color: #191919;
-        }
-
-        .seat.unavailable {
-            background: #e8e8e8;
-            color: #999;
-            border-color: #e8e8e8;
-            cursor: not-allowed;
-        }
-
-        .seat-legend {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 22px;
-            font-size: 13px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .legend-box {
-            width: 15px;
-            height: 15px;
-            border-radius: 4px;
-            border: 1px solid #d8d8d8;
-            background: #fff;
-        }
-
-        .legend-box.selected {
-            background: #191919;
-            border-color: #191919;
-        }
-
-        .legend-box.unavailable {
-            background: #e8e8e8;
-            border-color: #e8e8e8;
-        }
-
-        .seat-error {
-            color: #d00000;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .ticketing-back-button {
-            position: absolute;
-            left: 24px;
-            top: 24px;
-            background: none;
-            border: none;
-            font-size: 32px;
-            line-height: 1;
-            cursor: pointer;
-            color: #191919;
-        }
-
-        .ticketing-back-button:hover {
-            opacity: 0.65;
-        }
-
-        @media (max-width: 700px) {
-            .seat-grid {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 8px;
-            }
-
-            .seat-legend {
-                flex-wrap: wrap;
-                gap: 14px;
-            }
-        }
-    </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <button
-        type="button"
-        class="ticketing-back-button"
-        onclick="goBackFromWatchPartySeats()"
-    >
-        ‹
-    </button>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="logo-white.png" alt="TEDxRegents Secondary School Bali YOUTH">
+    </a>
 
-    <main class="ticketing-page">
+    <div class="progress">
+      <span>01 Tickets</span>
+      <span>02 Details</span>
+      <span>03 Attendees</span>
+      <span class="active">04 Seats</span>
+      <span>05 Add-ons</span>
+      <span>06 Review</span>
+      <span>07 Payment</span>
+    </div>
+  </div>
+</header>
 
-        <div class="progress-container">
-            <div class="progress-step completed">
-                <span>01</span>
-                <p>Tickets</p>
-            </div>
+<main>
 
-            <div class="progress-step completed">
-                <span>02</span>
-                <p>Details</p>
-            </div>
+  <button class="back-button" onclick="goBackFromWatchPartySeats()">← Back</button>
 
-            <div class="progress-step completed">
-                <span>03</span>
-                <p>Attendees</p>
-            </div>
+  <section class="section seating-section">
 
-            <div class="progress-step completed">
-                <span>04</span>
-                <p>Seats</p>
-            </div>
+    <div class="section-heading">
+      <p class="eyebrow">SEATING · WATCH PARTY</p>
+      <h1>Choose your seats.</h1>
+      <p>Select a seat for each Watch Party attendee.</p>
+    </div>
 
-            <div class="progress-step active">
-                <span>04</span>
-                <p>Seats</p>
-            </div>
+    <div class="seating-layout">
 
-            <div class="progress-step">
-                <span>05</span>
-                <p>Add-ons</p>
-            </div>
+      <div class="seating-chart-box">
 
-            <div class="progress-step">
-                <span>06</span>
-                <p>Review</p>
-            </div>
-
-            <div class="progress-step">
-                <span>07</span>
-                <p>Payment</p>
-            </div>
+        <div class="venue-header">
+          <span>WATCH PARTY</span>
         </div>
 
-        <section class="ticketing-card">
+        <div class="stage">SCREEN</div>
 
-            <div class="ticketing-header">
-                <h1>Select Your Watch Party Seats</h1>
-                <p>
-                    Choose a seat for each Watch Party attendee.
-                </p>
-            </div>
+        <div id="watchPartySeatMap" class="seat-map"></div>
 
-            <div id="seatContainer"></div>
+        <div class="seat-legend">
+          <div>
+            <span class="legend-seat available"></span>
+            Available
+          </div>
+          <div>
+            <span class="legend-seat selected"></span>
+            Selected
+          </div>
+          <div>
+            <span class="legend-seat taken"></span>
+            Taken
+          </div>
+        </div>
 
-            <div class="seat-error" id="seatError"></div>
+      </div>
 
-            <div class="seat-legend">
-                <div class="legend-item">
-                    <div class="legend-box"></div>
-                    <span>Available</span>
-                </div>
+      <div class="attendee-selection-box">
 
-                <div class="legend-item">
-                    <div class="legend-box selected"></div>
-                    <span>Selected</span>
-                </div>
+        <div class="attendee-header">
+          <span>ATTENDEES</span>
+        </div>
 
-                <div class="legend-item">
-                    <div class="legend-box unavailable"></div>
-                    <span>Unavailable</span>
-                </div>
-            </div>
+        <h2>Select seats</h2>
+        <p>Select a seat for each Watch Party attendee.</p>
 
-            <button
-                type="button"
-                class="continue-button"
-                onclick="continueFromWatchPartySeats()"
-            >
-                Continue
-            </button>
+        <div id="watchPartyAttendeeList"></div>
 
-        </section>
+        <div class="current-selecting">
+          <span>Currently selecting:</span>
+          <strong id="currentSelecting"></strong>
+        </div>
 
-    </main>
+      </div>
 
-    <script>
+    </div>
 
-        const WATCH_PARTY_SEATS = [
-            "W1","W2","W3","W4","W5","W6","W7","W8","W9","W10",
-            "W11","W12","W13","W14","W15","W16","W17","W18","W19","W20",
-            "W21","W22","W23","W24","W25","W26","W27","W28","W29","W30",
-            "W31","W32","W33","W34","W35","W36","W37","W38","W39","W40",
-            "W41","W42","W43","W44","W45","W46","W47","W48","W49","W50"
+    <button
+      id="continueButton"
+      class="continue-button"
+      onclick="continueFromWatchPartySeats()"
+    >
+      Continue
+    </button>
+
+  </section>
+
+</main>
+
+<script src="progress.js"></script>
+
+<script>
+
+async function goBackFromWatchPartySeats() {
+
+  const checkout =
+    JSON.parse(
+      sessionStorage.getItem("checkout")
+    );
+
+  const checkoutId =
+    checkout?.checkoutId || null;
+
+  if (checkoutId) {
+
+    try {
+
+      await fetch(
+        "/api/release-cart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            checkoutId
+          })
+        }
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+
+  }
+
+  localStorage.removeItem(
+    "selectedSeats"
+  );
+
+  sessionStorage.removeItem(
+    "pretixCart"
+  );
+
+  sessionStorage.removeItem(
+    "seatsCompleted"
+  );
+
+  sessionStorage.removeItem(
+    "watchPartySeatsCompleted"
+  );
+
+  window.location.href =
+    "seats.html";
+
+}
+
+const ticketQuantities =
+  JSON.parse(
+    localStorage.getItem("ticketQuantities")
+  ) || {
+    mainHall: 0,
+    vip: 0,
+    watchParty: 0
+  };
+
+const attendees =
+  JSON.parse(
+    localStorage.getItem("attendees")
+  ) || [];
+
+const selectedSeats =
+  JSON.parse(
+    localStorage.getItem("selectedSeats")
+  ) || {};
+
+const checkoutData =
+  JSON.parse(
+    sessionStorage.getItem("checkout")
+  );
+
+const totalTickets =
+  checkoutData?.ticketQuantities
+    ? Object.values(
+        checkoutData.ticketQuantities
+      ).reduce(
+        (sum, value) => sum + Number(value || 0),
+        0
+      )
+    : (
+        Number(ticketQuantities.mainHall || 0) +
+        Number(ticketQuantities.vip || 0) +
+        Number(ticketQuantities.watchParty || 0)
+      );
+
+const watchPartyAttendees = [];
+
+let attendeeNumber =
+  Number(ticketQuantities.mainHall || 0) +
+  Number(ticketQuantities.vip || 0) +
+  1;
+
+for (
+  let i = 0;
+  i < ticketQuantities.watchParty;
+  i++
+) {
+
+  watchPartyAttendees.push({
+    number: attendeeNumber++,
+    package: "Watch Party"
+  });
+
+}
+
+const validAttendeeNumbers =
+  Array.from(
+    { length: totalTickets },
+    (_, index) => index + 1
+  );
+
+Object.keys(selectedSeats).forEach(number => {
+
+  if (
+    !validAttendeeNumbers.includes(
+      Number(number)
+    )
+  ) {
+
+    delete selectedSeats[number];
+
+  }
+
+});
+
+localStorage.setItem(
+  "selectedSeats",
+  JSON.stringify(selectedSeats)
+);
+
+let currentAttendeeIndex = 0;
+
+const temporarySeats = [];
+
+for (let row = 0; row < 10; row++) {
+
+  const rowLetter =
+    String.fromCharCode(65 + row);
+
+  for (let seat = 1; seat <= 10; seat++) {
+
+    temporarySeats.push({
+      id: `watchParty-${rowLetter}-${seat}`,
+      row: rowLetter,
+      seatNumber: seat
+    });
+
+  }
+
+}
+
+function renderAttendees() {
+
+  const container =
+    document.getElementById(
+      "watchPartyAttendeeList"
+    );
+
+  container.innerHTML = "";
+
+  watchPartyAttendees.forEach(
+    (attendee, index) => {
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "attendee-card";
+
+      if (
+        index === currentAttendeeIndex
+      ) {
+
+        card.classList.add("active");
+
+      }
+
+      const selected =
+        selectedSeats[
+          attendee.number
         ];
 
-        const ticketQuantities =
-            JSON.parse(
-                localStorage.getItem("ticketQuantities")
-            ) || {};
+      card.innerHTML = `
+        <div class="attendee-card-top">
+          <div>
+            <span class="attendee-number">
+              ATTENDEE ${attendee.number}
+            </span>
+            <strong>${attendee.package}</strong>
+          </div>
 
-        const watchPartyQuantity =
-            Number(
-                ticketQuantities.watchParty || 0
-            );
-
-        const checkoutData =
-            JSON.parse(
-                sessionStorage.getItem("checkout")
-            ) || {};
-
-        let selectedSeats =
-            JSON.parse(
-                localStorage.getItem("watchPartySeats")
-            ) || [];
-
-        let unavailableSeats = [];
-
-        function showLoadingOverlay(title, message) {
-
-            const overlay =
-                document.createElement("div");
-
-            overlay.id =
-                "order-overlay";
-
-            overlay.style.position =
-                "fixed";
-
-            overlay.style.inset =
-                "0";
-
-            overlay.style.background =
-                "rgba(20, 33, 61, 0.48)";
-
-            overlay.style.backdropFilter =
-                "blur(14px)";
-
-            overlay.style.webkitBackdropFilter =
-                "blur(14px)";
-
-            overlay.style.zIndex =
-                "2147483647";
-
-            overlay.style.display =
-                "flex";
-
-            overlay.style.alignItems =
-                "center";
-
-            overlay.style.justifyContent =
-                "center";
-
-            const modal =
-                document.createElement("div");
-
-            modal.style.width =
-                "min(420px, calc(100vw - 48px))";
-
-            modal.style.maxWidth =
-                "420px";
-
-            modal.style.padding =
-                "40px 30px";
-
-            modal.style.background =
-                "#ffffff";
-
-            modal.style.borderRadius =
-                "20px";
-
-            modal.style.textAlign =
-                "center";
-
-            modal.style.boxShadow =
-                "0 20px 60px rgba(0,0,0,0.25)";
-
-            const spinner =
-                document.createElement("div");
-
-            spinner.className =
-                "order-spinner";
-
-            const heading =
-                document.createElement("h2");
-
-            heading.textContent =
-                title;
-
-            const paragraph =
-                document.createElement("p");
-
-            paragraph.textContent =
-                message;
-
-            modal.appendChild(spinner);
-            modal.appendChild(heading);
-            modal.appendChild(paragraph);
-
-            overlay.appendChild(modal);
-
-            document.body.appendChild(overlay);
-
-            return overlay;
-        }
-
-        async function loadUnavailableSeats() {
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/api/get-watch-party-seats"
-                    );
-
-                if (!response.ok) {
-                    return;
-                }
-
-                const data =
-                    await response.json();
-
-                unavailableSeats =
-                    Array.isArray(data.seats)
-                        ? data.seats
-                        : [];
-
-            } catch (error) {
-
-                console.error(
-                    "Could not load unavailable watch party seats:",
-                    error
-                );
-
+          <span class="attendee-seat">
+            ${
+              selected
+                ? selected.display
+                : "No seat selected"
             }
+          </span>
+        </div>
+      `;
 
-        }
+      card.onclick = () => {
 
-        function renderSeats() {
+        currentAttendeeIndex =
+          index;
 
-            const container =
-                document.getElementById(
-                    "seatContainer"
-                );
+        renderAttendees();
+        updateCurrentAttendee();
+        renderSeats();
 
-            container.innerHTML = "";
+      };
 
-            const section =
-                document.createElement("div");
+      container.appendChild(card);
 
-            section.className =
-                "seat-section";
+    }
+  );
 
-            const title =
-                document.createElement("div");
+}
 
-            title.className =
-                "seat-section-title";
+function updateCurrentAttendee() {
 
-            title.textContent =
-                "Watch Party";
+  const attendee =
+    watchPartyAttendees[
+      currentAttendeeIndex
+    ];
 
-            const subtitle =
-                document.createElement("div");
+  const currentSelecting =
+    document.getElementById(
+      "currentSelecting"
+    );
 
-            subtitle.className =
-                "seat-section-subtitle";
+  if (!attendee) {
 
-            subtitle.textContent =
-                `Please select ${watchPartyQuantity} seat${watchPartyQuantity === 1 ? "" : "s"}.`;
+    currentSelecting.textContent = "";
 
-            const grid =
-                document.createElement("div");
+    return;
 
-            grid.className =
-                "seat-grid";
+  }
 
-            WATCH_PARTY_SEATS.forEach(
-                seatNumber => {
+  currentSelecting.textContent =
+    `Attendee ${attendee.number} · ${attendee.package}`;
 
-                    const button =
-                        document.createElement("button");
+}
 
-                    button.type =
-                        "button";
+function renderSeats() {
 
-                    button.className =
-                        "seat";
+  const seatMap =
+    document.getElementById(
+      "watchPartySeatMap"
+    );
 
-                    button.textContent =
-                        seatNumber;
+  seatMap.innerHTML = "";
 
-                    const unavailable =
-                        unavailableSeats.includes(
-                            seatNumber
-                        );
+  const currentAttendee =
+    watchPartyAttendees[
+      currentAttendeeIndex
+    ];
 
-                    const selected =
-                        selectedSeats.includes(
-                            seatNumber
-                        );
+  temporarySeats.forEach(seat => {
 
-                    if (unavailable) {
+    const button =
+      document.createElement("button");
 
-                        button.classList.add(
-                            "unavailable"
-                        );
+    button.className =
+      "seat";
 
-                        button.disabled =
-                            true;
+    button.textContent =
+      seat.seatNumber;
 
-                    } else if (selected) {
+    const selectedByAnother =
+      Object.entries(
+        selectedSeats
+      ).some(
+        ([number, selection]) =>
+          Number(number) !==
+            currentAttendee?.number &&
+          selection?.id === seat.id
+      );
 
-                        button.classList.add(
-                            "selected"
-                        );
+    if (selectedByAnother) {
 
-                    }
+      button.classList.add("taken");
+      button.disabled = true;
 
-                    button.addEventListener(
-                        "click",
-                        () => toggleSeat(seatNumber)
-                    );
+    }
 
-                    grid.appendChild(button);
+    if (
+      currentAttendee &&
+      selectedSeats[
+        currentAttendee.number
+      ]?.id === seat.id
+    ) {
 
-                }
-            );
+      button.classList.add("selected");
 
-            section.appendChild(title);
-            section.appendChild(subtitle);
-            section.appendChild(grid);
+    }
 
-            container.appendChild(section);
+    button.onclick = () => {
 
-        }
+      if (button.disabled) return;
 
-        function toggleSeat(seatNumber) {
+      selectSeat(
+        seat.id,
+        seat.row,
+        seat.seatNumber
+      );
 
-            if (
-                unavailableSeats.includes(
-                    seatNumber
-                )
-            ) {
-                return;
-            }
+    };
 
-            const index =
-                selectedSeats.indexOf(
-                    seatNumber
-                );
+    seatMap.appendChild(button);
 
-            if (index !== -1) {
+  });
 
-                selectedSeats.splice(
-                    index,
-                    1
-                );
+}
+
+function selectSeat(
+  seatId,
+  row,
+  seatNumber
+) {
+
+  const attendee =
+    watchPartyAttendees[
+      currentAttendeeIndex
+    ];
+
+  if (!attendee) return;
+
+  selectedSeats[
+    attendee.number
+  ] = {
+    id: seatId,
+    display: `${row}${seatNumber}`
+  };
+
+  localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+  );
+
+  renderAttendees();
+  updateCurrentAttendee();
+  renderSeats();
+
+}
 
-            } else {
+function allSeatsSelected() {
 
-                if (
-                    selectedSeats.length >=
-                    watchPartyQuantity
-                ) {
-                    return;
-                }
+  return watchPartyAttendees.every(
+    attendee =>
+      selectedSeats[
+        attendee.number
+      ]
+  );
+
+}
 
-                selectedSeats.push(
-                    seatNumber
-                );
+function getCheckoutId() {
 
-            }
+  const checkout =
+    JSON.parse(
+      sessionStorage.getItem("checkout")
+    );
 
-            localStorage.setItem(
-                "watchPartySeats",
-                JSON.stringify(
-                    selectedSeats
-                )
-            );
+  return checkout?.checkoutId || null;
 
-            renderSeats();
+}
 
-        }
+function showSeatLoadingOverlay() {
 
-        async function createPretixCart() {
+  const existing =
+    document.getElementById(
+      "order-overlay"
+    );
 
-            const checkoutId =
-                checkoutData.checkoutId ||
-                checkoutData.checkout_id;
+  if (existing) return;
 
-            if (!checkoutId) {
+  const overlay =
+    document.createElement("div");
 
-                throw new Error(
-                    "Your checkout session could not be found."
-                );
+  overlay.id =
+    "order-overlay";
 
-            }
+  Object.assign(overlay.style, {
 
-            const mainHallSeats =
-                JSON.parse(
-                    localStorage.getItem(
-                        "selectedSeats"
-                    )
-                ) || [];
+    position: "fixed",
+    top: "0",
+    left: "0",
+    right: "0",
+    bottom: "0",
+    width: "100vw",
+    height: "100vh",
+    margin: "0",
+    padding: "24px",
+    boxSizing: "border-box",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "rgba(20, 33, 61, 0.48)",
+    backdropFilter: "blur(14px)",
+    webkitBackdropFilter: "blur(14px)",
+    zIndex: "2147483647"
 
-            const response =
-                await fetch(
-                    "/api/create-cart",
-                    {
-                        method: "POST",
+  });
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+  overlay.innerHTML = `
+    <div
+      class="order-modal"
+      style="
+        position: relative;
+        width: min(420px, calc(100vw - 48px));
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 40px 30px;
+        box-sizing: border-box;
+        background: #ffffff;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      "
+    >
+      <div class="order-spinner"></div>
+      <h2>Securing your seats...</h2>
+      <p>Please wait while we reserve your seats.</p>
+    </div>
+  `;
 
-                        body: JSON.stringify({
+  document.body.appendChild(overlay);
 
-                            checkoutId:
-                                checkoutId,
+}
 
-                            selectedSeats:
-                                mainHallSeats,
+async function createPretixCart() {
 
-                            watchPartySeats:
-                                selectedSeats
+  const checkoutId =
+    getCheckoutId();
 
-                        })
-                    }
-                );
+  if (!checkoutId) {
 
-            const data =
-                await response.json();
+    throw new Error(
+      "Checkout session not found."
+    );
 
-            if (!response.ok) {
+  }
 
-                throw new Error(
-                    data.error ||
-                    "Could not reserve your seats."
-                );
+  const seats =
+    [];
 
-            }
+  for (
+    let number = 1;
+    number <= totalTickets;
+    number++
+  ) {
 
-            sessionStorage.setItem(
-                "pretixCart",
-                JSON.stringify(data)
-            );
+    const selection =
+      selectedSeats[number];
 
-        }
+    if (!selection) {
 
-        async function continueFromWatchPartySeats() {
+      throw new Error(
+        `Seat missing for attendee ${number}.`
+      );
 
-            const errorElement =
-                document.getElementById(
-                    "seatError"
-                );
+    }
 
-            errorElement.style.display =
-                "none";
+    seats.push({
+      attendeeNumber: number,
+      seatId: selection.id
+    });
 
-            if (
-                selectedSeats.length !==
-                watchPartyQuantity
-            ) {
+  }
 
-                errorElement.textContent =
-                    `Please select exactly ${watchPartyQuantity} seat${watchPartyQuantity === 1 ? "" : "s"}.`;
+  if (
+    seats.length !==
+    totalTickets
+  ) {
 
-                errorElement.style.display =
-                    "block";
+    throw new Error(
+      "The number of selected seats does not match the number of tickets."
+    );
 
-                return;
-            }
+  }
 
-            const button =
-                document.querySelector(
-                    ".continue-button"
-                );
+  const response =
+    await fetch(
+      "/api/create-cart",
+      {
 
-            button.disabled =
-                true;
+        method: "POST",
 
-            const loadingOverlay =
-                showLoadingOverlay(
-                    "Securing your seats...",
-                    "Please wait while we reserve your seats."
-                );
+        headers: {
+          "Content-Type": "application/json"
+        },
 
-            try {
+        body: JSON.stringify({
+          checkoutId: checkoutId,
+          seats: seats
+        })
 
-                await createPretixCart();
+      }
+    );
 
-                sessionStorage.setItem(
-                    "watchPartySeatsCompleted",
-                    "true"
-                );
+  const data =
+    await response.json();
 
-                window.location.href =
-                    "addons.html";
+  if (
+    !response.ok ||
+    !data.success
+  ) {
 
-            } catch (error) {
+    throw new Error(
+      data.error ||
+      "Unable to reserve seats."
+    );
 
-                console.error(
-                    "Create cart error:",
-                    error
-                );
+  }
 
-                if (loadingOverlay) {
-                    loadingOverlay.remove();
-                }
+  sessionStorage.setItem(
+    "pretixCart",
+    JSON.stringify(data)
+  );
 
-                alert(
-                    error.message ||
-                    "Could not reserve your seats. Please try again."
-                );
+  return data;
 
-                button.disabled =
-                    false;
-            }
+}
 
-        }
+async function continueFromWatchPartySeats() {
 
-        async function goBackFromWatchPartySeats() {
+  if (!allSeatsSelected()) {
 
-            const checkoutData =
-                JSON.parse(
-                    sessionStorage.getItem(
-                        "checkout"
-                    )
-                );
+    alert(
+      "Please select a seat for every Watch Party attendee."
+    );
 
-            const checkoutId =
-                checkoutData &&
-                (
-                    checkoutData.checkoutId ||
-                    checkoutData.checkout_id
-                );
+    return;
 
-            if (checkoutId) {
+  }
 
-                try {
+  localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+  );
 
-                    const response =
-                        await fetch(
-                            "/api/release-cart",
-                            {
-                                method: "POST",
+  const button =
+    document.getElementById(
+      "continueButton"
+    );
 
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
+  button.disabled = true;
 
-                                body: JSON.stringify({
-                                    checkoutId:
-                                        checkoutId
-                                })
-                            }
-                        );
+  button.textContent =
+    "Securing seats...";
 
-                    const data =
-                        await response.json();
+  showSeatLoadingOverlay();
 
-                    if (
-                        !response.ok ||
-                        !data.success
-                    ) {
+  try {
 
-                        console.error(
-                            "Could not release seat reservation:",
-                            data
-                        );
+    await createPretixCart();
 
-                        alert(
-                            "We couldn't release your seat reservation. Please try again."
-                        );
+    sessionStorage.setItem(
+      "watchPartySeatsCompleted",
+      "true"
+    );
 
-                        return;
-                    }
+    window.location.href =
+      "addons.html";
 
-                } catch (error) {
+  } catch (error) {
 
-                    console.error(
-                        "Release cart error:",
-                        error
-                    );
+    console.error(error);
 
-                    alert(
-                        "We couldn't release your seat reservation. Please check your connection and try again."
-                    );
+    const overlay =
+      document.getElementById(
+        "order-overlay"
+      );
 
-                    return;
-                }
-            }
+    if (overlay) {
+      overlay.remove();
+    }
 
-            localStorage.removeItem(
-                "selectedSeats"
-            );
+    alert(
+      error.message ||
+      "Unable to reserve seats. Please try again."
+    );
 
-            localStorage.removeItem(
-                "watchPartySeats"
-            );
+    button.disabled = false;
 
-            sessionStorage.removeItem(
-                "pretixCart"
-            );
+    button.textContent =
+      "Continue";
 
-            sessionStorage.removeItem(
-                "seatsCompleted"
-            );
+  }
 
-            sessionStorage.removeItem(
-                "watchPartySeatsCompleted"
-            );
+}
 
-            window.location.href =
-                "seats.html";
-        }
+renderAttendees();
+updateCurrentAttendee();
+renderSeats();
 
-        async function initializeSeats() {
-
-            if (
-                watchPartyQuantity <= 0
-            ) {
-
-                window.location.href =
-                    "addons.html";
-
-                return;
-            }
-
-            await loadUnavailableSeats();
-
-            renderSeats();
-
-        }
-
-        initializeSeats();
-
-    </script>
+</script>
 
 </body>
 </html>
+
