@@ -1,10 +1,7 @@
-```js
 import { Redis } from "@upstash/redis";
-
 
 const PRETIX_BASE =
     "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027";
-
 
 const MAX_TICKETS_PER_ORDER = 10;
 
@@ -14,31 +11,19 @@ const MAX_TICKETS_PER_ORDER = 10;
    ========================================= */
 
 function getRedis() {
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
 
-    const url =
-        process.env.KV_REST_API_URL;
-
-    const token =
-        process.env.KV_REST_API_TOKEN;
-
-
-    if (
-        !url ||
-        !token
-    ) {
-
+    if (!url || !token) {
         throw new Error(
             "Redis environment variables are missing. Please check KV_REST_API_URL and KV_REST_API_TOKEN in Vercel."
         );
-
     }
 
-
     return new Redis({
-        url,
-        token
+        url: url,
+        token: token
     });
-
 }
 
 
@@ -47,124 +32,83 @@ function getRedis() {
    ========================================= */
 
 function getPretixToken() {
-
-    const token =
-        process.env.PRETIX_API_TOKEN;
-
+    const token = process.env.PRETIX_API_TOKEN;
 
     if (!token) {
-
         throw new Error(
             "PRETIX_API_TOKEN is missing from Vercel environment variables."
         );
-
     }
 
-
     return token;
-
 }
 
 
 /* =========================================
-   LOAD TICKET INFORMATION FROM PRETIX
+   LOAD TICKET INFORMATION
    ========================================= */
 
 async function loadTicketInformation(
     orderCode,
     expectedTicketCount
 ) {
+    const pretixToken = getPretixToken();
 
-    const pretixToken =
-        getPretixToken();
+    const url =
+        PRETIX_BASE +
+        "/orderpositions/?order=" +
+        encodeURIComponent(orderCode);
 
+    const response = await fetch(url, {
+        method: "GET",
 
-    const response =
-        await fetch(
-            `${PRETIX_BASE}/orderpositions/?order=${encodeURIComponent(
-                orderCode
-            )}`,
-            {
-                method: "GET",
+        headers: {
+            Authorization:
+                "Token " + pretixToken,
 
-                headers: {
-
-                    Authorization:
-                        `Token ${pretixToken}`,
-
-                    Accept:
-                        "application/json"
-
-                }
-
-            }
-        );
-
+            Accept:
+                "application/json"
+        }
+    });
 
     const responseText =
         await response.text();
 
-
     let data;
 
-
     try {
-
         data =
-            JSON.parse(
-                responseText
-            );
-
+            JSON.parse(responseText);
     } catch {
-
         data =
             responseText;
-
     }
 
-
-    if (
-        !response.ok
-    ) {
-
+    if (!response.ok) {
         console.error(
             "Pretix order positions request failed:",
             data
         );
 
-
         throw new Error(
             "Pretix could not return the ticket information."
         );
-
     }
-
 
     const results =
         Array.isArray(data.results)
             ? data.results
             : [];
 
-
-    /*
-       Only normal ticket positions are included.
-
-       Add-ons have addon_to set to the
-       parent ticket position.
-    */
-
     const ticketPositions =
-        results.filter(
-            position =>
-                position.addon_to == null
-        );
-
+        results.filter(function (position) {
+            return position.addon_to == null;
+        });
 
     if (
         ticketPositions.length !==
         expectedTicketCount
     ) {
-
         console.error(
             "Unexpected ticket position count:",
             {
@@ -179,41 +123,37 @@ async function loadTicketInformation(
             }
         );
 
-
         throw new Error(
             "The order was created, but the ticket information is incomplete."
         );
-
     }
 
-
     return ticketPositions.map(
-        position => ({
+        function (position) {
+            return {
+                positionId:
+                    position.positionid,
 
-            positionId:
-                position.positionid,
+                secret:
+                    position.secret,
 
-            secret:
-                position.secret,
+                attendeeName:
+                    position.attendee_name,
 
-            attendeeName:
-                position.attendee_name,
+                attendeeEmail:
+                    position.attendee_email,
 
-            attendeeEmail:
-                position.attendee_email,
+                item:
+                    position.item,
 
-            item:
-                position.item,
+                variation:
+                    position.variation,
 
-            variation:
-                position.variation,
-
-            seat:
-                position.seat
-
-        })
+                seat:
+                    position.seat
+            };
+        }
     );
-
 }
 
 
@@ -235,16 +175,11 @@ export default async function handler(
         if (
             req.method !== "POST"
         ) {
-
             return res.status(405).json({
-
                 success: false,
-
                 error:
                     "Method not allowed. Use POST."
-
             });
-
         }
 
 
@@ -254,7 +189,6 @@ export default async function handler(
 
         const redis =
             getRedis();
-
 
         const pretixToken =
             getPretixToken();
@@ -267,21 +201,15 @@ export default async function handler(
         const body =
             req.body;
 
-
         if (
             !body ||
             typeof body !== "object"
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Invalid request body."
-
             });
-
         }
 
 
@@ -304,16 +232,11 @@ export default async function handler(
             typeof checkoutId !== "string" ||
             !checkoutId.trim()
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "checkoutId is required."
-
             });
-
         }
 
 
@@ -323,23 +246,16 @@ export default async function handler(
 
         const checkout =
             await redis.get(
-                `tedx:checkout:${checkoutId}`
+                "tedx:checkout:" +
+                checkoutId
             );
 
-
-        if (
-            !checkout
-        ) {
-
+        if (!checkout) {
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Your checkout has expired. Please start again."
-
             });
-
         }
 
 
@@ -350,23 +266,17 @@ export default async function handler(
         const tickets =
             checkout.tickets;
 
-
         if (
             !Array.isArray(tickets) ||
             tickets.length === 0 ||
             tickets.length >
                 MAX_TICKETS_PER_ORDER
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Invalid ticket reservation."
-
             });
-
         }
 
 
@@ -376,23 +286,16 @@ export default async function handler(
 
         const savedCart =
             await redis.get(
-                `tedx:cart:${checkoutId}`
+                "tedx:cart:" +
+                checkoutId
             );
 
-
-        if (
-            !savedCart
-        ) {
-
+        if (!savedCart) {
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Your seat reservation has expired. Please select your seats again."
-
             });
-
         }
 
 
@@ -400,16 +303,11 @@ export default async function handler(
             cartId &&
             savedCart.cartId !== cartId
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Invalid ticket reservation."
-
             });
-
         }
 
 
@@ -419,18 +317,12 @@ export default async function handler(
 
         const existingOrder =
             await redis.get(
-                `tedx:order:${checkoutId}`
+                "tedx:order:" +
+                checkoutId
             );
 
 
-        if (
-            existingOrder
-        ) {
-
-            /*
-               If ticket information already exists,
-               return the existing order.
-            */
+        if (existingOrder) {
 
             if (
                 Array.isArray(
@@ -438,27 +330,14 @@ export default async function handler(
                 ) &&
                 existingOrder.tickets.length > 0
             ) {
-
                 return res.status(200).json({
-
                     success: true,
-
                     existing: true,
-
                     order:
                         existingOrder
-
                 });
-
             }
 
-
-            /*
-               Older order without ticket information.
-
-               Retrieve the ticket secrets from Pretix
-               and save them to Redis.
-            */
 
             const ticketInformation =
                 await loadTicketInformation(
@@ -468,32 +347,27 @@ export default async function handler(
 
 
             const updatedOrder = {
-
                 ...existingOrder,
 
                 tickets:
                     ticketInformation
-
             };
 
 
             await redis.set(
-                `tedx:order:${checkoutId}`,
+                "tedx:order:" +
+                checkoutId,
+
                 updatedOrder
             );
 
 
             return res.status(200).json({
-
                 success: true,
-
                 existing: true,
-
                 order:
                     updatedOrder
-
             });
-
         }
 
 
@@ -505,16 +379,11 @@ export default async function handler(
             !ordererDetails ||
             typeof ordererDetails !== "object"
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Orderer details are required."
-
             });
-
         }
 
 
@@ -546,22 +415,18 @@ export default async function handler(
         if (
             ordererPhone.startsWith("08")
         ) {
-
             ordererPhone =
                 "+62" +
                 ordererPhone.slice(1);
-
         }
 
 
         if (
             ordererPhone.startsWith("62")
         ) {
-
             ordererPhone =
                 "+" +
                 ordererPhone;
-
         }
 
 
@@ -570,16 +435,11 @@ export default async function handler(
             !ordererEmail ||
             !ordererPhone
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Name, email and phone are required."
-
             });
-
         }
 
 
@@ -591,16 +451,11 @@ export default async function handler(
             !Array.isArray(attendees) ||
             attendees.length !== tickets.length
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "The number of attendees does not match the number of tickets."
-
             });
-
         }
 
 
@@ -621,18 +476,12 @@ export default async function handler(
                     attendee.phone || ""
                 ).trim()
             ) {
-
                 return res.status(400).json({
-
                     success: false,
-
                     error:
                         "Every attendee must have a name, email and phone number."
-
                 });
-
             }
-
         }
 
 
@@ -644,16 +493,11 @@ export default async function handler(
             paymentMethod !== "cash" &&
             paymentMethod !== "bank"
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Invalid payment method."
-
             });
-
         }
 
 
@@ -661,16 +505,11 @@ export default async function handler(
             paymentMethod === "bank" &&
             !paymentProofName
         ) {
-
             return res.status(400).json({
-
                 success: false,
-
                 error:
                     "Bank transfer payment proof is required."
-
             });
-
         }
 
 
@@ -680,9 +519,7 @@ export default async function handler(
 
         const positions = [];
 
-
-        let positionId =
-            1;
+        let positionId = 1;
 
 
         for (
@@ -694,34 +531,27 @@ export default async function handler(
             const ticket =
                 tickets[index];
 
-
             const attendee =
                 attendees[index];
 
-
             const savedSeat =
-                savedCart.seats?.[index];
+                savedCart.seats &&
+                savedCart.seats[index];
 
 
             if (
                 !savedSeat ||
                 !savedSeat.seatGuid
             ) {
-
                 return res.status(400).json({
-
                     success: false,
-
                     error:
                         "A reserved seat could not be found."
-
                 });
-
             }
 
 
             positions.push({
-
                 positionid:
                     positionId,
 
@@ -752,12 +582,10 @@ export default async function handler(
                     String(
                         attendee.email
                     ).trim()
-
             });
 
 
             positionId++;
-
         }
 
 
@@ -766,7 +594,6 @@ export default async function handler(
            ===================================== */
 
         const ADDONS = [
-
             {
                 key:
                     "toteBag",
@@ -832,7 +659,6 @@ export default async function handler(
                 price:
                     30000
             }
-
         ];
 
 
@@ -858,30 +684,24 @@ export default async function handler(
                     ) ||
                     quantity <= 0
                 ) {
-
                     continue;
-
                 }
 
 
                 if (
                     quantity > 100
                 ) {
-
                     return res.status(400).json({
-
                         success: false,
-
                         error:
-                            `Invalid quantity for ${addon.key}.`
-
+                            "Invalid quantity for " +
+                            addon.key +
+                            "."
                     });
-
                 }
 
 
                 positions.push({
-
                     positionid:
                         positionId,
 
@@ -899,14 +719,11 @@ export default async function handler(
 
                     addon_to:
                         1
-
                 });
 
 
                 positionId++;
-
             }
-
         }
 
 
@@ -915,7 +732,6 @@ export default async function handler(
            ===================================== */
 
         const paymentInfo = {
-
             method:
                 paymentMethod,
 
@@ -924,7 +740,6 @@ export default async function handler(
 
             status:
                 "pending"
-
         };
 
 
@@ -944,11 +759,11 @@ export default async function handler(
                 paymentInfo,
 
             comment:
-                `Orderer: ${ordererName}`,
+                "Orderer: " +
+                ordererName,
 
             api_meta:
                 JSON.stringify({
-
                     checkout_id:
                         checkoutId,
 
@@ -957,18 +772,14 @@ export default async function handler(
 
                     payment_proof_name:
                         paymentProofName || null
-
                 }),
 
             positions:
                 positions,
 
             consume_carts: [
-
                 savedCart.cartId
-
             ]
-
         };
 
 
@@ -978,7 +789,8 @@ export default async function handler(
 
         const pretixResponse =
             await fetch(
-                `${PRETIX_BASE}/orders/`,
+                PRETIX_BASE +
+                "/orders/",
                 {
                     method:
                         "POST",
@@ -986,21 +798,20 @@ export default async function handler(
                     headers: {
 
                         Authorization:
-                            `Token ${pretixToken}`,
+                            "Token " +
+                            pretixToken,
 
                         Accept:
                             "application/json",
 
                         "Content-Type":
                             "application/json"
-
                     },
 
                     body:
                         JSON.stringify(
                             orderPayload
                         )
-
                 }
             );
 
@@ -1013,17 +824,13 @@ export default async function handler(
 
 
         try {
-
             pretixData =
                 JSON.parse(
                     pretixResponseText
                 );
-
         } catch {
-
             pretixData =
                 pretixResponseText;
-
         }
 
 
@@ -1042,7 +849,6 @@ export default async function handler(
 
 
             return res.status(502).json({
-
                 success: false,
 
                 error:
@@ -1050,9 +856,7 @@ export default async function handler(
 
                 pretix:
                     pretixData
-
             });
-
         }
 
 
@@ -1068,7 +872,6 @@ export default async function handler(
 
 
             return res.status(502).json({
-
                 success: false,
 
                 error:
@@ -1076,9 +879,7 @@ export default async function handler(
 
                 pretix:
                     pretixData
-
             });
-
         }
 
 
@@ -1125,12 +926,13 @@ export default async function handler(
 
             createdAt:
                 new Date().toISOString()
-
         };
 
 
         await redis.set(
-            `tedx:order:${checkoutId}`,
+            "tedx:order:" +
+            checkoutId,
+
             orderRecord
         );
 
@@ -1140,13 +942,12 @@ export default async function handler(
            ===================================== */
 
         return res.status(201).json({
-
             success: true,
 
             order:
                 orderRecord
-
         });
+
 
     } catch (error) {
 
@@ -1156,24 +957,17 @@ export default async function handler(
         );
 
 
-        /*
-           This guarantees that errors occurring
-           INSIDE the handler are returned as JSON
-           instead of becoming an unexplained
-           FUNCTION_INVOCATION_FAILED response.
-        */
-
         return res.status(500).json({
-
             success: false,
 
             error:
-                error?.message ||
-                "An unexpected server error occurred."
-
+                error &&
+                error.message
+                    ? error.message
+                    : "An unexpected server error occurred."
         });
 
     }
 
 }
-```
+
