@@ -1141,129 +1141,71 @@ function showSeatLoadingOverlay() {
    CREATE PRETIX CART
    ========================================= */
 
+
 async function createPretixCart() {
-
-    const checkoutId =
-        getCheckoutId();
-
+    const checkoutId = getCheckoutId();
 
     if (!checkoutId) {
-
-        throw new Error(
-            "Checkout session not found."
-        );
-
+        throw new Error("Checkout session not found.");
     }
 
+    const allSeats = [];
 
-    const seats =
-        [];
+    // Main Hall + VIP seats
+    mainHallAttendees.forEach((attendee) => {
+        const seat = selectedSeats[attendee.number];
 
-
-    for (
-        let number = 1;
-        number <= totalTickets;
-        number++
-    ) {
-
-        const selection =
-            selectedSeats[
-                number
-            ];
-
-
-        if (!selection) {
-
+        if (!seat) {
             throw new Error(
-                `Seat missing for attendee ${number}.`
+                `No seat selected for Attendee ${attendee.number}.`
             );
-
         }
 
+        allSeats.push(seat);
+    });
 
-        seats.push({
+    // Watch Party seats
+    watchPartyAttendees.forEach((attendee) => {
+        const seat = selectedSeats[attendee.number];
 
-            attendeeNumber:
-                number,
+        if (!seat) {
+            throw new Error(
+                `No seat selected for Attendee ${attendee.number}.`
+            );
+        }
 
-            seatId:
-                selection.id
+        allSeats.push(seat);
+    });
 
-        });
+    const response = await fetch("/api/create-cart", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            checkoutId,
+            seats: allSeats
+        })
+    });
 
-    }
+    const data = await response.json();
 
-
-    if (
-        seats.length !==
-        totalTickets
-    ) {
-
+    if (!response.ok) {
         throw new Error(
-            "The number of selected seats does not match the number of tickets."
+            data?.error ||
+            data?.pretix?.detail ||
+            "Could not reserve your seats."
         );
-
     }
-
-
-    const response =
-        await fetch(
-            "/api/create-cart",
-            {
-
-                method:
-                    "POST",
-
-                headers: {
-
-                    "Content-Type":
-                        "application/json"
-
-                },
-
-                body:
-                    JSON.stringify({
-
-                        checkoutId:
-                            checkoutId,
-
-                        seats:
-                            seats
-
-                    })
-
-            }
-        );
-
-
-    const data =
-        await response.json();
-
-
-    if (
-        !response.ok ||
-        !data.success
-    ) {
-
-        throw new Error(
-            data.error ||
-            "Unable to reserve seats."
-        );
-
-    }
-
 
     sessionStorage.setItem(
         "pretixCart",
-        JSON.stringify(
-            data
-        )
+        JSON.stringify(data)
     );
 
-
     return data;
-
 }
+
 
 
 /* =========================================
