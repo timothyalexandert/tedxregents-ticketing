@@ -1,13 +1,17 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
+```
+<title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
 
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css">
+```
+
 </head>
 
 <body>
@@ -20,61 +24,62 @@
     >
 </header>
 
-
 <main>
 
-    <div class="progress">
-        <span>01 Tickets</span>
-        <span>02 Details</span>
-        <span class="active">03 Attendees</span>
-        <span>04 Seats</span>
-        <span>05 Add-ons</span>
-        <span>06 Review</span>
-        <span>07 Payment</span>
-    </div>
+```
+<div class="progress">
+    <span>01 Tickets</span>
+    <span>02 Details</span>
+    <span class="active">03 Attendees</span>
+    <span>04 Seats</span>
+    <span>05 Add-ons</span>
+    <span>06 Review</span>
+    <span>07 Payment</span>
+</div>
 
 
-    <!-- back button -->
+<!-- back button -->
+    <button
+        type="button"
+        class="ticketing-back-button"
+        onclick="window.location.href='details.html'"
+    >
+        ‹
+    </button>
+
+
+<section class="details-section">
+
+    <p class="eyebrow">ATTENDEES</p>
+
+    <h1>Who’s attending?</h1>
+
+    <p class="subtitle">
+        Enter the details of each person attending the event.
+    </p>
+
+
+    <form id="attendeesForm" class="attendees-form">
+
+        <div id="attendeeFields"></div>
+
+
         <button
-            type="button"
-            class="ticketing-back-button"
-            onclick="window.location.href='details.html'"
+            type="submit"
+            class="continue-button"
         >
-            ‹
+            Continue
         </button>
 
+    </form>
 
-    <section class="details-section">
-
-        <p class="eyebrow">ATTENDEES</p>
-
-        <h1>Who’s attending?</h1>
-
-        <p class="subtitle">
-            Enter the details of each person attending the event.
-        </p>
-
-
-        <form id="attendeesForm" class="attendees-form">
-
-            <div id="attendeeFields"></div>
-
-
-            <button
-                type="submit"
-                class="continue-button"
-            >
-                Continue
-            </button>
-
-        </form>
-
-    </section>
+</section>
+```
 
 </main>
 
 <script src="progress.js"></script>
-    
+
 <script>
 
 const savedTicketQuantities =
@@ -91,462 +96,4 @@ const ticketQuantities =
         };
 
 
-const ordererDetails =
-    JSON.parse(localStorage.getItem("ordererDetails")) || {
-        name: "",
-        email: "",
-        phone: ""
-    };
-
-
-const attendeeFields =
-    document.getElementById("attendeeFields");
-
-
-let attendeeNumber = 0;
-
-
-const totalAttendees =
-    ticketQuantities.mainHall +
-    ticketQuantities.vip +
-    ticketQuantities.watchParty;
-
-console.log(
-    "Ticket quantities:",
-    ticketQuantities
-);
-
-console.log(
-    "Total attendees:",
-    totalAttendees
-);
-    
-/* =========================
-   ADD ATTENDEE FIELDS
-========================= */
-
-function addAttendeeFields(ticketType, quantity) {
-
-    for (let i = 1; i <= quantity; i++) {
-
-        attendeeNumber++;
-
-
-        /*
-            Use collapsible boxes for 3+ attendees.
-            Keep normal boxes for 1–2 attendees.
-        */
-
-        if (totalAttendees > 2) {
-
-            const box =
-                document.createElement("details");
-
-            box.className =
-                "attendee-box";
-
-            if (attendeeNumber === 1) {
-                box.open = true;
-            }
-
-
-            box.innerHTML = `
-
-                <summary class="attendee-heading">
-
-                    <span class="attendee-name">
-                        ATTENDEE ${attendeeNumber}
-                        <em> - ${ticketType}</em>
-                    </span>
-
-                    <span class="attendee-arrow">⌄</span>
-
-                </summary>
-
-
-                <div class="attendee-content">
-
-                    <!-- FULL NAME -->
-
-                    <div class="form-group">
-
-                        <label
-                            for="attendeeName${attendeeNumber}"
-                        >
-                            Full name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="attendeeName${attendeeNumber}"
-                            placeholder="Enter full name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- PHONE -->
-
-                    <div class="form-group">
-
-                        <div class="email-label-row">
-
-                            <label
-                                for="attendeePhone${attendeeNumber}"
-                            >
-                                Phone number
-                            </label>
-
-                            <label class="same-orderer">
-
-                                <input
-                                    type="checkbox"
-                                    id="sameAsOrdererPhone${attendeeNumber}"
-                                    onchange="toggleOrdererPhone(${attendeeNumber})"
-                                >
-
-                                <span>Same as orderer</span>
-
-                            </label>
-
-                        </div>
-
-
-                        <input
-                            type="tel"
-                            id="attendeePhone${attendeeNumber}"
-                            placeholder="+62 812 3456 7890"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="form-group">
-
-                        <div class="email-label-row">
-
-                            <label
-                                for="attendeeEmail${attendeeNumber}"
-                            >
-                                Email address
-                            </label>
-
-                            <label class="same-orderer">
-
-                                <input
-                                    type="checkbox"
-                                    id="sameAsOrdererEmail${attendeeNumber}"
-                                    onchange="toggleOrdererEmail(${attendeeNumber})"
-                                >
-
-                                <span>Same as orderer</span>
-
-                            </label>
-
-                        </div>
-
-
-                        <input
-                            type="email"
-                            id="attendeeEmail${attendeeNumber}"
-                            placeholder="you@example.com"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-            `;
-
-            attendeeFields.appendChild(box);
-
-        } else {
-
-            const box =
-                document.createElement("div");
-
-            box.className =
-                "attendee-box";
-
-
-            box.innerHTML = `
-
-                <div class="attendee-heading">
-
-                    <span class="attendee-name">
-                        ATTENDEE ${attendeeNumber}
-                        <em> - ${ticketType}</em>
-                    </span>
-
-                </div>
-
-
-                <div class="attendee-content">
-
-                    <!-- FULL NAME -->
-
-                    <div class="form-group">
-
-                        <label
-                            for="attendeeName${attendeeNumber}"
-                        >
-                            Full name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="attendeeName${attendeeNumber}"
-                            placeholder="Enter full name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- PHONE -->
-
-                    <div class="form-group">
-
-                        <div class="email-label-row">
-
-                            <label
-                                for="attendeePhone${attendeeNumber}"
-                            >
-                                Phone number
-                            </label>
-
-                            <label class="same-orderer">
-
-                                <input
-                                    type="checkbox"
-                                    id="sameAsOrdererPhone${attendeeNumber}"
-                                    onchange="toggleOrdererPhone(${attendeeNumber})"
-                                >
-
-                                <span>Same as orderer</span>
-
-                            </label>
-
-                        </div>
-
-
-                        <input
-                            type="tel"
-                            id="attendeePhone${attendeeNumber}"
-                            placeholder="+62 812 3456 7890"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="form-group">
-
-                        <div class="email-label-row">
-
-                            <label
-                                for="attendeeEmail${attendeeNumber}"
-                            >
-                                Email address
-                            </label>
-
-                            <label class="same-orderer">
-
-                                <input
-                                    type="checkbox"
-                                    id="sameAsOrdererEmail${attendeeNumber}"
-                                    onchange="toggleOrdererEmail(${attendeeNumber})"
-                                >
-
-                                <span>Same as orderer</span>
-
-                            </label>
-
-                        </div>
-
-
-                        <input
-                            type="email"
-                            id="attendeeEmail${attendeeNumber}"
-                            placeholder="you@example.com"
-                            required
-                        >
-
-                    </div>
-
-                </div>
-
-            `;
-
-            attendeeFields.appendChild(box);
-        }
-    }
-}
-
-
-/* =========================
-   SAME AS ORDERER — PHONE
-========================= */
-
-function toggleOrdererPhone(number) {
-
-    const checkbox =
-        document.getElementById(
-            `sameAsOrdererPhone${number}`
-        );
-
-    const phoneInput =
-        document.getElementById(
-            `attendeePhone${number}`
-        );
-
-
-    if (checkbox.checked) {
-
-        phoneInput.value =
-            ordererDetails.phone;
-
-        phoneInput.disabled =
-            true;
-
-    } else {
-
-        phoneInput.value =
-            "";
-
-        phoneInput.disabled =
-            false;
-    }
-}
-
-
-/* =========================
-   SAME AS ORDERER — EMAIL
-========================= */
-
-function toggleOrdererEmail(number) {
-
-    const checkbox =
-        document.getElementById(
-            `sameAsOrdererEmail${number}`
-        );
-
-    const emailInput =
-        document.getElementById(
-            `attendeeEmail${number}`
-        );
-
-
-    if (checkbox.checked) {
-
-        emailInput.value =
-            ordererDetails.email;
-
-        emailInput.disabled =
-            true;
-
-    } else {
-
-        emailInput.value =
-            "";
-
-        emailInput.disabled =
-            false;
-    }
-}
-
-
-/* =========================
-   BUILD ATTENDEES
-========================= */
-
-addAttendeeFields(
-    "Main Hall",
-    ticketQuantities.mainHall
-);
-
-addAttendeeFields(
-    "VIP",
-    ticketQuantities.vip
-);
-
-addAttendeeFields(
-    "Watch Party",
-    ticketQuantities.watchParty
-);
-
-
-/* =========================
-   SAVE ATTENDEES
-========================= */
-
-document
-    .getElementById("attendeesForm")
-    .addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const attendees = [];
-
-
-        for (let i = 1; i <= attendeeNumber; i++) {
-
-            attendees.push({
-
-                name:
-                    document
-                        .getElementById(
-                            `attendeeName${i}`
-                        )
-                        .value
-                        .trim(),
-
-                phone:
-                    document
-                        .getElementById(
-                            `attendeePhone${i}`
-                        )
-                        .value
-                        .trim(),
-
-                email:
-                    document
-                        .getElementById(
-                            `attendeeEmail${i}`
-                        )
-                        .value
-                        .trim()
-
-            });
-
-        }
-
-
-        localStorage.setItem(
-            "attendees",
-            JSON.stringify(attendees)
-        );
-        
-        sessionStorage.setItem(
-            "attendeesCompleted",
-            "true"
-        );
-        
-        window.location.href =
-            "seats.html";
-
-    });
-
-    
-</script>
-
-</body>
-
-</html>
+const ordererDetail
