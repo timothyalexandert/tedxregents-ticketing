@@ -14,11 +14,13 @@
 <body>
 
 <header class="site-header">
+
     <img
         src="logo-white.png"
         alt="TEDxRegents Secondary School Bali YOUTH"
         class="site-logo"
     >
+
 </header>
 
 
@@ -27,6 +29,7 @@
     <!-- PROGRESS -->
 
     <div class="progress">
+
         <span>01 Tickets</span>
         <span>02 Details</span>
         <span>03 Attendees</span>
@@ -34,6 +37,7 @@
         <span>05 Add-ons</span>
         <span>06 Review</span>
         <span class="active">07 Payment</span>
+
     </div>
 
 
@@ -52,9 +56,15 @@
 
     <section class="payment-section">
 
-        <p class="eyebrow">PAYMENT</p>
+        <p class="eyebrow">
+            PAYMENT
+        </p>
 
-        <h1>Complete your payment.</h1>
+
+        <h1>
+            Complete your payment.
+        </h1>
+
 
         <p class="subtitle">
             Choose how you would like to pay for your order.
@@ -66,8 +76,13 @@
         <div class="payment-price-section">
 
             <div class="payment-heading">
-                <h2>Price Breakdown</h2>
+
+                <h2>
+                    Price Breakdown
+                </h2>
+
             </div>
+
 
             <div class="price-breakdown">
 
@@ -75,9 +90,17 @@
 
                 <div id="addonPriceBreakdown"></div>
 
+
                 <div class="payment-total">
-                    <span>Total</span>
-                    <strong id="paymentTotal">Rp0</strong>
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="paymentTotal">
+                        Rp0
+                    </strong>
+
                 </div>
 
             </div>
@@ -88,11 +111,17 @@
         <!-- PAYMENT METHOD -->
 
         <div class="payment-heading">
-            <h2>Payment Method</h2>
+
+            <h2>
+                Payment Method
+            </h2>
+
         </div>
 
 
         <div class="payment-methods">
+
+            <!-- CASH -->
 
             <label class="payment-option">
 
@@ -102,15 +131,21 @@
                     value="cash"
                 >
 
+
                 <div class="payment-option-content">
 
                     <div>
-                        <strong>Cash on Day</strong>
+
+                        <strong>
+                            Cash on Day
+                        </strong>
 
                         <span>
                             Pay in cash at the event.
                         </span>
+
                     </div>
+
 
                     <span class="payment-radio"></span>
 
@@ -118,6 +153,8 @@
 
             </label>
 
+
+            <!-- BANK -->
 
             <label class="payment-option">
 
@@ -127,17 +164,21 @@
                     value="bank"
                 >
 
+
                 <div class="payment-option-content">
 
                     <div>
 
-                        <strong>Bank Transfer</strong>
+                        <strong>
+                            Bank Transfer
+                        </strong>
 
                         <span>
                             Transfer the total amount and upload your proof of payment.
                         </span>
 
                     </div>
+
 
                     <span class="payment-radio"></span>
 
@@ -158,7 +199,10 @@
 
             <div class="bank-transfer-box">
 
-                <h3>Bank Transfer Details</h3>
+                <h3>
+                    Bank Transfer Details
+                </h3>
+
 
                 <p class="bank-instruction">
                     Please transfer the exact total amount to the account below.
@@ -168,20 +212,41 @@
                 <div class="bank-details">
 
                     <div class="bank-detail">
-                        <span>Bank</span>
-                        <strong>BCA</strong>
+
+                        <span>
+                            Bank
+                        </span>
+
+                        <strong>
+                            BCA
+                        </strong>
+
                     </div>
 
-                    <div class="bank-detail">
-                        <span>Account number</span>
-                        <strong>XXXXXXXXXX</strong>
-                    </div>
 
                     <div class="bank-detail">
-                        <span>Account name</span>
+
+                        <span>
+                            Account number
+                        </span>
+
+                        <strong>
+                            XXXXXXXXXX
+                        </strong>
+
+                    </div>
+
+
+                    <div class="bank-detail">
+
+                        <span>
+                            Account name
+                        </span>
+
                         <strong>
                             TEDxRegents Secondary School Bali YOUTH
                         </strong>
+
                     </div>
 
                 </div>
@@ -198,7 +263,10 @@
 
             <div class="proof-section">
 
-                <h3>Proof of Payment</h3>
+                <h3>
+                    Proof of Payment
+                </h3>
+
 
                 <p>
                     Upload a screenshot or photo of your transfer receipt.
@@ -213,13 +281,17 @@
                         accept="image/*,.pdf"
                     >
 
+
                     <span class="file-upload-icon">
                         +
                     </span>
 
+
                     <span class="file-upload-text">
 
-                        <strong>Choose a file</strong>
+                        <strong>
+                            Choose a file
+                        </strong>
 
                         <small>
                             JPG, PNG or PDF
@@ -251,11 +323,15 @@
 
             <div class="cash-box">
 
-                <h3>Cash Payment</h3>
+                <h3>
+                    Cash Payment
+                </h3>
+
 
                 <p>
                     You will pay the total amount in cash on the day of the event.
                 </p>
+
 
                 <p>
                     Please keep your order confirmation available when you arrive.
@@ -294,15 +370,43 @@
 <script>
 
 /* =========================
-   HELPER
+   HELPERS
 ========================= */
 
-function getStoredJSON(key, fallback) {
+function getStoredJSON(
+    key,
+    fallback
+) {
 
     try {
 
         const value =
             localStorage.getItem(key);
+
+
+        return value
+            ? JSON.parse(value)
+            : fallback;
+
+    } catch (error) {
+
+        return fallback;
+
+    }
+
+}
+
+
+function getSessionJSON(
+    key,
+    fallback
+) {
+
+    try {
+
+        const value =
+            sessionStorage.getItem(key);
+
 
         return value
             ? JSON.parse(value)
@@ -326,6 +430,7 @@ const quantities =
         "ticketQuantities",
         {}
     );
+
 
 const addons =
     getStoredJSON(
@@ -395,10 +500,12 @@ function calculateTotal() {
             quantities.mainHall
         ) || 0;
 
+
     const vipCount =
         Number(
             quantities.vip
         ) || 0;
+
 
     const watchPartyCount =
         Number(
@@ -407,12 +514,13 @@ function calculateTotal() {
 
 
     /* =========================
-       TICKET PRICING
+       EARLY BIRD ALLOCATION
     ========================= */
 
     const mainVipTotal =
         mainHallCount +
         vipCount;
+
 
     const mainVipEarlyBird =
         Math.min(
@@ -420,11 +528,13 @@ function calculateTotal() {
             10
         );
 
+
     const mainHallEarlyBird =
         Math.min(
             mainHallCount,
             mainVipEarlyBird
         );
+
 
     const vipEarlyBird =
         Math.min(
@@ -433,13 +543,16 @@ function calculateTotal() {
             mainHallEarlyBird
         );
 
+
     const mainHallNormal =
         mainHallCount -
         mainHallEarlyBird;
 
+
     const vipNormal =
         vipCount -
         vipEarlyBird;
+
 
     const watchPartyEarlyBird =
         Math.min(
@@ -447,23 +560,27 @@ function calculateTotal() {
             10
         );
 
+
     const watchPartyNormal =
         watchPartyCount -
         watchPartyEarlyBird;
 
 
     /* =========================
-       TICKET TOTAL
+       TICKET BREAKDOWN
     ========================= */
 
     let ticketTotal = 0;
+
 
     const ticketBreakdown =
         document.getElementById(
             "ticketPriceBreakdown"
         );
 
-    ticketBreakdown.innerHTML = "";
+
+    ticketBreakdown.innerHTML =
+        "";
 
 
     function addTicketLine(
@@ -472,8 +589,12 @@ function calculateTotal() {
         price
     ) {
 
-        if (quantity <= 0) {
+        if (
+            quantity <= 0
+        ) {
+
             return;
+
         }
 
 
@@ -481,6 +602,7 @@ function calculateTotal() {
             document.createElement(
                 "div"
             );
+
 
         row.className =
             "price-line";
@@ -587,7 +709,9 @@ function calculateTotal() {
             "addonPriceBreakdown"
         );
 
-    addonBreakdown.innerHTML = "";
+
+    addonBreakdown.innerHTML =
+        "";
 
 
     Object.keys(
@@ -605,7 +729,9 @@ function calculateTotal() {
                 quantity <= 0 ||
                 !addonPrices[key]
             ) {
+
                 return;
+
             }
 
 
@@ -647,14 +773,11 @@ function calculateTotal() {
 
 
     /* =========================
-       TICKET SUBTOTAL
-       Only displayed when
-       add-ons have been selected.
+       TICKETS SUBTOTAL
     ========================= */
 
     if (
-        addonTotal > 0 &&
-        ticketBreakdown
+        addonTotal > 0
     ) {
 
         const ticketSubtotal =
@@ -686,7 +809,7 @@ function calculateTotal() {
 
 
     /* =========================
-       ADD-ON SUBTOTAL
+       ADD-ONS SUBTOTAL
     ========================= */
 
     if (
@@ -744,8 +867,7 @@ function calculateTotal() {
 }
 
 
-const total =
-    calculateTotal();
+calculateTotal();
 
 
 /* =========================
@@ -854,7 +976,7 @@ paymentProof.addEventListener(
 
 
 /* =========================
-   CONFIRM
+   CONFIRM PAYMENT
 ========================= */
 
 const confirmButton =
@@ -887,7 +1009,9 @@ confirmButton.addEventListener(
             );
 
 
-        if (!selectedMethod) {
+        if (
+            !selectedMethod
+        ) {
 
             paymentError.textContent =
                 "Please select a payment method.";
@@ -967,7 +1091,7 @@ confirmButton.addEventListener(
 
 
         /* =========================
-           VALIDATE DATA
+           VALIDATE CHECKOUT
         ========================= */
 
         if (
@@ -1071,6 +1195,7 @@ confirmButton.addEventListener(
         confirmButton.disabled =
             true;
 
+
         confirmButton.textContent =
             "Creating your ticket...";
 
@@ -1126,8 +1251,38 @@ confirmButton.addEventListener(
                 );
 
 
-            const data =
-                await response.json();
+            /* =========================
+               READ SERVER RESPONSE
+            ========================= */
+
+            const responseText =
+                await response.text();
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(
+                        responseText
+                    );
+
+            } catch (parseError) {
+
+                console.error(
+                    "Server returned non-JSON response:",
+                    responseText
+                );
+
+
+                throw new Error(
+                    "Server error: " +
+                    responseText
+                );
+
+            }
 
 
             /* =========================
@@ -1147,28 +1302,18 @@ confirmButton.addEventListener(
 
                 let errorMessage =
                     data.error ||
+                    data.message ||
                     "Could not create your order.";
 
 
                 if (
-                    data.pretix
+                    data.pretix &&
+                    data.pretix.detail
                 ) {
 
-                    console.error(
-                        "Pretix error details:",
-                        data.pretix
-                    );
-
-
-                    if (
-                        data.pretix.detail
-                    ) {
-
-                        errorMessage +=
-                            "\n\nPretix: " +
-                            data.pretix.detail;
-
-                    }
+                    errorMessage +=
+                        "\n\nPretix: " +
+                        data.pretix.detail;
 
                 }
 
@@ -1251,37 +1396,7 @@ confirmButton.addEventListener(
     }
 );
 
-
-/* =========================
-   SESSION STORAGE HELPER
-========================= */
-
-function getSessionJSON(
-    key,
-    fallback
-) {
-
-    try {
-
-        const value =
-            sessionStorage.getItem(
-                key
-            );
-
-        return value
-            ? JSON.parse(value)
-            : fallback;
-
-    } catch (error) {
-
-        return fallback;
-
-    }
-
-}
-
 </script>
 
 </body>
 </html>
-```
