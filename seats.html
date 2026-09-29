@@ -199,10 +199,10 @@
 
         <button
             type="button"
-            class="continue-button"
-            onclick="continueFromSeats()"
+            class="ticketing-back-button"
+            onclick="goBackFromSeats()"
         >
-            Continue
+            ‹
         </button>
 
     </section>
@@ -1309,6 +1309,119 @@ async function initialiseSeats() {
 }
 
 
+/* =========================================
+   BACK FROM SEATS
+   ========================================= */
+
+async function goBackFromSeats() {
+
+    const checkoutData =
+        JSON.parse(
+            sessionStorage.getItem(
+                "checkout"
+            )
+        );
+
+
+    const checkoutId =
+        checkoutData &&
+        (
+            checkoutData.checkoutId ||
+            checkoutData.checkout_id
+        );
+
+
+    /*
+     * If there is an active Pretix cart,
+     * release the reserved seats first.
+     */
+
+    if (checkoutId) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/release-cart",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                checkoutId:
+                                    checkoutId
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                console.error(
+                    "Could not release seat reservation:",
+                    data
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Release cart error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Clear the local seat selections.
+     *
+     * Details, attendees, ticket quantities,
+     * add-ons, etc. remain untouched.
+     */
+
+    localStorage.removeItem(
+        "selectedSeats"
+    );
+
+
+    sessionStorage.removeItem(
+        "pretixCart"
+    );
+
+
+    sessionStorage.removeItem(
+        "seatsCompleted"
+    );
+
+
+    /*
+     * Return to attendees.
+     */
+
+    window.location.href =
+        "attendees.html";
+
+}
+
+
+    
 initialiseSeats();
 
 
