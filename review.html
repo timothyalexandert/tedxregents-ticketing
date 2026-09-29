@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,6 +35,7 @@
         <span>07 Payment</span>
     </div>
 
+
     <!-- BACK -->
 
     <button
@@ -44,8 +46,6 @@
         ‹
     </button>
 
-    <!-- --- -->
-    
 
     <!-- INTRO -->
 
@@ -130,8 +130,9 @@
 
 </main>
 
+
 <script src="progress.js"></script>
-    
+
 <script>
 
 /* =========================
@@ -154,6 +155,7 @@ function getStoredJSON(key, fallback) {
         return fallback;
 
     }
+
 }
 
 
@@ -167,11 +169,13 @@ const quantities =
         {}
     );
 
+
 const attendees =
     getStoredJSON(
         "attendees",
         []
     );
+
 
 const ordererDetails =
     getStoredJSON(
@@ -179,17 +183,20 @@ const ordererDetails =
         {}
     );
 
+
 const selectedSeats =
     getStoredJSON(
         "selectedSeats",
         {}
     );
 
+
 const addons =
     getStoredJSON(
         "addons",
         {}
     );
+
 
 const addonOwner =
     localStorage.getItem(
@@ -777,10 +784,51 @@ function calculatePrices() {
             ticketPrices.watchPartyNormal
         );
 
+    }
 
-        /* =========================
-           TICKET SUBTOTAL
-        ========================== */
+
+    /* =========================
+       ADD-ON TOTAL
+    ========================== */
+
+    let addonTotal = 0;
+
+
+    Object.keys(addons).forEach(
+        key => {
+
+            const quantity =
+                Number(
+                    addons[key]
+                ) || 0;
+
+
+            const info =
+                addonInfo[key];
+
+
+            if (!info) return;
+
+
+            addonTotal +=
+                quantity *
+                info.price;
+
+        }
+    );
+
+
+    /* =========================
+       TICKET SUBTOTAL
+       
+       Only displayed when
+       add-ons have been selected.
+    ========================== */
+
+    if (
+        addonTotal > 0 &&
+        ticketBreakdown
+    ) {
 
         const ticketSubtotal =
             document.createElement(
@@ -814,37 +862,6 @@ function calculatePrices() {
         );
 
     }
-
-
-    /* =========================
-       ADD-ON TOTAL
-    ========================== */
-
-    let addonTotal = 0;
-
-
-    Object.keys(addons).forEach(
-        key => {
-
-            const quantity =
-                Number(
-                    addons[key]
-                ) || 0;
-
-
-            const info =
-                addonInfo[key];
-
-
-            if (!info) return;
-
-
-            addonTotal +=
-                quantity *
-                info.price;
-
-        }
-    );
 
 
     /* =========================
@@ -938,10 +955,6 @@ function calculatePrices() {
 
             /*
                ADD-ONS OWNER HEADING
-
-               This is deliberately
-               created here, AFTER
-               ownerName exists.
             */
 
             const heading =
@@ -1096,6 +1109,7 @@ function continueToPayment() {
         "true"
     );
 
+
     window.location.href =
         "payment.html";
 
@@ -1136,3 +1150,4 @@ if (paymentButton) {
 
 </body>
 </html>
+```
