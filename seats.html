@@ -1278,102 +1278,106 @@ async function continueFromSeats() {
      * those seats and create the final cart.
      */
 
-    if (
-        ticketQuantities.watchParty > 0
-    ) {
+   if (
+    ticketQuantities.watchParty > 0
+) {
 
-        sessionStorage.setItem(
-            "seatsCompleted",
-            "true"
-        );
+    sessionStorage.setItem(
+        "seatsCompleted",
+        "true"
+    );
 
 
-        /* =====================================
-           LOADING SCREEN
-           ===================================== */
+    /* =====================================
+       LOADING SCREEN
+       ===================================== */
 
-        const overlay =
-            document.createElement("div");
+    const overlay =
+        document.createElement("div");
 
-        overlay.id =
-            "order-overlay";
+    overlay.id =
+        "order-overlay";
 
-        Object.assign(
-            overlay.style,
-            {
-                position: "fixed",
-                top: "0",
-                left: "0",
-                right: "0",
-                bottom: "0",
-                width: "100vw",
-                height: "100vh",
-                margin: "0",
-                padding: "24px",
-                boxSizing: "border-box",
+    Object.assign(
+        overlay.style,
+        {
+            position: "fixed",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
+            width: "100vw",
+            height: "100vh",
+            margin: "0",
+            padding: "24px",
+            boxSizing: "border-box",
 
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
 
-                background:
-                    "rgba(20, 33, 61, 0.48)",
+            background:
+                "rgba(20, 33, 61, 0.48)",
 
-                backdropFilter:
-                    "blur(14px)",
+            backdropFilter:
+                "blur(14px)",
 
-                webkitBackdropFilter:
-                    "blur(14px)",
+            webkitBackdropFilter:
+                "blur(14px)",
 
-                zIndex:
-                    "2147483647"
-            }
-        );
+            zIndex:
+                "2147483647"
+        }
+    );
 
-        overlay.innerHTML = `
+    overlay.innerHTML = `
 
-            <div
-                class="order-modal"
-                style="
-                    position: relative;
-                    width: min(420px, calc(100vw - 48px));
-                    max-width: 420px;
-                    margin: 0 auto;
-                    padding: 40px 30px;
-                    box-sizing: border-box;
-                    background: #ffffff;
-                    border-radius: 20px;
-                    text-align: center;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-                "
-            >
+        <div
+            class="order-modal"
+            style="
+                position: relative;
+                width: min(420px, calc(100vw - 48px));
+                max-width: 420px;
+                margin: 0 auto;
+                padding: 40px 30px;
+                box-sizing: border-box;
+                background: #ffffff;
+                border-radius: 20px;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            "
+        >
 
-                <div class="order-spinner"></div>
+            <div class="order-spinner"></div>
 
-                <h2>
-                    Loading seats...
-                </h2>
+            <h2>
+                Loading seats...
+            </h2>
 
-                <p>
-                    Taking you to Watch Party seating...
-                </p>
+            <p>
+                Taking you to Watch Party seating...
+            </p>
 
-            </div>
+        </div>
 
-        `;
+    `;
 
-        document.body.appendChild(
-            overlay
-        );
+    document.body.appendChild(
+        overlay
+    );
 
+
+    requestAnimationFrame(() => {
 
         window.location.href =
             "watch-party-seats.html";
 
+    });
 
-        return;
 
-    }
+    return;
+
+}
 
 
     /*
