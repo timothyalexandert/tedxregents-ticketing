@@ -6,11 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
 <title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
 
 <link rel="stylesheet" href="style.css">
-
 
 </head>
 
@@ -37,6 +35,7 @@
     <span>07 Payment</span>
 </div>
 
+
 <button
     type="button"
     class="ticketing-back-button"
@@ -44,6 +43,7 @@
 >
     ‹
 </button>
+
 
 <section class="details-section">
 
@@ -55,9 +55,11 @@
         Enter the details of each person attending the event.
     </p>
 
+
     <form id="attendeesForm" class="attendees-form">
 
         <div id="attendeeFields"></div>
+
 
         <button
             type="submit"
@@ -69,7 +71,7 @@
     </form>
 
 </section>
-```
+
 
 </main>
 
@@ -80,6 +82,7 @@
 const savedTicketQuantities =
     localStorage.getItem("ticketQuantities");
 
+
 const ticketQuantities =
     savedTicketQuantities
         ? JSON.parse(savedTicketQuantities)
@@ -89,6 +92,7 @@ const ticketQuantities =
             watchParty: 0
         };
 
+
 const ordererDetails =
     JSON.parse(localStorage.getItem("ordererDetails")) || {
         name: "",
@@ -96,24 +100,19 @@ const ordererDetails =
         phone: ""
     };
 
+
 const attendeeFields =
     document.getElementById("attendeeFields");
 
+
 let attendeeNumber = 0;
 
-const mainHallQuantity =
-    Number(ticketQuantities.mainHall || 0);
-
-const vipQuantity =
-    Number(ticketQuantities.vip || 0);
-
-const watchPartyQuantity =
-    Number(ticketQuantities.watchParty || 0);
 
 const totalAttendees =
-    mainHallQuantity +
-    vipQuantity +
-    watchPartyQuantity;
+    Number(ticketQuantities.mainHall || 0) +
+    Number(ticketQuantities.vip || 0) +
+    Number(ticketQuantities.watchParty || 0);
+
 
 console.log(
     "Ticket quantities:",
@@ -132,25 +131,31 @@ console.log(
 
 function addAttendeeFields(ticketType, quantity) {
 
-    for (let i = 1; i <= quantity; i++) {
+    for (let i = 1; i <= Number(quantity || 0); i++) {
 
         attendeeNumber++;
 
-        const box =
-            totalAttendees > 2
-                ? document.createElement("details")
-                : document.createElement("div");
 
-        box.className =
-            "attendee-box";
+        /*
+            Use collapsible boxes for 3+ attendees.
+            Keep normal boxes for 1–2 attendees.
+        */
 
         if (totalAttendees > 2) {
+
+            const box =
+                document.createElement("details");
+
+            box.className =
+                "attendee-box";
 
             if (attendeeNumber === 1) {
                 box.open = true;
             }
 
+
             box.innerHTML = 
+
                 <summary class="attendee-heading">
 
                     <span class="attendee-name">
@@ -162,7 +167,10 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </summary>
 
+
                 <div class="attendee-content">
+
+                    <!-- FULL NAME -->
 
                     <div class="form-group">
 
@@ -181,6 +189,8 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
+
+                    <!-- PHONE -->
 
                     <div class="form-group">
 
@@ -206,6 +216,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
+
                         <input
                             type="tel"
                             id="attendeePhone${attendeeNumber}"
@@ -215,6 +226,8 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
+
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -240,6 +253,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
+
                         <input
                             type="email"
                             id="attendeeEmail${attendeeNumber}"
@@ -250,11 +264,22 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
                 </div>
-            `;
+
+            ;
+
+            attendeeFields.appendChild(box);
 
         } else {
 
-            box.innerHTML = `
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "attendee-box";
+
+
+            box.innerHTML = 
+
                 <div class="attendee-heading">
 
                     <span class="attendee-name">
@@ -264,7 +289,10 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
+
                 <div class="attendee-content">
+
+                    <!-- FULL NAME -->
 
                     <div class="form-group">
 
@@ -283,6 +311,8 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
+
+                    <!-- PHONE -->
 
                     <div class="form-group">
 
@@ -308,6 +338,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
+
                         <input
                             type="tel"
                             id="attendeePhone${attendeeNumber}"
@@ -317,6 +348,8 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
+
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -342,6 +375,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
+
                         <input
                             type="email"
                             id="attendeeEmail${attendeeNumber}"
@@ -352,10 +386,11 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
                 </div>
-            ;
-        }
 
-        attendeeFields.appendChild(box);
+            ;
+
+            attendeeFields.appendChild(box);
+        }
     }
 }
 
@@ -375,6 +410,7 @@ function toggleOrdererPhone(number) {
         document.getElementById(
             `attendeePhone${number}`
         );
+
 
     if (checkbox.checked) {
 
@@ -411,6 +447,7 @@ function toggleOrdererEmail(number) {
             `attendeeEmail${number}`
         );
 
+
     if (checkbox.checked) {
 
         emailInput.value =
@@ -431,78 +468,107 @@ function toggleOrdererEmail(number) {
 
 
 /* =========================
-SAVE ATTENDEES
+   BUILD ATTENDEES
+========================= */
+
+addAttendeeFields(
+    "Main Hall",
+    ticketQuantities.mainHall
+);
+
+addAttendeeFields(
+    "VIP",
+    ticketQuantities.vip
+);
+
+addAttendeeFields(
+    "Watch Party",
+    ticketQuantities.watchParty
+);
+
+
+/* =========================
+   SAVE ATTENDEES
 ========================= */
 
 document
-.getElementById("attendeesForm")
-.addEventListener("submit", function(event) {
+    .getElementById("attendeesForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const attendees = [];
 
 
-    event.preventDefault();
+        for (let i = 1; i <= attendeeNumber; i++) {
 
-    const attendees = [];
+            attendees.push({
 
+                name:
+                    document
+                        .getElementById(
+                            `attendeeName${i}`
+                        )
+                        .value
+                        .trim(),
 
-    for (let i = 1; i <= attendeeNumber; i++) {
+                phone:
+                    document
+                        .getElementById(
+                            `attendeePhone${i}`
+                        )
+                        .value
+                        .trim(),
 
-        attendees.push({
+                email:
+                    document
+                        .getElementById(
+                            `attendeeEmail${i}`
+                        )
+                        .value
+                        .trim()
 
-            name:
-                document
-                    .getElementById(
-                        `attendeeName${i}`
-                    )
-                    .value
-                    .trim(),
+            });
 
-            phone:
-                document
-                    .getElementById(
-                        `attendeePhone${i}`
-                    )
-                    .value
-                    .trim(),
-
-            email:
-                document
-                    .getElementById(
-                        `attendeeEmail${i}`
-                    )
-                    .value
-                    .trim()
-
-        });
-
-    }
+        }
 
 
-    localStorage.setItem(
-        "attendees",
-        JSON.stringify(attendees)
-    );
+        localStorage.setItem(
+            "attendees",
+            JSON.stringify(attendees)
+        );
+        
+        sessionStorage.setItem(
+            "attendeesCompleted",
+            "true"
+        );
+
+
+        /*
+         * If Main Hall tickets were purchased,
+         * go to Main Hall/VIP seating.
+         *
+         * If no Main Hall tickets were purchased,
+         * go directly to Watch Party seating.
+         */
+
+        if (
+            Number(ticketQuantities.mainHall || 0) > 0
+        ) {
+
+            window.location.href =
+                "seats.html";
+
+        } else {
+
+            window.location.href =
+                "watch-party-seats.html";
+
+        }
+
+    });
+
     
-    sessionStorage.setItem(
-        "attendeesCompleted",
-        "true"
-    );
-
-
-    if (Number(ticketQuantities.mainHall || 0) > 0) {
-
-        window.location.href =
-            "seats.html";
-
-    } else {
-
-        window.location.href =
-            "watch-party-seats.html";
-
-    }
-
-});
-
-
 </script>
 
 </body>
