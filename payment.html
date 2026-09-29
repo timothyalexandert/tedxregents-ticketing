@@ -1,188 +1,1586 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Payment — TEDxRegents Secondary School Bali YOUTH</title>
 
-  <link rel="stylesheet" href="style.css">
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Payment — TEDxRegents Secondary School Bali YOUTH
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
 
 <body>
 
 <header class="site-header">
-  <div class="header-inner">
-    <a href="index.html" class="logo-link">
-      <img src="logo-white.png" alt="TEDxRegents Secondary School Bali YOUTH">
-    </a>
 
-    <div class="progress">
-      <span>01 Tickets</span>
-      <span>02 Details</span>
-      <span>03 Attendees</span>
-      <span>04 Seats</span>
-      <span>05 Add-ons</span>
-      <span>06 Review</span>
-      <span class="active">07 Payment</span>
-    </div>
-  </div>
+    <img
+        src="logo-white.png"
+        alt="TEDxRegents Secondary School Bali YOUTH"
+        class="site-logo"
+    >
+
 </header>
+
 
 <main>
 
-  <button class="back-button" onclick="window.location.href='index.html'">
-    ← Back
-  </button>
+    <!-- PROGRESS -->
 
-  <section class="section">
+    <div class="progress">
 
-    <div class="section-heading">
-      <p class="eyebrow">PAYMENT</p>
-      <h1>Complete your payment.</h1>
-      <p>Choose your payment method and submit your payment details.</p>
+        <span>
+            01 Tickets
+        </span>
+
+        <span>
+            02 Details
+        </span>
+
+        <span>
+            03 Attendees
+        </span>
+
+        <span>
+            04 Seats
+        </span>
+
+        <span>
+            05 Add-ons
+        </span>
+
+        <span>
+            06 Review
+        </span>
+
+        <span class="active">
+            07 Payment
+        </span>
+
     </div>
 
-    <div class="payment-layout">
 
-      <div class="payment-box">
+    <!-- BACK -->
 
-        <h2>Payment method</h2>
+    <button
+        type="button"
+        class="ticketing-back-button"
+        onclick="window.location.href='index.html'"
+    >
+        ‹
+    </button>
+
+
+    <!-- PAYMENT SECTION -->
+
+    <section class="payment-section">
+
+        <p class="eyebrow">
+            PAYMENT
+        </p>
+
+
+        <h1>
+            Complete your payment.
+        </h1>
+
+
+        <p class="subtitle">
+            Choose how you would like to pay for your order.
+        </p>
+
+
+        <!-- PRICE BREAKDOWN -->
+
+        <div class="payment-price-section">
+
+            <div class="payment-heading">
+
+                <h2>
+                    Price Breakdown
+                </h2>
+
+            </div>
+
+
+            <div class="price-breakdown">
+
+                <div id="ticketPriceBreakdown"></div>
+
+                <div id="addonPriceBreakdown"></div>
+
+
+                <div class="payment-total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="paymentTotal">
+                        Rp0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="payment-heading">
+
+            <h2>
+                Payment Method
+            </h2>
+
+        </div>
+
 
         <div class="payment-methods">
 
-          <label class="payment-method">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="cash"
-            >
-            <div>
-              <strong>Cash on Day</strong>
-              <span>Pay in cash when you arrive at the event.</span>
-            </div>
-          </label>
+            <!-- CASH -->
 
-          <label class="payment-method">
-            <input
-              type="radio"
-              name="paymentMethod"
-              value="bank"
-            >
-            <div>
-              <strong>Bank Transfer</strong>
-              <span>Transfer the total amount and upload your proof of payment.</span>
-            </div>
-          </label>
+            <label class="payment-option">
+
+                <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="cash"
+                >
+
+
+                <div class="payment-option-content">
+
+                    <div>
+
+                        <strong>
+                            Cash on Day
+                        </strong>
+
+                        <span>
+                            Pay in cash at the event.
+                        </span>
+
+                    </div>
+
+
+                    <span class="payment-radio"></span>
+
+                </div>
+
+            </label>
+
+
+            <!-- BANK -->
+
+            <label class="payment-option">
+
+                <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="bank"
+                >
+
+
+                <div class="payment-option-content">
+
+                    <div>
+
+                        <strong>
+                            Bank Transfer
+                        </strong>
+
+                        <span>
+                            Transfer the total amount and upload your proof of payment.
+                        </span>
+
+                    </div>
+
+
+                    <span class="payment-radio"></span>
+
+                </div>
+
+            </label>
 
         </div>
+
+
+        <!-- BANK TRANSFER -->
 
         <div
-          id="bankDetails"
-          class="bank-details"
-          style="display:none;"
+            id="bankTransferSection"
+            class="bank-transfer-section"
+            hidden
         >
 
-          <h3>Bank transfer details</h3>
+            <div class="bank-transfer-box">
 
-          <p><strong>Bank:</strong> BCA</p>
-          <p><strong>Account Number:</strong> XXXXXXXXXX</p>
-          <p><strong>Account Name:</strong> TEDxRegents Secondary School Bali YOUTH</p>
+                <h3>
+                    Bank Transfer Details
+                </h3>
 
-          <label for="paymentProof">
-            Payment proof
-          </label>
 
-          <input
-            type="file"
-            id="paymentProof"
-            accept="image/*,.pdf"
-          >
+                <p class="bank-instruction">
+                    Please transfer the exact total amount to the account below.
+                </p>
 
-          <p id="paymentFileName"></p>
+
+                <div class="bank-details">
+
+                    <div class="bank-detail">
+
+                        <span>
+                            Bank
+                        </span>
+
+                        <strong>
+                            BCA
+                        </strong>
+
+                    </div>
+
+
+                    <div class="bank-detail">
+
+                        <span>
+                            Account number
+                        </span>
+
+                        <strong>
+                            XXXXXXXXXX
+                        </strong>
+
+                    </div>
+
+
+                    <div class="bank-detail">
+
+                        <span>
+                            Account name
+                        </span>
+
+                        <strong>
+                            TEDxRegents Secondary School Bali YOUTH
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <p class="bank-note">
+                    Please make sure the amount transferred matches your order total.
+                </p>
+
+            </div>
+
+
+            <!-- PROOF OF PAYMENT -->
+
+            <div class="proof-section">
+
+                <h3>
+                    Proof of Payment
+                </h3>
+
+
+                <p>
+                    Upload a screenshot or photo of your transfer receipt.
+                </p>
+
+
+                <label class="file-upload">
+
+                    <input
+                        type="file"
+                        id="paymentProof"
+                        accept="image/*,.pdf"
+                    >
+
+
+                    <span class="file-upload-icon">
+                        +
+                    </span>
+
+
+                    <span class="file-upload-text">
+
+                        <strong>
+                            Choose a file
+                        </strong>
+
+                        <small>
+                            JPG, PNG or PDF
+                        </small>
+
+                    </span>
+
+                </label>
+
+
+                <p
+                    id="fileName"
+                    class="selected-file"
+                    hidden
+                ></p>
+
+            </div>
 
         </div>
 
-        <p
-          id="paymentError"
-          class="payment-error"
-          style="display:none;"
-        ></p>
 
-      </div>
+        <!-- CASH INFO -->
 
-      <div class="payment-box">
+        <div
+            id="cashSection"
+            class="cash-section"
+            hidden
+        >
 
-        <h2>Order summary</h2>
+            <div class="cash-box">
 
-        <div id="priceBreakdown"></div>
+                <h3>
+                    Cash Payment
+                </h3>
+
+
+                <p>
+                    You will pay the total amount in cash on the day of the event.
+                </p>
+
+
+                <p>
+                    Please keep your order confirmation available when you arrive.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- CONFIRM -->
 
         <button
-          id="confirmButton"
-          class="continue-button"
-          onclick="confirmPayment()"
+            type="button"
+            class="continue-button"
+            id="confirmPayment"
         >
-          Confirm & Continue
+            Confirm Payment Method
         </button>
 
-      </div>
 
-    </div>
+        <p
+            id="paymentError"
+            class="payment-error"
+            hidden
+        ></p>
 
-  </section>
+    </section>
 
 </main>
 
+
 <script src="progress.js"></script>
+
 
 <script>
 
-const ticketQuantities =
-  JSON.parse(
-    localStorage.getItem("ticketQuantities")
-  ) || {
-    mainHall: 0,
-    vip: 0,
-    watchParty: 0
-  };
+/* =========================
+   HELPERS
+========================= */
 
-const addons =
-  JSON.parse(
-    localStorage.getItem("addons")
-  ) || {};
+function getStoredJSON(
+    key,
+    fallback
+) {
 
-const ADDON_PRICES = {
-  toteBag: 60000,
-  notebook: 30000,
-  pen: 10000,
-  lanyard: 15000,
-  stickerPack: 3000,
-  food: 30000
-};
+    try {
 
-const ADDON_NAMES = {
-  toteBag: "Tote Bag",
-  notebook: "Notebook",
-  pen: "Pen",
-  lanyard: "Lanyard",
-  stickerPack: "Sticker Pack",
-  food: "Food"
-};
+        const value =
+            localStorage.getItem(
+                key
+            );
 
-function formatPrice(price) {
 
-  return "Rp" +
-    Number(price).toLocaleString(
-      "id-ID"
-    );
+        return value
+            ? JSON.parse(value)
+            : fallback;
+
+    } catch (error) {
+
+        return fallback;
+
+    }
 
 }
 
+
+function getSessionJSON(
+    key,
+    fallback
+) {
+
+    try {
+
+        const value =
+            sessionStorage.getItem(
+                key
+            );
+
+
+        return value
+            ? JSON.parse(value)
+            : fallback;
+
+    } catch (error) {
+
+        return fallback;
+
+    }
+
+}
+
+
+/* =========================
+   LOAD ORDER DATA
+========================= */
+
+const quantities =
+    getStoredJSON(
+        "ticketQuantities",
+        {}
+    );
+
+
+const addons =
+    getStoredJSON(
+        "addons",
+        {}
+    );
+
+
+/* =========================
+   PRICES
+========================= */
+
+const ticketPrices = {
+
+    mainHallEarly:
+        40000,
+
+    mainHallNormal:
+        45000,
+
+    vipEarly:
+        50000,
+
+    vipNormal:
+        55000,
+
+    watchPartyEarly:
+        25000,
+
+    watchPartyNormal:
+        30000
+
+};
+
+
+const addonPrices = {
+
+    toteBag:
+        60000,
+
+    notebook:
+        30000,
+
+    pen:
+        10000,
+
+    lanyard:
+        15000,
+
+    stickerPack:
+        3000,
+
+    food:
+        30000
+
+};
+
+
+/* =========================
+   CALCULATE TOTAL
+========================= */
+
 function calculateTotal() {
 
-  const mainHallEarlyBird =
-    ticketQuantities.mainHall > 0 &&
-    (
-      ticketQuantities.mainHall +
-      ticketQuantities.vip
-    )
+    const mainHallCount =
+        Number(
+            quantities.mainHall
+        ) || 0;
 
+
+    const vipCount =
+        Number(
+            quantities.vip
+        ) || 0;
+
+
+    const watchPartyCount =
+        Number(
+            quantities.watchParty
+        ) || 0;
+
+
+    /* =========================
+       EARLY BIRD ALLOCATION
+    ========================= */
+
+    const mainVipTotal =
+        mainHallCount +
+        vipCount;
+
+
+    const mainVipEarlyBird =
+        Math.min(
+            mainVipTotal,
+            10
+        );
+
+
+    const mainHallEarlyBird =
+        Math.min(
+            mainHallCount,
+            mainVipEarlyBird
+        );
+
+
+    const vipEarlyBird =
+        Math.min(
+            vipCount,
+            mainVipEarlyBird -
+            mainHallEarlyBird
+        );
+
+
+    const mainHallNormal =
+        mainHallCount -
+        mainHallEarlyBird;
+
+
+    const vipNormal =
+        vipCount -
+        vipEarlyBird;
+
+
+    const watchPartyEarlyBird =
+        Math.min(
+            watchPartyCount,
+            10
+        );
+
+
+    const watchPartyNormal =
+        watchPartyCount -
+        watchPartyEarlyBird;
+
+
+    /* =========================
+       TICKET BREAKDOWN
+    ========================= */
+
+    let ticketTotal = 0;
+
+
+    const ticketBreakdown =
+        document.getElementById(
+            "ticketPriceBreakdown"
+        );
+
+
+    ticketBreakdown.innerHTML =
+        "";
+
+
+    function addTicketLine(
+        label,
+        quantity,
+        price
+    ) {
+
+        if (
+            quantity <= 0
+        ) {
+
+            return;
+
+        }
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+
+        row.className =
+            "price-line";
+
+
+        row.innerHTML = `
+
+            <span>
+                ${label} × ${quantity}
+            </span>
+
+            <strong>
+                Rp${(
+                    quantity * price
+                ).toLocaleString("id-ID")}
+            </strong>
+
+        `;
+
+
+        ticketBreakdown.appendChild(
+            row
+        );
+
+
+        ticketTotal +=
+            quantity * price;
+
+    }
+
+
+    addTicketLine(
+        "Main Hall — Early Bird",
+        mainHallEarlyBird,
+        ticketPrices.mainHallEarly
+    );
+
+
+    addTicketLine(
+        "Main Hall — Normal",
+        mainHallNormal,
+        ticketPrices.mainHallNormal
+    );
+
+
+    addTicketLine(
+        "VIP — Early Bird",
+        vipEarlyBird,
+        ticketPrices.vipEarly
+    );
+
+
+    addTicketLine(
+        "VIP — Normal",
+        vipNormal,
+        ticketPrices.vipNormal
+    );
+
+
+    addTicketLine(
+        "Watch Party — Early Bird",
+        watchPartyEarlyBird,
+        ticketPrices.watchPartyEarly
+    );
+
+
+    addTicketLine(
+        "Watch Party — Normal",
+        watchPartyNormal,
+        ticketPrices.watchPartyNormal
+    );
+
+
+    /* =========================
+       ADD-ONS
+    ========================= */
+
+    const addonNames = {
+
+        toteBag:
+            "Tote Bag",
+
+        notebook:
+            "Notebook",
+
+        pen:
+            "Pen",
+
+        lanyard:
+            "Lanyard",
+
+        stickerPack:
+            "Sticker Pack",
+
+        food:
+            "Food"
+
+    };
+
+
+    let addonTotal = 0;
+
+
+    const addonBreakdown =
+        document.getElementById(
+            "addonPriceBreakdown"
+        );
+
+
+    addonBreakdown.innerHTML =
+        "";
+
+
+    Object.keys(
+        addons
+    ).forEach(
+        key => {
+
+            const quantity =
+                Number(
+                    addons[key]
+                ) || 0;
+
+
+            if (
+                quantity <= 0 ||
+                !addonPrices[key]
+            ) {
+
+                return;
+
+            }
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "price-line addon-price-line";
+
+
+            row.innerHTML = `
+
+                <span>
+                    ${addonNames[key]} × ${quantity}
+                </span>
+
+                <strong>
+                    Rp${(
+                        addonPrices[key] *
+                        quantity
+                    ).toLocaleString("id-ID")}
+                </strong>
+
+            `;
+
+
+            addonBreakdown.appendChild(
+                row
+            );
+
+
+            addonTotal +=
+                addonPrices[key] *
+                quantity;
+
+        }
+    );
+
+
+    /* =========================
+       TICKETS SUBTOTAL
+    ========================= */
+
+    if (
+        addonTotal > 0
+    ) {
+
+        const ticketSubtotal =
+            document.createElement(
+                "div"
+            );
+
+
+        ticketSubtotal.className =
+            "price-subtotal";
+
+
+        ticketSubtotal.innerHTML = `
+
+            <span>
+                Tickets subtotal
+            </span>
+
+            <strong>
+                Rp${ticketTotal.toLocaleString("id-ID")}
+            </strong>
+
+        `;
+
+
+        ticketBreakdown.appendChild(
+            ticketSubtotal
+        );
+
+    }
+
+
+    /* =========================
+       ADD-ONS SUBTOTAL
+    ========================= */
+
+    if (
+        addonTotal > 0
+    ) {
+
+        const addonSubtotal =
+            document.createElement(
+                "div"
+            );
+
+
+        addonSubtotal.className =
+            "price-subtotal";
+
+
+        addonSubtotal.innerHTML = `
+
+            <span>
+                Add ons subtotal
+            </span>
+
+            <strong>
+                Rp${addonTotal.toLocaleString("id-ID")}
+            </strong>
+
+        `;
+
+
+        addonBreakdown.appendChild(
+            addonSubtotal
+        );
+
+    }
+
+
+    /* =========================
+       GRAND TOTAL
+    ========================= */
+
+    const grandTotal =
+        ticketTotal +
+        addonTotal;
+
+
+    document.getElementById(
+        "paymentTotal"
+    ).textContent =
+        "Rp" +
+        grandTotal.toLocaleString(
+            "id-ID"
+        );
+
+
+    return grandTotal;
+
+}
+
+
+calculateTotal();
+
+
+/* =========================
+   PAYMENT METHOD
+========================= */
+
+const paymentOptions =
+    document.querySelectorAll(
+        'input[name="paymentMethod"]'
+    );
+
+
+const bankTransferSection =
+    document.getElementById(
+        "bankTransferSection"
+    );
+
+
+const cashSection =
+    document.getElementById(
+        "cashSection"
+    );
+
+
+paymentOptions.forEach(
+    option => {
+
+        option.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.value === "bank"
+                ) {
+
+                    bankTransferSection.hidden =
+                        false;
+
+                    cashSection.hidden =
+                        true;
+
+                }
+
+
+                if (
+                    this.value === "cash"
+                ) {
+
+                    bankTransferSection.hidden =
+                        true;
+
+                    cashSection.hidden =
+                        false;
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================
+   FILE UPLOAD
+========================= */
+
+const paymentProof =
+    document.getElementById(
+        "paymentProof"
+    );
+
+
+const fileName =
+    document.getElementById(
+        "fileName"
+    );
+
+
+paymentProof.addEventListener(
+    "change",
+    function () {
+
+        if (
+            this.files.length > 0
+        ) {
+
+            fileName.textContent =
+                this.files[0].name;
+
+            fileName.hidden =
+                false;
+
+        } else {
+
+            fileName.textContent =
+                "";
+
+            fileName.hidden =
+                true;
+
+        }
+
+    }
+);
+
+
+/* =========================
+   PAYMENT LOADING OVERLAY
+========================= */
+
+function showPaymentLoadingOverlay() {
+
+    const existing =
+        document.getElementById(
+            "order-overlay"
+        );
+
+
+    if (existing) {
+
+        return existing;
+
+    }
+
+
+    const overlay =
+        document.createElement(
+            "div"
+        );
+
+
+    overlay.id =
+        "order-overlay";
+
+
+    Object.assign(
+        overlay.style,
+        {
+
+            position:
+                "fixed",
+
+            top:
+                "0",
+
+            left:
+                "0",
+
+            right:
+                "0",
+
+            bottom:
+                "0",
+
+            width:
+                "100vw",
+
+            height:
+                "100vh",
+
+            margin:
+                "0",
+
+            padding:
+                "24px",
+
+            boxSizing:
+                "border-box",
+
+            display:
+                "flex",
+
+            alignItems:
+                "center",
+
+            justifyContent:
+                "center",
+
+            background:
+                "rgba(20, 33, 61, 0.48)",
+
+            backdropFilter:
+                "blur(14px)",
+
+            webkitBackdropFilter:
+                "blur(14px)",
+
+            zIndex:
+                "2147483647"
+
+        }
+    );
+
+
+    overlay.innerHTML = `
+
+        <div
+            class="order-modal"
+            style="
+                position: relative;
+                width: min(420px, calc(100vw - 48px));
+                max-width: 420px;
+                margin: 0 auto;
+                padding: 40px 30px;
+                box-sizing: border-box;
+                background: #ffffff;
+                border-radius: 20px;
+                text-align: center;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            "
+        >
+
+            <div class="order-spinner"></div>
+
+            <h2>
+                Creating your ticket...
+            </h2>
+
+            <p>
+                Please wait while we confirm your order.
+            </p>
+
+        </div>
+
+    `;
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    return overlay;
+
+}
+
+
+/* =========================
+   CONFIRM PAYMENT
+========================= */
+
+const confirmButton =
+    document.getElementById(
+        "confirmPayment"
+    );
+
+
+const paymentError =
+    document.getElementById(
+        "paymentError"
+    );
+
+
+confirmButton.addEventListener(
+    "click",
+    async function () {
+
+        paymentError.hidden =
+            true;
+
+
+        /* =========================
+           PAYMENT METHOD
+        ========================= */
+
+        const selectedMethod =
+            document.querySelector(
+                'input[name="paymentMethod"]:checked'
+            );
+
+
+        if (
+            !selectedMethod
+        ) {
+
+            paymentError.textContent =
+                "Please select a payment method.";
+
+            paymentError.hidden =
+                false;
+
+            return;
+
+        }
+
+
+        /* =========================
+           BANK PROOF
+        ========================= */
+
+        if (
+            selectedMethod.value === "bank" &&
+            paymentProof.files.length === 0
+        ) {
+
+            paymentError.textContent =
+                "Please upload your proof of payment.";
+
+            paymentError.hidden =
+                false;
+
+            return;
+
+        }
+
+
+        /* =========================
+           LOAD STORED DATA
+        ========================= */
+
+        const checkout =
+            getSessionJSON(
+                "checkout",
+                null
+            );
+
+
+        const pretixCart =
+            getSessionJSON(
+                "pretixCart",
+                null
+            );
+
+
+        const ordererDetails =
+            getStoredJSON(
+                "ordererDetails",
+                null
+            );
+
+
+        const attendees =
+            getStoredJSON(
+                "attendees",
+                []
+            );
+
+
+        const selectedSeats =
+            getStoredJSON(
+                "selectedSeats",
+                {}
+            );
+
+
+        const storedAddons =
+            getStoredJSON(
+                "addons",
+                {}
+            );
+
+
+        /* =========================
+           VALIDATE CHECKOUT
+        ========================= */
+
+        if (
+            !checkout ||
+            !checkout.checkoutId
+        ) {
+
+            paymentError.textContent =
+                "Your checkout could not be found. Please start again.";
+
+            paymentError.hidden =
+                false;
+
+            return;
+
+        }
+
+
+        if (
+            !pretixCart ||
+            !pretixCart.cart_id
+        ) {
+
+            paymentError.textContent =
+                "Your seat reservation could not be found. Please select your seats again.";
+
+            paymentError.hidden =
+                false;
+
+            return;
+
+        }
+
+
+        if (
+            !ordererDetails
+        ) {
+
+            paymentError.textContent =
+                "Your order details could not be found. Please go back and check your details.";
+
+            paymentError.hidden =
+                false;
+
+            return;
+
+        }
+
+
+        /* =========================
+           PAYMENT PROOF NAME
+        ========================= */
+
+        let paymentProofName =
+            null;
+
+
+        if (
+            selectedMethod.value === "bank" &&
+            paymentProof.files.length > 0
+        ) {
+
+            paymentProofName =
+                paymentProof.files[0].name;
+
+        }
+
+
+        /* =========================
+           SAVE PAYMENT DETAILS
+        ========================= */
+
+        localStorage.setItem(
+            "paymentMethod",
+            selectedMethod.value
+        );
+
+
+        if (
+            paymentProofName
+        ) {
+
+            localStorage.setItem(
+                "paymentProofName",
+                paymentProofName
+            );
+
+        } else {
+
+            localStorage.removeItem(
+                "paymentProofName"
+            );
+
+        }
+
+
+        /*
+         * Everything has been validated.
+         * Show the full-screen loading overlay
+         * before creating the Pretix order.
+         */
+
+        const overlay =
+            showPaymentLoadingOverlay();
+
+
+        /*
+         * Keep the actual button text unchanged.
+         * The overlay now handles the loading state.
+         */
+
+        confirmButton.disabled =
+            true;
+
+
+        try {
+
+            /* =========================
+               CREATE PRETIX ORDER
+            ========================= */
+
+            const response =
+                await fetch(
+                    "/api/create-order",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                checkoutId:
+                                    checkout.checkoutId,
+
+                                cartId:
+                                    pretixCart.cart_id,
+
+                                paymentMethod:
+                                    selectedMethod.value,
+
+                                paymentProofName:
+                                    paymentProofName,
+
+                                ordererDetails:
+                                    ordererDetails,
+
+                                attendees:
+                                    attendees,
+
+                                selectedSeats:
+                                    selectedSeats,
+
+                                addons:
+                                    storedAddons
+
+                            })
+
+                    }
+                );
+
+
+            /* =========================
+               READ SERVER RESPONSE
+            ========================= */
+
+            const responseText =
+                await response.text();
+
+
+            let data;
+
+
+            try {
+
+                data =
+                    JSON.parse(
+                        responseText
+                    );
+
+            } catch (parseError) {
+
+                console.error(
+                    "Server returned non-JSON response:",
+                    responseText
+                );
+
+
+                throw new Error(
+                    "Server error: " +
+                    responseText
+                );
+
+            }
+
+
+            /* =========================
+               CHECK RESPONSE
+            ========================= */
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                console.error(
+                    "Pretix order response:",
+                    data
+                );
+
+
+                let errorMessage =
+                    data.error ||
+                    data.message ||
+                    "Could not create your order.";
+
+
+                if (
+                    data.pretix &&
+                    data.pretix.detail
+                ) {
+
+                    errorMessage +=
+                        "\n\nPretix: " +
+                        data.pretix.detail;
+
+                }
+
+
+                throw new Error(
+                    errorMessage
+                );
+
+            }
+
+
+            /* =========================
+               SAVE PRETIX ORDER
+            ========================= */
+
+            sessionStorage.setItem(
+                "pretixOrder",
+                JSON.stringify(
+                    data.order
+                )
+            );
+
+
+            if (
+                data.order &&
+                data.order.orderCode
+            ) {
+
+                localStorage.setItem(
+                    "pretixOrderCode",
+                    data.order.orderCode
+                );
+
+            }
+
+
+            /* =========================
+               MARK PAYMENT COMPLETE
+            ========================= */
+
+            sessionStorage.setItem(
+                "paymentCompleted",
+                "true"
+            );
+
+
+            /* =========================
+               SUCCESS
+            ========================= */
+
+            window.location.href =
+                "success.html";
+
+        } catch (error) {
+
+            console.error(
+                "Order creation error:",
+                error
+            );
+
+
+            overlay.remove();
+
+
+            paymentError.textContent =
+                error.message ||
+                "Something went wrong while creating your ticket.";
+
+
+            paymentError.hidden =
+                false;
+
+
+            confirmButton.disabled =
+                false;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>
