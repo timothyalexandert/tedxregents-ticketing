@@ -850,12 +850,9 @@ export default async function handler(
 
             return res.status(502).json({
                 success: false,
-
-                error:
-                    "Pretix rejected the order.",
-
-                pretix:
-                    pretixData
+                error: "Pretix rejected the order.",
+                pretix: pretixData,
+                details: pretixData
             });
         }
 
