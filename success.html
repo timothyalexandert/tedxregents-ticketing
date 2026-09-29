@@ -476,9 +476,6 @@ if (
    If the backend ticket array isn't
    available, use Pretix's original
    order positions.
-
-   This is what allows your current
-   7MLCS order to work.
 */
 
 if (
@@ -538,9 +535,6 @@ function getTicketType(
             ticket.item
         );
 
-    /*
-       Current ticket item IDs.
-    */
 
     if (
         item === 1162153
@@ -550,12 +544,6 @@ function getTicketType(
 
     }
 
-    /*
-       If additional item IDs are
-       introduced later, the fallback
-       quantities below still provide
-       a useful label.
-    */
 
     return "Ticket";
 
@@ -633,6 +621,84 @@ function getSeatName(
 
 
 /* =========================
+   DOWNLOAD QR CODE
+========================= */
+
+function downloadQRCode(
+    qrContainer,
+    ticketNumber
+) {
+
+    const canvas =
+        qrContainer.querySelector(
+            "canvas"
+        );
+
+    const image =
+        qrContainer.querySelector(
+            "img"
+        );
+
+
+    let downloadURL = null;
+
+
+    if (canvas) {
+
+        downloadURL =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+    } else if (image) {
+
+        downloadURL =
+            image.src;
+
+    }
+
+
+    if (!downloadURL) {
+
+        alert(
+            "The QR code could not be downloaded. Please try again."
+        );
+
+        return;
+
+    }
+
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+
+    link.href =
+        downloadURL;
+
+
+    link.download =
+        `TEDx-Ticket-${ticketNumber}-QR.png`;
+
+
+    document.body.appendChild(
+        link
+    );
+
+
+    link.click();
+
+
+    document.body.removeChild(
+        link
+    );
+
+}
+
+
+/* =========================
    DISPLAY TICKETS
 ========================= */
 
@@ -678,6 +744,7 @@ function displayTickets() {
                     "div"
                 );
 
+
             card.style.cssText = `
                 margin-top: 24px;
                 padding: 24px;
@@ -693,8 +760,10 @@ function displayTickets() {
                     "p"
                 );
 
+
             ticketNumber.textContent =
                 `TICKET ${index + 1}`;
+
 
             ticketNumber.style.cssText = `
                 margin: 0 0 8px;
@@ -710,10 +779,12 @@ function displayTickets() {
                     "h3"
                 );
 
+
             ticketType.textContent =
                 getTicketType(
                     ticket
                 );
+
 
             ticketType.style.cssText = `
                 margin: 0 0 8px;
@@ -726,10 +797,12 @@ function displayTickets() {
                     "p"
                 );
 
+
             attendee.textContent =
                 ticket.attendeeName ||
                 ordererDetails.name ||
                 "—";
+
 
             attendee.style.cssText = `
                 margin: 0 0 6px;
@@ -743,10 +816,12 @@ function displayTickets() {
                     "p"
                 );
 
+
             seat.textContent =
                 getSeatName(
                     ticket
                 );
+
 
             seat.style.cssText = `
                 margin: 0 0 20px;
@@ -759,6 +834,7 @@ function displayTickets() {
                 document.createElement(
                     "div"
                 );
+
 
             qr.style.cssText = `
                 display: flex;
@@ -805,9 +881,58 @@ function displayTickets() {
                             220,
 
                         correctLevel:
-                            QRCode.CorrectLevel
-                                .M
+                            QRCode.CorrectLevel.M
                     }
+                );
+
+
+                /*
+                   Download button
+                */
+
+                const downloadButton =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                downloadButton.type =
+                    "button";
+
+
+                downloadButton.textContent =
+                    "Download QR Code";
+
+
+                downloadButton.style.cssText = `
+                    display: inline-block;
+                    margin-top: 8px;
+                    padding: 10px 18px;
+                    border: none;
+                    border-radius: 6px;
+                    background: #191919;
+                    color: #fff;
+                    font-size: 13px;
+                    font-weight: 600;
+                    cursor: pointer;
+                `;
+
+
+                downloadButton.addEventListener(
+                    "click",
+                    function () {
+
+                        downloadQRCode(
+                            qr,
+                            index + 1
+                        );
+
+                    }
+                );
+
+
+                card.appendChild(
+                    downloadButton
                 );
 
             } else {
@@ -817,11 +942,14 @@ function displayTickets() {
                         "p"
                     );
 
+
                 errorText.textContent =
                     "QR code unavailable.";
 
+
                 errorText.style.color =
                     "#b00020";
+
 
                 card.appendChild(
                     errorText
