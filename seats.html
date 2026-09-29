@@ -1247,6 +1247,7 @@ async function goBackFromSeats() {
    CONTINUE
    ========================================= */
 
+
 async function continueFromSeats() {
 
     if (
@@ -1267,24 +1268,6 @@ async function continueFromSeats() {
         JSON.stringify(
             selectedSeats
         )
-    );
-
-
-    /*
-     * If Watch Party tickets exist,
-     * do NOT create the Pretix cart yet.
-     *
-     * The Watch Party page will add
-     * those seats and create the final cart.
-     */
-
-   if (
-    ticketQuantities.watchParty > 0
-) {
-
-    sessionStorage.setItem(
-        "seatsCompleted",
-        "true"
     );
 
 
@@ -1351,11 +1334,11 @@ async function continueFromSeats() {
             <div class="order-spinner"></div>
 
             <h2>
-                Loading seats...
+                Securing your seats...
             </h2>
 
             <p>
-                Taking you to Watch Party seating...
+                Please wait while we prepare your seating.
             </p>
 
         </div>
@@ -1367,17 +1350,72 @@ async function continueFromSeats() {
     );
 
 
-    requestAnimationFrame(() => {
+    /* =====================================
+       WATCH PARTY
+       ===================================== */
+
+    if (
+        ticketQuantities.watchParty > 0
+    ) {
+
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+
+
+        requestAnimationFrame(() => {
+
+            window.location.href =
+                "watch-party-seats.html";
+
+        });
+
+
+        return;
+
+    }
+
+
+    /* =====================================
+       NO WATCH PARTY
+       ===================================== */
+
+    try {
+
+        await createPretixCart();
+
+
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+
 
         window.location.href =
-            "watch-party-seats.html";
+            "addons.html";
 
-    });
+    } catch (error) {
+
+        console.error(
+            "Create cart error:",
+            error
+        );
 
 
-    return;
+        overlay.remove();
+
+
+        alert(
+            error.message ||
+            "Could not reserve your seats. Please try again."
+        );
+
+    }
 
 }
+```
+
 
 
     /*
