@@ -224,8 +224,8 @@
 
         <!-- ADD-ONS UNDER -->
 
-        <div class="addon-owner">
-
+    <div class="addon-owner" id="addonOwnerSection">
+        
             <p class="owner-label">ORDER DETAILS</p>
 
             <h2>Add-ons under</h2>
@@ -312,6 +312,7 @@ function changeAddon(type, amount) {
     ).textContent = addons[type];
 
     updateAddonTotal();
+    updateAddonOwnerVisibility();
 }
 
 
@@ -327,6 +328,20 @@ function updateAddonTotal() {
         "Rp" + total.toLocaleString("id-ID");
 }
 
+function updateAddonOwnerVisibility() {
+
+    const ownerSection =
+        document.getElementById("addonOwnerSection");
+
+    const hasAddons =
+        Object.values(addons).some(
+            quantity => quantity > 0
+        );
+
+    ownerSection.style.display =
+        hasAddons ? "" : "none";
+}
+    
 
 function loadAttendees() {
 
@@ -458,6 +473,7 @@ function initialise() {
 
     updateAddonTotal();
     loadAttendees();
+    updateAddonOwnerVisibility();
 }
 
 
