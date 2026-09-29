@@ -182,6 +182,8 @@
 
         </div>
 
+        
+
 
         <!-- FOOD -->
 
@@ -264,6 +266,37 @@
     </section>
 
 </main>
+
+
+    function goBackFromAddons() {
+    
+        const ticketQuantities =
+            JSON.parse(
+                localStorage.getItem("ticketQuantities")
+            ) || {
+                mainHall: 0,
+                vip: 0,
+                watchParty: 0
+            };
+    
+    
+        if (
+            ticketQuantities.watchParty > 0
+        ) {
+    
+            window.location.href =
+                "watch-party-seats.html";
+    
+            return;
+    
+        }
+    
+    
+        window.location.href =
+            "seats.html";
+    
+    }
+
 
 
 <script>
