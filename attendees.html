@@ -431,102 +431,77 @@ function toggleOrdererEmail(number) {
 
 
 /* =========================
-   BUILD ATTENDEES
-========================= */
-
-addAttendeeFields(
-    "Main Hall",
-    mainHallQuantity
-);
-
-addAttendeeFields(
-    "VIP",
-    vipQuantity
-);
-
-addAttendeeFields(
-    "Watch Party",
-    watchPartyQuantity
-);
-
-
-/* =========================
-   SAVE ATTENDEES
+SAVE ATTENDEES
 ========================= */
 
 document
-    .getElementById("attendeesForm")
-    .addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const attendees = [];
-
-        for (let i = 1; i <= attendeeNumber; i++) {
-
-            attendees.push({
-
-                name:
-                    document
-                        .getElementById(
-                            `attendeeName${i}`
-                        )
-                        .value
-                        .trim(),
-
-                phone:
-                    document
-                        .getElementById(
-                            `attendeePhone${i}`
-                        )
-                        .value
-                        .trim(),
-
-                email:
-                    document
-                        .getElementById(
-                            `attendeeEmail${i}`
-                        )
-                        .value
-                        .trim()
-
-            });
-
-        }
-
-        localStorage.setItem(
-            "attendees",
-            JSON.stringify(attendees)
-        );
-
-        sessionStorage.setItem(
-            "attendeesCompleted",
-            "true"
-        );
+.getElementById("attendeesForm")
+.addEventListener("submit", function(event) {
 
 
-        /*
-         * Watch Party-only purchases skip
-         * the Main Hall/VIP seating page.
-         */
+    event.preventDefault();
 
-        if (
-            mainHallQuantity === 0 &&
-            vipQuantity === 0 &&
-            watchPartyQuantity > 0
-        ) {
+    const attendees = [];
 
-            window.location.href =
-                "watch-party-seats.html";
 
-        } else {
+    for (let i = 1; i <= attendeeNumber; i++) {
 
-            window.location.href =
-                "seats.html";
+        attendees.push({
 
-        }
+            name:
+                document
+                    .getElementById(
+                        `attendeeName${i}`
+                    )
+                    .value
+                    .trim(),
 
-    });
+            phone:
+                document
+                    .getElementById(
+                        `attendeePhone${i}`
+                    )
+                    .value
+                    .trim(),
+
+            email:
+                document
+                    .getElementById(
+                        `attendeeEmail${i}`
+                    )
+                    .value
+                    .trim()
+
+        });
+
+    }
+
+
+    localStorage.setItem(
+        "attendees",
+        JSON.stringify(attendees)
+    );
+    
+    sessionStorage.setItem(
+        "attendeesCompleted",
+        "true"
+    );
+
+
+    if (Number(ticketQuantities.mainHall || 0) > 0) {
+
+        window.location.href =
+            "seats.html";
+
+    } else {
+
+        window.location.href =
+            "watch-party-seats.html";
+
+    }
+
+});
+
 
 </script>
 
