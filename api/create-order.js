@@ -1,3 +1,4 @@
+```javascript
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
@@ -182,13 +183,13 @@ export default async function handler(req, res) {
       String(
         ordererDetails.phone || ""
       ).trim();
-    
+
     ordererPhone =
       ordererPhone.replace(
         /[\s()-]/g,
         ""
       );
-    
+
     if (
       ordererPhone.startsWith("08")
     ) {
@@ -196,7 +197,7 @@ export default async function handler(req, res) {
         "+62" +
         ordererPhone.slice(1);
     }
-    
+
     if (
       ordererPhone.startsWith("62")
     ) {
@@ -478,10 +479,12 @@ export default async function handler(req, res) {
        ===================================== */
 
     const orderPayload = {
-  email:
-    ordererEmail,
-  payment_provider:
-    "manual",
+
+      email:
+        ordererEmail,
+
+      payment_provider:
+        "manual",
 
       payment_info:
         paymentInfo,
@@ -565,20 +568,197 @@ export default async function handler(req, res) {
     }
 
 
-        if (!response.ok) {
-          console.error(
-            "Pretix order creation failed:",
-            JSON.stringify(pretixData, null, 2)
-          );
-        
-          return res.status(response.status).json({
-            success: false,
-            error:
-              "Pretix rejected the order: " +
-              JSON.stringify(pretixData),
-            pretix: pretixData,
-          });
+    /* =====================================
+       CHECK PRETIX RESPONSE
+       ===================================== */
+
+    if (!response.ok) {
+
+      console.error(
+        "Pretix order creation failed:",
+        JSON.stringify(
+          pretixData,
+          null,
+          2
+        )
+      );
+
+      return res.status(
+        response.status
+      ).json({
+
+        success: false,
+
+        error:
+          "Pretix rejected the order: " +
+          JSON.stringify(
+            pretixData
+          ),
+
+        pretix:
+          pretixData,
+
+      });
+
+    }
+
+
+    /* =====================================
+       LOAD TICKET POSITIONS
+       ===================================== */
+
+    const positionsResponse =
+      await fetch(
+        `${PRETIX_BASE}/orderpositions/?order=${encodeURIComponent(
+          pretixData.code
+        )}`,
+        {
+          method: "GET",
+
+          headers: {
+
+            Authorization:
+              `Token ${process.env.PRETIX_API_TOKEN}`,
+
+            Accept:
+              "application/json",
+
+          },
+
         }
+      );
+
+
+    const positionsText =
+      await positionsResponse.text();
+
+    let positionsData;
+
+    try {
+
+      positionsData =
+        JSON.parse(
+          positionsText
+        );
+
+    } catch {
+
+      positionsData =
+        positionsText;
+
+    }
+
+
+    /* =====================================
+       CHECK POSITION RESPONSE
+       ===================================== */
+
+    if (
+      !positionsResponse.ok
+    ) {
+
+      console.error(
+        "Could not load Pretix order positions:",
+        JSON.stringify(
+          positionsData,
+          null,
+          2
+        )
+      );
+
+      return res.status(500).json({
+
+        success: false,
+
+        error:
+          "The order was created, but the ticket information could not be loaded.",
+
+        pretix:
+          positionsData,
+
+      });
+
+    }
+
+
+    /* =====================================
+       EXTRACT ACTUAL TICKETS
+       ===================================== */
+
+    const ticketPositions =
+      Array.isArray(
+        positionsData.results
+      )
+        ? positionsData.results.filter(
+            position =>
+              !position.addon_to
+          )
+        : [];
+
+
+    if (
+      ticketPositions.length !==
+      tickets.length
+    ) {
+
+      console.error(
+        "Unexpected Pretix ticket position count:",
+        {
+          expected:
+            tickets.length,
+
+          received:
+            ticketPositions.length,
+
+          positions:
+            positionsData.results,
+        }
+      );
+
+      return res.status(500).json({
+
+        success: false,
+
+        error:
+          "The order was created, but the ticket information is incomplete.",
+
+      });
+
+    }
+
+
+    /* =====================================
+       BUILD TICKET INFORMATION
+       ===================================== */
+
+    const ticketInformation =
+      ticketPositions.map(
+        position => ({
+
+          positionId:
+            position.positionid,
+
+          secret:
+            position.secret,
+
+          attendeeName:
+            position.attendee_name,
+
+          attendeeEmail:
+            position.attendee_email,
+
+          item:
+            position.item,
+
+          variation:
+            position.variation,
+
+          seat:
+            position.seat,
+
+        })
+      );
+
 
     /* =====================================
        SAVE ORDER IN REDIS
@@ -603,6 +783,9 @@ export default async function handler(req, res) {
 
       cartId:
         savedCart.cartId,
+
+      tickets:
+        ticketInformation,
 
       pretix:
         pretixData,
