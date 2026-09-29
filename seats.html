@@ -43,7 +43,7 @@
     <button
         type="button"
         class="ticketing-back-button"
-        onclick="window.location.href='index.html'"
+        onclick="goBackFromSeats()"
     >
         ‹
     </button>
@@ -197,13 +197,7 @@
         </div>
 
 
-        <button
-            type="button"
-            class="ticketing-back-button"
-            onclick="goBackFromSeats()"
-        >
-            ‹
-        </button>
+
 
     </section>
 
@@ -1154,6 +1148,95 @@ async function createPretixCart() {
 }
 
 
+async function goBackFromSeats() {
+
+    const checkoutData =
+        JSON.parse(
+            sessionStorage.getItem("checkout")
+        );
+
+    const checkoutId =
+        checkoutData &&
+        (
+            checkoutData.checkoutId ||
+            checkoutData.checkout_id
+        );
+
+    if (checkoutId) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/release-cart",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            checkoutId:
+                                checkoutId
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                console.error(
+                    "Could not release seat reservation:",
+                    data
+                );
+
+                alert(
+                    "We couldn't release your seat reservation. Please try again."
+                );
+
+                return;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Release cart error:",
+                error
+            );
+
+            alert(
+                "We couldn't release your seat reservation. Please check your connection and try again."
+            );
+
+            return;
+        }
+    }
+
+    localStorage.removeItem(
+        "selectedSeats"
+    );
+
+    sessionStorage.removeItem(
+        "pretixCart"
+    );
+
+    sessionStorage.removeItem(
+        "seatsCompleted"
+    );
+
+    window.location.href =
+        "attendees.html";
+}
+
+    
+
 /* =========================================
    CONTINUE
    ========================================= */
@@ -1308,117 +1391,6 @@ async function initialiseSeats() {
 
 }
 
-
-/* =========================================
-   BACK FROM SEATS
-   ========================================= */
-
-async function goBackFromSeats() {
-
-    const checkoutData =
-        JSON.parse(
-            sessionStorage.getItem(
-                "checkout"
-            )
-        );
-
-
-    const checkoutId =
-        checkoutData &&
-        (
-            checkoutData.checkoutId ||
-            checkoutData.checkout_id
-        );
-
-
-    /*
-     * If there is an active Pretix cart,
-     * release the reserved seats first.
-     */
-
-    if (checkoutId) {
-
-        try {
-
-            const response =
-                await fetch(
-                    "/api/release-cart",
-                    {
-                        method:
-                            "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-                                checkoutId:
-                                    checkoutId
-                            })
-                    }
-                );
-
-
-            const data =
-                await response.json();
-
-
-            if (
-                !response.ok ||
-                !data.success
-            ) {
-
-                console.error(
-                    "Could not release seat reservation:",
-                    data
-                );
-
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Release cart error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /*
-     * Clear the local seat selections.
-     *
-     * Details, attendees, ticket quantities,
-     * add-ons, etc. remain untouched.
-     */
-
-    localStorage.removeItem(
-        "selectedSeats"
-    );
-
-
-    sessionStorage.removeItem(
-        "pretixCart"
-    );
-
-
-    sessionStorage.removeItem(
-        "seatsCompleted"
-    );
-
-
-    /*
-     * Return to attendees.
-     */
-
-    window.location.href =
-        "attendees.html";
-
-}
 
 
     
