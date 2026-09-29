@@ -1,1121 +1,569 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tickets — TEDxRegents Secondary School Bali YOUTH</title>
-    <link rel="stylesheet" href="style.css">
+
+
+<title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
+
+<link rel="stylesheet" href="style.css">
+
+
 </head>
 
 <body>
 
 <header class="site-header">
-
     <img
         src="logo-white.png"
         alt="TEDxRegents Secondary School Bali YOUTH"
         class="site-logo"
     >
-
 </header>
-
 
 <main>
 
-    <!-- PROGRESS -->
 
-    <div class="progress">
+<div class="progress">
+    <span>01 Tickets</span>
+    <span>02 Details</span>
+    <span class="active">03 Attendees</span>
+    <span>04 Seats</span>
+    <span>05 Add-ons</span>
+    <span>06 Review</span>
+    <span>07 Payment</span>
+</div>
 
-        <span class="active">
-            01 Tickets
-        </span>
 
-        <span>
-            02 Details
-        </span>
+<!-- back button -->
+<button
+    type="button"
+    class="ticketing-back-button"
+    onclick="window.location.href='details.html'"
+>
+    ‹
+</button>
 
-        <span>
-            03 Attendees
-        </span>
 
-        <span>
-            04 Seats
-        </span>
+<section class="details-section">
 
-        <span>
-            05 Add-ons
-        </span>
+    <p class="eyebrow">ATTENDEES</p>
 
-        <span>
-            06 Review
-        </span>
+    <h1>Who’s attending?</h1>
 
-        <span>
-            07 Payment
-        </span>
+    <p class="subtitle">
+        Enter the details of each person attending the event.
+    </p>
 
-    </div>
 
+    <form id="attendeesForm" class="attendees-form">
 
-    <!-- TICKET SECTION -->
+        <div id="attendeeFields"></div>
 
-    <section class="ticket-section">
-
-        <p class="eyebrow">
-            TEDxREGENTS SECONDARY SCHOOL BALI YOUTH
-        </p>
-
-        <h1>
-            Choose your tickets.
-        </h1>
-
-        <p class="subtitle">
-            Pick your tickets below. Early Bird pricing is available while it lasts.
-        </p>
-
-
-        <!-- MAIN HALL -->
-
-        <div class="ticket-card">
-
-            <div class="ticket-content">
-
-                <div>
-
-                    <span class="ticket-label">
-                        MAIN HALL
-                    </span>
-
-                    <h2>
-                        Main Hall
-                    </h2>
-
-                    <p class="ticket-description">
-                        Experience the full TEDxRegents programme live in the main
-                        auditorium, surrounded by speakers, performances, and the
-                        TEDx community.
-                    </p>
-
-                </div>
-
-
-                <div class="ticket-bottom">
-
-                    <div class="price" id="mainHallPrice">
-
-                        <strong id="mainHallCurrentPrice">
-                            Rp40,000
-                        </strong>
-                    
-                        <span class="old-price" id="mainHallOldPrice">
-                            Rp45,000
-                        </span>
-                    
-                    </div>
-
-
-                    <div class="quantity">
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('mainHall', -1)"
-                        >
-                            −
-                        </button>
-
-                        <span id="mainHallQuantity">
-                            0
-                        </span>
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('mainHall', 1)"
-                        >
-                            +
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- VIP -->
-
-        <div class="ticket-card">
-
-            <div class="ticket-content">
-
-                <div>
-
-                    <span class="ticket-label">
-                        VIP
-                    </span>
-
-                    <h2>
-                        VIP
-                    </h2>
-
-                    <p class="ticket-description">
-                        Enjoy the TEDxRegents experience with exclusive VIP
-                        benefits throughout the event.
-                    </p>
-
-                </div>
-
-
-                <div class="ticket-bottom">
-
-                    <div class="price" id="vipPrice">
-
-                        <strong id="vipCurrentPrice">
-                            Rp50,000
-                        </strong>
-                    
-                        <span class="old-price" id="vipOldPrice">
-                            Rp55,000
-                        </span>
-                    
-                    </div>
-
-
-                    <div class="quantity">
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('vip', -1)"
-                        >
-                            −
-                        </button>
-
-                        <span id="vipQuantity">
-                            0
-                        </span>
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('vip', 1)"
-                        >
-                            +
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- WATCH PARTY -->
-
-        <div class="ticket-card">
-
-            <div class="ticket-content">
-
-                <div>
-
-                    <span class="ticket-label">
-                        WATCH PARTY
-                    </span>
-
-                    <h2>
-                        Watch Party
-                    </h2>
-
-                    <p class="ticket-description">
-                        Catch the TEDxRegents experience together with the
-                        community from our dedicated Watch Party space.
-                    </p>
-
-                </div>
-
-
-                <div class="ticket-bottom">
-
-                    <div class="price" id="watchPartyPrice">
-
-                        <strong id="watchPartyCurrentPrice">
-                            Rp25,000
-                        </strong>
-                    
-                        <span class="old-price" id="watchPartyOldPrice">
-                            Rp30,000
-                        </span>
-                    
-                    </div>
-
-
-                    <div class="quantity">
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('watchParty', -1)"
-                        >
-                            −
-                        </button>
-
-                        <span id="watchPartyQuantity">
-                            0
-                        </span>
-
-                        <button
-                            type="button"
-                            onclick="changeQuantity('watchParty', 1)"
-                        >
-                            +
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- ORDER SUMMARY -->
-
-        <div class="summary">
-
-            <div>
-
-                <span>
-                    Total tickets
-                </span>
-
-                <strong id="totalTickets">
-                    0
-                </strong>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    Total
-                </span>
-
-                <strong id="totalPrice">
-                    Rp0
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <!-- CONTINUE -->
 
         <button
-            type="button"
+            type="submit"
             class="continue-button"
-            onclick="continueToDetails()"
         >
             Continue
         </button>
 
-    </section>
+    </form>
+
+</section>
+
 
 </main>
 
+<script src="progress.js"></script>
 
 <script>
 
-    /* =========================================
-   PRETIX AVAILABILITY
-========================================= */
+const savedTicketQuantities =
+    localStorage.getItem("ticketQuantities");
 
-    let availability = {
-        mainHall: {
-            available: true,
-            availableNumber: 100
-        },
-    
-        mainHallEarlyBird: {
-            available: true,
-            availableNumber: 10
-        },
-    
-        watchParty: {
-            available: true,
-            availableNumber: 100
-        },
-    
-        watchPartyEarlyBird: {
-            available: true,
-            availableNumber: 10
-        }
+
+const ticketQuantities =
+    savedTicketQuantities
+        ? JSON.parse(savedTicketQuantities)
+        : {
+            mainHall: 0,
+            vip: 0,
+            watchParty: 0
+        };
+
+
+const ordererDetails =
+    JSON.parse(localStorage.getItem("ordererDetails")) || {
+        name: "",
+        email: "",
+        phone: ""
     };
 
-    /* =========================================
-   LOAD PRETIX AVAILABILITY
-========================================= */
 
-async function loadAvailability() {
+const attendeeFields =
+    document.getElementById("attendeeFields");
 
-    try {
 
-        const response =
-            await fetch("/api/availability");
+let attendeeNumber = 0;
 
-        const data =
-            await response.json();
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
-            throw new Error(
-                data.error ||
-                "Unable to load ticket availability."
-            );
-        }
+const totalAttendees =
+    ticketQuantities.mainHall +
+    ticketQuantities.vip +
+    ticketQuantities.watchParty;
 
-        availability = data;
+console.log(
+    "Ticket quantities:",
+    ticketQuantities
+);
 
-        updateDisplayedPrices();
-
-        updateSummary();
-
-    } catch (error) {
-
-        console.error(
-            "Availability error:",
-            error
-        );
-
-        /*
-         * If availability cannot be loaded,
-         * keep the existing displayed prices.
-         *
-         * The backend remains the final authority.
-         */
-
-    }
-
-}
-
-    /* =========================================
-   UPDATE DISPLAYED TICKET PRICES
-========================================= */
-
-function updateDisplayedPrices() {
-
-    /*
-     * MAIN HALL
-     *
-     * Main Hall + VIP share the
-     * same Early Bird quota.
-     */
-
-    const mainHallEBAvailable =
-        availability.mainHallEarlyBird
-            .availableNumber > 0;
-
-
-    const mainHallCurrentPrice =
-        document.getElementById(
-            "mainHallCurrentPrice"
-        );
-
-    const mainHallOldPrice =
-        document.getElementById(
-            "mainHallOldPrice"
-        );
-
-
-    if (mainHallEBAvailable) {
-
-        mainHallCurrentPrice.textContent =
-            "Rp40,000";
-
-        mainHallOldPrice.textContent =
-            "Rp45,000";
-
-        mainHallOldPrice.style.display =
-            "";
-
-    } else {
-
-        mainHallCurrentPrice.textContent =
-            "Rp45,000";
-
-        mainHallOldPrice.style.display =
-            "none";
-
-    }
-
-
-    /*
-     * VIP
-     *
-     * Uses the EXACT SAME
-     * Main Hall Early Bird quota.
-     */
-
-    const vipCurrentPrice =
-        document.getElementById(
-            "vipCurrentPrice"
-        );
-
-    const vipOldPrice =
-        document.getElementById(
-            "vipOldPrice"
-        );
-
-
-    if (mainHallEBAvailable) {
-
-        vipCurrentPrice.textContent =
-            "Rp50,000";
-
-        vipOldPrice.textContent =
-            "Rp55,000";
-
-        vipOldPrice.style.display =
-            "";
-
-    } else {
-
-        vipCurrentPrice.textContent =
-            "Rp55,000";
-
-        vipOldPrice.style.display =
-            "none";
-
-    }
-
-
-    /*
-     * WATCH PARTY
-     *
-     * Has its OWN Early Bird quota.
-     */
-
-    const watchPartyEBAvailable =
-        availability.watchPartyEarlyBird
-            .availableNumber > 0;
-
-
-    const watchPartyCurrentPrice =
-        document.getElementById(
-            "watchPartyCurrentPrice"
-        );
-
-    const watchPartyOldPrice =
-        document.getElementById(
-            "watchPartyOldPrice"
-        );
-
-
-    if (watchPartyEBAvailable) {
-
-        watchPartyCurrentPrice.textContent =
-            "Rp25,000";
-
-        watchPartyOldPrice.textContent =
-            "Rp30,000";
-
-        watchPartyOldPrice.style.display =
-            "";
-
-    } else {
-
-        watchPartyCurrentPrice.textContent =
-            "Rp30,000";
-
-        watchPartyOldPrice.style.display =
-            "none";
-
-    }
-
-}
-
-/* =========================================
-   TICKET QUANTITIES
-========================================= */
-
-const quantities = {
-
-    mainHall: 0,
-
-    vip: 0,
-
-    watchParty: 0
-
-};
-
-
-/* =========================================
-   PREVENT DOUBLE CLICK
-========================================= */
-
-let orderStarting = false;
-
-
-/* =========================================
-   CHANGE QUANTITY
-========================================= */
-
-function changeQuantity(type, amount) {
-
-    quantities[type] += amount;
-
-
-    if (quantities[type] < 0) {
-
-        quantities[type] = 0;
-
-    }
-
-
-    document.getElementById(
-        type + "Quantity"
-    ).textContent =
-        quantities[type];
-
-
-    updateSummary();
-
-}
-
-
-/* =========================================
-   UPDATE PRICE SUMMARY
-========================================= */
-
-function updateSummary() {
-
-    const mainHall =
-        quantities.mainHall;
-
-    const vip =
-        quantities.vip;
-
-    const watchParty =
-        quantities.watchParty;
-
-
-    /*
-     * MAIN HALL + VIP
-     *
-     * They share the same Early Bird pool.
-     */
-
-    const mainVipTotal =
-        mainHall + vip;
-
-
-    const mainVipEBAvailable =
-        Math.max(
-            0,
-            availability.mainHallEarlyBird
-                .availableNumber
-        );
-
-
-    const mainVipEarlyBird =
-        Math.min(
-            mainVipTotal,
-            mainVipEBAvailable
-        );
-
-
-    /*
-     * Backend allocation order:
-     * Main Hall tickets first,
-     * then VIP tickets.
-     *
-     * This mirrors start-checkout.js.
-     */
-
-    const mainHallEarlyBird =
-        Math.min(
-            mainHall,
-            mainVipEarlyBird
-        );
-
-
-    const vipEarlyBird =
-        Math.min(
-            vip,
-            mainVipEarlyBird -
-            mainHallEarlyBird
-        );
-
-
-    const mainHallNormal =
-        mainHall -
-        mainHallEarlyBird;
-
-
-    const vipNormal =
-        vip -
-        vipEarlyBird;
-
-
-    /*
-     * WATCH PARTY
-     *
-     * Has its own Early Bird pool.
-     */
-
-    const watchPartyEBAvailable =
-        Math.max(
-            0,
-            availability.watchPartyEarlyBird
-                .availableNumber
-        );
-
-
-    const watchPartyEarlyBird =
-        Math.min(
-            watchParty,
-            watchPartyEBAvailable
-        );
-
-
-    const watchPartyNormal =
-        watchParty -
-        watchPartyEarlyBird;
-
-
-    /*
-     * Calculate total.
-     */
-
-    const totalPrice =
-
-        (mainHallEarlyBird * 40000) +
-
-        (mainHallNormal * 45000) +
-
-        (vipEarlyBird * 50000) +
-
-        (vipNormal * 55000) +
-
-        (watchPartyEarlyBird * 25000) +
-
-        (watchPartyNormal * 30000);
-
-
-    const totalTickets =
-
-        mainHall +
-
-        vip +
-
-        watchParty;
-
-
-    document.getElementById(
-        "totalTickets"
-    ).textContent =
-        totalTickets;
-
-
-    document.getElementById(
-        "totalPrice"
-    ).textContent =
-        "Rp" +
-        totalPrice.toLocaleString("id-ID");
-
-}
-
-
-/* =========================================
-   START ORDER
-========================================= */
-
-async function continueToDetails() {
-
-
-    /*
-     * Stop duplicate clicks.
-     */
-
-    if (orderStarting) {
-
-        return;
-
-    }
-
-
-    const totalTickets =
-
-        quantities.mainHall +
-
-        quantities.vip +
-
-        quantities.watchParty;
-
-
-    /*
-     * Require at least one ticket.
-     */
-
-    if (totalTickets === 0) {
-
-        alert(
-            "Please select at least one ticket."
-        );
-
-        return;
-
-    }
-
-
-    /*
-     * Lock the button against
-     * duplicate requests.
-     */
-
-    orderStarting = true;
-
-
-    /*
-     * Create the loading overlay.
-     */
-
-    const overlay =
-    document.createElement("div");
+console.log(
+    "Total attendees:",
+    totalAttendees
+);
     
-    overlay.id =
-        "order-overlay";
-    
-    /* Force the overlay to cover the entire screen */
-    Object.assign(overlay.style, {
-        position: "fixed",
-        top: "0",
-        left: "0",
-        right: "0",
-        bottom: "0",
-        width: "100vw",
-        height: "100vh",
-        margin: "0",
-        padding: "24px",
-        boxSizing: "border-box",
-    
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    
-        background: "rgba(20, 33, 61, 0.48)",
-    
-        backdropFilter: "blur(14px)",
-        webkitBackdropFilter: "blur(14px)",
-    
-        zIndex: "2147483647"
-    });
-    
-    overlay.innerHTML = `
+/* =========================
+   ADD ATTENDEE FIELDS
+========================= */
 
-            <div
-                class="order-modal"
-                style="
-                    position: relative;
-                    width: min(420px, calc(100vw - 48px));
-                    max-width: 420px;
-                    margin: 0 auto;
-                    padding: 40px 30px;
-                    box-sizing: border-box;
-                    background: #ffffff;
-                    border-radius: 20px;
-                    text-align: center;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-                "
-            >
-            <div class="order-spinner"></div>
+function addAttendeeFields(ticketType, quantity) {
 
-            <h2>
-                Starting order...
-            </h2>
+    for (let i = 1; i <= quantity; i++) {
 
-            <p>
-                Securing your ticket price...
-            </p>
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(
-        overlay
-    );
-
-
-    try {
-
-
-        /* =====================================
-           SEND REQUEST TO BACKEND
-        ===================================== */
-
-        const response =
-
-            await fetch(
-                "/api/start-checkout",
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type":
-                            "application/json"
-
-                    },
-
-                    body:
-                        JSON.stringify({
-                            quantities:
-                                quantities
-                        })
-
-                }
-            );
-
-
-        const data =
-            await response.json();
+        attendeeNumber++;
 
 
         /*
-         * Check backend response.
-         */
+            Use collapsible boxes for 3+ attendees.
+            Keep normal boxes for 1–2 attendees.
+        */
 
-        if (
-            !response.ok ||
-            !data.success
-        ) {
+        if (totalAttendees > 2) {
 
-            throw new Error(
+            const box =
+                document.createElement("details");
 
-                data.error ||
-                "Unable to start your order."
+            box.className =
+                "attendee-box";
 
-            );
+            if (attendeeNumber === 1) {
+                box.open = true;
+            }
+
+
+            box.innerHTML = 
+
+                <summary class="attendee-heading">
+
+                    <span class="attendee-name">
+                        ATTENDEE ${attendeeNumber}
+                        <em> - ${ticketType}</em>
+                    </span>
+
+                    <span class="attendee-arrow">⌄</span>
+
+                </summary>
+
+
+                <div class="attendee-content">
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            ;
+
+            attendeeFields.appendChild(box);
+
+        } else {
+
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "attendee-box";
+
+
+            box.innerHTML = 
+
+                <div class="attendee-heading">
+
+                    <span class="attendee-name">
+                        ATTENDEE ${attendeeNumber}
+                        <em> - ${ticketType}</em>
+                    </span>
+
+                </div>
+
+
+                <div class="attendee-content">
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            ;
+
+            attendeeFields.appendChild(box);
+        }
+    }
+}
+
+
+/* =========================
+   SAME AS ORDERER — PHONE
+========================= */
+
+function toggleOrdererPhone(number) {
+
+    const checkbox =
+        document.getElementById(
+            `sameAsOrdererPhone${number}`
+        );
+
+    const phoneInput =
+        document.getElementById(
+            `attendeePhone${number}`
+        );
+
+
+    if (checkbox.checked) {
+
+        phoneInput.value =
+            ordererDetails.phone;
+
+        phoneInput.disabled =
+            true;
+
+    } else {
+
+        phoneInput.value =
+            "";
+
+        phoneInput.disabled =
+            false;
+    }
+}
+
+
+/* =========================
+   SAME AS ORDERER — EMAIL
+========================= */
+
+function toggleOrdererEmail(number) {
+
+    const checkbox =
+        document.getElementById(
+            `sameAsOrdererEmail${number}`
+        );
+
+    const emailInput =
+        document.getElementById(
+            `attendeeEmail${number}`
+        );
+
+
+    if (checkbox.checked) {
+
+        emailInput.value =
+            ordererDetails.email;
+
+        emailInput.disabled =
+            true;
+
+    } else {
+
+        emailInput.value =
+            "";
+
+        emailInput.disabled =
+            false;
+    }
+}
+
+
+/* =========================
+   BUILD ATTENDEES
+========================= */
+
+addAttendeeFields(
+    "Main Hall",
+    ticketQuantities.mainHall
+);
+
+addAttendeeFields(
+    "VIP",
+    ticketQuantities.vip
+);
+
+addAttendeeFields(
+    "Watch Party",
+    ticketQuantities.watchParty
+);
+
+
+/* =========================
+   SAVE ATTENDEES
+========================= */
+
+document
+    .getElementById("attendeesForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const attendees = [];
+
+
+        for (let i = 1; i <= attendeeNumber; i++) {
+
+            attendees.push({
+
+                name:
+                    document
+                        .getElementById(
+                            `attendeeName${i}`
+                        )
+                        .value
+                        .trim(),
+
+                phone:
+                    document
+                        .getElementById(
+                            `attendeePhone${i}`
+                        )
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById(
+                            `attendeeEmail${i}`
+                        )
+                        .value
+                        .trim()
+
+            });
 
         }
-
-
-        /* =====================================
-           SAVE BACKEND CHECKOUT
-        ===================================== */
-
-        sessionStorage.setItem(
-            "checkout",
-            JSON.stringify(data)
-
-        );
 
 
         localStorage.setItem(
-            "ticketQuantities",
-            JSON.stringify(quantities)
+            "attendees",
+            JSON.stringify(attendees)
         );
-
-        /* =====================================
-           GET BACKEND EXPIRY TIME
-        ===================================== */
-
-        const expiry =
-
-            new Date(
-                data.expiresAt
-            );
-
-
-        const expiryText =
-
-            expiry.toLocaleTimeString(
-                [],
-                {
-
-                    hour: "2-digit",
-
-                    minute: "2-digit"
-
-                }
-            );
-
-
-        /* =====================================
-           CHECK ACTUAL EB ALLOCATION
-        ===================================== */
-
-        const hasEarlyBird =
-
-            Array.isArray(data.tickets) &&
-
-            data.tickets.some(
-
-                ticket =>
-                    ticket.early_bird === true
-
-            );
-
-
-        const priceMessage =
-
-            hasEarlyBird
-
-                ? "Your Early Bird ticket price is held for 15 mins"
-
-                : "Your ticket price is held for 15 mins";
-
-
-        /* =====================================
-           SHOW CONFIRMATION
-        ===================================== */
-
-        overlay.innerHTML = `
-
-            <div class="order-modal">
-
-                <div class="order-check">
-                    ✓
-                </div>
-
-                <h2>
-                    Ticket is held
-                </h2>
-
-                <p>
-                    ${priceMessage}
-                </p>
-
-                <p class="order-expiry">
-                    Until
-                    <strong>
-                        ${expiryText}
-                    </strong>
-                </p>
-
-                <button
-                    type="button"
-                    class="order-next-button"
-                    id="order-next-button"
-                >
-                    Next
-                </button>
-
-            </div>
-
-        `;
-
-
-        /* =====================================
-           NEXT → DETAILS
-        ===================================== */
-
-        document
-            .getElementById(
-                "order-next-button"
-            )
-            .addEventListener(
-
-                "click",
-
-                () => {
-
-                    window.location.href =
-                        "details.html";
-
-                }
-
-            );
-
-
-    } catch (error) {
-
-
-        console.error(
-            "Start order error:",
-            error
+        
+        sessionStorage.setItem(
+            "attendeesCompleted",
+            "true"
         );
 
 
-        /*
-         * Allow another attempt
-         * if the request failed.
-         */
+        if (
+            Number(ticketQuantities.mainHall || 0) > 0
+        ) {
 
-        orderStarting = false;
+            window.location.href =
+                "seats.html";
 
+        } else {
 
-        overlay.innerHTML = `
+            window.location.href =
+                "watch-party-seats.html";
 
-            <div class="order-modal">
+        }
 
-                <div class="order-error">
-                    !
-                </div>
+    });
 
-                <h2>
-                    Unable to start order
-                </h2>
-
-                <p>
-                    ${
-                        error.message ||
-                        "Something went wrong. Please try again."
-                    }
-                </p>
-
-                <button
-                    type="button"
-                    class="order-next-button"
-                    id="order-retry-button"
-                >
-                    Try again
-                </button>
-
-            </div>
-
-        `;
-
-
-        /*
-         * Try again removes the old
-         * overlay so the user can
-         * click Continue again.
-         */
-
-        document
-            .getElementById(
-                "order-retry-button"
-            )
-            .addEventListener(
-
-                "click",
-
-                () => {
-
-                    overlay.remove();
-
-                }
-
-            );
-
-    }
-
-}
-
-
-
-loadAvailability();
     
 </script>
 
 </body>
-</html>
 
+</html>
