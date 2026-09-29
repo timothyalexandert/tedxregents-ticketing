@@ -1,4 +1,3 @@
-```javascript
 import { Redis } from "@upstash/redis";
 
 const PRETIX_BASE =
@@ -311,4 +310,3 @@ export default async function handler(
     }
 
 }
-```
