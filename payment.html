@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -510,34 +511,6 @@ function calculateTotal() {
 
 
     /* =========================
-       TICKET SUBTOTAL
-    ========================= */
-
-    const ticketSubtotal =
-        document.createElement(
-            "div"
-        );
-
-
-    ticketSubtotal.className =
-        "price-subtotal";
-
-
-    ticketSubtotal.innerHTML = `
-        <span>Tickets subtotal</span>
-
-        <strong>
-            Rp${ticketTotal.toLocaleString("id-ID")}
-        </strong>
-    `;
-
-
-    ticketBreakdown.appendChild(
-        ticketSubtotal
-    );
-
-
-    /* =========================
        ADD-ONS
     ========================= */
 
@@ -618,6 +591,44 @@ function calculateTotal() {
 
         }
     );
+
+
+    /* =========================
+       TICKET SUBTOTAL
+       
+       Only displayed when
+       add-ons have been selected.
+    ========================= */
+
+    if (
+        addonTotal > 0 &&
+        ticketBreakdown
+    ) {
+
+        const ticketSubtotal =
+            document.createElement(
+                "div"
+            );
+
+
+        ticketSubtotal.className =
+            "price-subtotal";
+
+
+        ticketSubtotal.innerHTML = `
+            <span>Tickets subtotal</span>
+
+            <strong>
+                Rp${ticketTotal.toLocaleString("id-ID")}
+            </strong>
+        `;
+
+
+        ticketBreakdown.appendChild(
+            ticketSubtotal
+        );
+
+    }
 
 
     /* =========================
@@ -957,7 +968,7 @@ confirmButton.addEventListener(
 
         /* =========================
            PAYMENT PROOF NAME
-        ========================= */
+        ========================== */
 
         let paymentProofName =
             null;
@@ -1217,3 +1228,6 @@ function getSessionJSON(
 
 </body>
 </html>
+```
+
+The **only functional change** is that `Tickets subtotal` is now created **after calculating add-ons**, and only when `addonTotal > 0`. Everything else—including the actual order creation/payment logic—is preserved.
