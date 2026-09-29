@@ -514,82 +514,6 @@ export default async function handler(
 
 
         /* =====================================
-           BUILD TICKET POSITIONS
-           ===================================== */
-
-        const positions = [];
-
-        let positionId = 1;
-
-
-        for (
-            let index = 0;
-            index < tickets.length;
-            index++
-        ) {
-
-            const ticket =
-                tickets[index];
-
-            const attendee =
-                attendees[index];
-
-            const savedSeat =
-                savedCart.seats &&
-                savedCart.seats[index];
-
-
-            if (
-                !savedSeat ||
-                !savedSeat.seatGuid
-            ) {
-                return res.status(400).json({
-                    success: false,
-                    error:
-                        "A reserved seat could not be found."
-                });
-            }
-
-
-            positions.push({
-                positionid:
-                    positionId,
-
-                item:
-                    Number(
-                        ticket.item
-                    ),
-
-                variation:
-                    Number(
-                        ticket.variation
-                    ),
-
-                price:
-                    String(
-                        ticket.price
-                    ),
-
-                seat:
-                    savedSeat.seatGuid,
-
-                attendee_name:
-                    String(
-                        attendee.name
-                    ).trim(),
-
-                attendee_email:
-                    String(
-                        attendee.email
-                    ).trim()
-            });
-
-
-            positionId++;
-        }
-
-
-        /* =====================================
            ADD-ONS
            ===================================== */
 
@@ -662,67 +586,176 @@ export default async function handler(
         ];
 
 
-        if (
-            addons &&
-            typeof addons === "object"
+        /* =====================================
+           BUILD POSITIONS
+           ===================================== */
+
+        const positions = [];
+
+        let positionId = 1;
+
+
+        /*
+         * Pretix requires add-ons to appear
+         * immediately after the position they
+         * reference.
+         *
+         * We attach all order-level add-ons
+         * to the first ticket.
+         */
+
+        for (
+            let index = 0;
+            index < tickets.length;
+            index++
         ) {
 
-            for (
-                const addon
-                of ADDONS
+            const ticket =
+                tickets[index];
+
+            const attendee =
+                attendees[index];
+
+            const savedSeat =
+                savedCart.seats &&
+                savedCart.seats[index];
+
+
+            if (
+                !savedSeat ||
+                !savedSeat.seatGuid
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    error:
+                        "A reserved seat could not be found."
+                });
+            }
+
+
+            const currentPositionId =
+                positionId;
+
+
+            /* =================================
+               TICKET POSITION
+               ================================= */
+
+            positions.push({
+                positionid:
+                    currentPositionId,
+
+                item:
+                    Number(
+                        ticket.item
+                    ),
+
+                variation:
+                    Number(
+                        ticket.variation
+                    ),
+
+                price:
+                    String(
+                        ticket.price
+                    ),
+
+                seat:
+                    savedSeat.seatGuid,
+
+                attendee_name:
+                    String(
+                        attendee.name
+                    ).trim(),
+
+                attendee_email:
+                    String(
+                        attendee.email
+                    ).trim()
+            });
+
+
+            positionId++;
+
+
+            /* =================================
+               ADD-ONS
+               ================================= */
+
+            if (
+                index === 0 &&
+                addons &&
+                typeof addons === "object"
             ) {
 
-                const quantity =
-                    Number(
-                        addons[addon.key] || 0
-                    );
-
-
-                if (
-                    !Number.isInteger(
-                        quantity
-                    ) ||
-                    quantity <= 0
+                for (
+                    const addon
+                    of ADDONS
                 ) {
-                    continue;
-                }
+
+                    const quantity =
+                        Number(
+                            addons[addon.key] || 0
+                        );
 
 
-                if (
-                    quantity > 100
-                ) {
-                    return res.status(400).json({
-                        success: false,
-                        error:
-                            "Invalid quantity for " +
-                            addon.key +
-                            "."
-                    });
-                }
-
-
-                positions.push({
-                    positionid:
-                        positionId,
-
-                    item:
-                        addon.item,
-
-                    price:
-                        String(
-                            addon.price *
+                    if (
+                        !Number.isInteger(
                             quantity
-                        ),
-
-                    count:
-                        quantity,
-
-                    addon_to:
-                        1
-                });
+                        ) ||
+                        quantity <= 0
+                    ) {
+                        continue;
+                    }
 
 
-                positionId++;
+                    if (
+                        quantity > 100
+                    ) {
+                        return res.status(400).json({
+                            success: false,
+                            error:
+                                "Invalid quantity for " +
+                                addon.key +
+                                "."
+                        });
+                    }
+
+
+                    /*
+                     * Each add-on unit gets its
+                     * own position.
+                     *
+                     * Pretix does not use a "count"
+                     * field here.
+                     */
+
+                    for (
+                        let quantityIndex = 0;
+                        quantityIndex < quantity;
+                        quantityIndex++
+                    ) {
+
+                        positions.push({
+                            positionid:
+                                positionId,
+
+                            item:
+                                addon.item,
+
+                            price:
+                                String(
+                                    addon.price
+                                ),
+
+                            addon_to:
+                                currentPositionId
+                        });
+
+
+                        positionId++;
+                    }
+                }
             }
         }
 
@@ -850,9 +883,14 @@ export default async function handler(
 
             return res.status(502).json({
                 success: false,
-                error: "Pretix rejected the order.",
-                pretix: pretixData,
-                details: pretixData
+                error:
+                    "Pretix rejected the order.",
+
+                pretix:
+                    pretixData,
+
+                details:
+                    pretixData
             });
         }
 
@@ -967,4 +1005,3 @@ export default async function handler(
     }
 
 }
-
