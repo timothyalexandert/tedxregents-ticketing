@@ -1,812 +1,736 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Your Seats — TEDxRegents Secondary School Bali YOUTH</title>
 
-    <title>Seats — TEDxRegents Secondary School Bali YOUTH</title>
-
-    <link rel="stylesheet" href="style.css">
-
-    <style>
-        .seat-section {
-            margin-bottom: 40px;
-        }
-
-        .seat-section-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .seat-section-subtitle {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .seat-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .seat {
-            aspect-ratio: 1;
-            border: 1px solid #d8d8d8;
-            border-radius: 7px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: 0.15s ease;
-        }
-
-        .seat:hover:not(.unavailable):not(.selected) {
-            border-color: #191919;
-        }
-
-        .seat.selected {
-            background: #191919;
-            color: #fff;
-            border-color: #191919;
-        }
-
-        .seat.unavailable {
-            background: #e8e8e8;
-            color: #999;
-            border-color: #e8e8e8;
-            cursor: not-allowed;
-        }
-
-        .seat-legend {
-            display: flex;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 22px;
-            font-size: 13px;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .legend-box {
-            width: 15px;
-            height: 15px;
-            border-radius: 4px;
-            border: 1px solid #d8d8d8;
-            background: #fff;
-        }
-
-        .legend-box.selected {
-            background: #191919;
-            border-color: #191919;
-        }
-
-        .legend-box.unavailable {
-            background: #e8e8e8;
-            border-color: #e8e8e8;
-        }
-
-        .seat-error {
-            color: #d00000;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .ticketing-back-button {
-            position: absolute;
-            left: 24px;
-            top: 24px;
-            background: none;
-            border: none;
-            font-size: 32px;
-            line-height: 1;
-            cursor: pointer;
-            color: #191919;
-        }
-
-        .ticketing-back-button:hover {
-            opacity: 0.65;
-        }
-
-        @media (max-width: 700px) {
-            .seat-grid {
-                grid-template-columns: repeat(5, 1fr);
-                gap: 8px;
-            }
-
-            .seat-legend {
-                flex-wrap: wrap;
-                gap: 14px;
-            }
-        }
-    </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <button
-        type="button"
-        class="ticketing-back-button"
-        onclick="goBackFromSeats()"
-    >
-        ‹
-    </button>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="logo-white.png" alt="TEDxRegents Secondary School Bali YOUTH">
+    </a>
 
-    <main class="ticketing-page">
+    <div class="progress">
+      <span>01 Tickets</span>
+      <span>02 Details</span>
+      <span>03 Attendees</span>
+      <span class="active">04 Seats</span>
+      <span>05 Add-ons</span>
+      <span>06 Review</span>
+      <span>07 Payment</span>
+    </div>
+  </div>
+</header>
 
-        <div class="progress-container">
-            <div class="progress-step completed">
-                <span>01</span>
-                <p>Tickets</p>
-            </div>
+<main>
 
-            <div class="progress-step completed">
-                <span>02</span>
-                <p>Details</p>
-            </div>
+  <button class="back-button" onclick="goBackFromSeats()">← Back</button>
 
-            <div class="progress-step completed">
-                <span>03</span>
-                <p>Attendees</p>
-            </div>
+  <section class="section seating-section">
 
-            <div class="progress-step active">
-                <span>04</span>
-                <p>Seats</p>
-            </div>
+    <div class="section-heading">
+      <p class="eyebrow">SEATING</p>
+      <h1 id="venueTitle">Choose your seats.</h1>
+      <p id="venueSubtitle">Select a seat for each attendee.</p>
+    </div>
 
-            <div class="progress-step">
-                <span>05</span>
-                <p>Add-ons</p>
-            </div>
+    <div class="seating-layout">
 
-            <div class="progress-step">
-                <span>06</span>
-                <p>Review</p>
-            </div>
+      <div class="seating-chart-box">
 
-            <div class="progress-step">
-                <span>07</span>
-                <p>Payment</p>
-            </div>
+        <div class="venue-header">
+          <span id="venueName">MAIN HALL</span>
         </div>
 
-        <section class="ticketing-card">
+        <div class="stage">STAGE</div>
 
-            <div class="ticketing-header">
-                <h1>Select Your Seats</h1>
-                <p>
-                    Choose a seat for each Main Hall or VIP attendee.
-                </p>
-            </div>
+        <div id="seatMap" class="seat-map"></div>
 
-            <div id="seatContainer"></div>
+        <div class="seat-legend">
+          <div>
+            <span class="legend-seat available"></span>
+            Available
+          </div>
+          <div>
+            <span class="legend-seat selected"></span>
+            Selected
+          </div>
+          <div>
+            <span class="legend-seat taken"></span>
+            Taken
+          </div>
+        </div>
 
-            <div class="seat-error" id="seatError"></div>
+      </div>
 
-            <div class="seat-legend">
-                <div class="legend-item">
-                    <div class="legend-box"></div>
-                    <span>Available</span>
-                </div>
+      <div class="attendee-selection-box">
 
-                <div class="legend-item">
-                    <div class="legend-box selected"></div>
-                    <span>Selected</span>
-                </div>
+        <div class="attendee-header">
+          <span>ATTENDEES</span>
+        </div>
 
-                <div class="legend-item">
-                    <div class="legend-box unavailable"></div>
-                    <span>Unavailable</span>
-                </div>
-            </div>
+        <h2>Select seats</h2>
+        <p>Select a seat for each attendee. You can only select one seat per attendee.</p>
 
-            <button
-                type="button"
-                class="continue-button"
-                onclick="continueFromSeats()"
-            >
-                Continue
-            </button>
+        <div id="attendeeList"></div>
 
-        </section>
+        <div class="current-selecting">
+          <span>Currently selecting:</span>
+          <strong id="currentSelecting"></strong>
+        </div>
 
-    </main>
+      </div>
 
-    <script>
+    </div>
 
-        const MAIN_HALL_SEATS = [
-            "A1","A2","A3","A4","A5","A6","A7","A8","A9","A10",
-            "B1","B2","B3","B4","B5","B6","B7","B8","B9","B10",
-            "C1","C2","C3","C4","C5","C6","C7","C8","C9","C10",
-            "D1","D2","D3","D4","D5","D6","D7","D8","D9","D10",
-            "E1","E2","E3","E4","E5","E6","E7","E8","E9","E10",
-            "F1","F2","F3","F4","F5","F6","F7","F8","F9","F10",
-            "G1","G2","G3","G4","G5","G6","G7","G8","G9","G10",
-            "H1","H2","H3","H4","H5","H6","H7","H8","H9","H10",
-            "I1","I2","I3","I4","I5","I6","I7","I8","I9","I10",
-            "J1","J2","J3","J4","J5","J6","J7","J8","J9","J10"
-        ];
+    <div id="nextVenueNotice" class="next-venue-notice">
+      <strong>NEXT · WATCH PARTY SEATING</strong>
+      <p>
+        After selecting all Main Hall and VIP seats, you will continue to the
+        Watch Party seating page.
+      </p>
+    </div>
 
-        const checkoutData =
-            JSON.parse(
-                sessionStorage.getItem("checkout")
-            ) || {};
+    <button class="continue-button" onclick="continueFromSeats()">
+      Continue
+    </button>
 
-        const ticketQuantities =
-            JSON.parse(
-                localStorage.getItem("ticketQuantities")
-            ) || {};
+  </section>
 
-        const mainHallQuantity =
-            Number(
-                ticketQuantities.mainHall || 0
-            );
+</main>
 
-        const vipQuantity =
-            Number(
-                ticketQuantities.vip || 0
-            );
+<script src="progress.js"></script>
 
-        const watchPartyQuantity =
-            Number(
-                ticketQuantities.watchParty || 0
-            );
+<script>
 
-        const requiredMainHallSeats =
-            mainHallQuantity + vipQuantity;
+const ticketQuantities =
+  JSON.parse(localStorage.getItem("ticketQuantities")) || {
+    mainHall: 0,
+    vip: 0,
+    watchParty: 0
+  };
 
-        let selectedSeats =
-            JSON.parse(
-                localStorage.getItem("selectedSeats")
-            ) || [];
+const attendees =
+  JSON.parse(localStorage.getItem("attendees")) || [];
 
-        let unavailableSeats = [];
+const attendeeList = [];
 
-        function showLoadingOverlay(title, message) {
+let attendeeNumber = 1;
 
-            const overlay =
-                document.createElement("div");
+for (let i = 0; i < ticketQuantities.mainHall; i++) {
+  attendeeList.push({
+    number: attendeeNumber++,
+    package: "Main Hall",
+    venue: "mainHall"
+  });
+}
 
-            overlay.id =
-                "order-overlay";
+for (let i = 0; i < ticketQuantities.vip; i++) {
+  attendeeList.push({
+    number: attendeeNumber++,
+    package: "VIP",
+    venue: "mainHall"
+  });
+}
 
-            overlay.style.position =
-                "fixed";
+for (let i = 0; i < ticketQuantities.watchParty; i++) {
+  attendeeList.push({
+    number: attendeeNumber++,
+    package: "Watch Party",
+    venue: "watchParty"
+  });
+}
 
-            overlay.style.inset =
-                "0";
+const mainHallAttendees =
+  attendeeList.filter(attendee => attendee.venue === "mainHall");
 
-            overlay.style.background =
-                "rgba(20, 33, 61, 0.48)";
+let currentAttendeeIndex = 0;
 
-            overlay.style.backdropFilter =
-                "blur(14px)";
+const temporarySeats = {
+  mainHall: [],
+  watchParty: []
+};
 
-            overlay.style.webkitBackdropFilter =
-                "blur(14px)";
+const pretixSeatStatus = {
+  mainHall: {},
+  watchParty: {}
+};
 
-            overlay.style.zIndex =
-                "2147483647";
+let selectedSeats =
+  JSON.parse(localStorage.getItem("selectedSeats")) || {};
 
-            overlay.style.display =
-                "flex";
+async function loadPretixSeatStatus() {
 
-            overlay.style.alignItems =
-                "center";
+  try {
 
-            overlay.style.justifyContent =
-                "center";
+    const response = await fetch("/api/seats");
 
-            const modal =
-                document.createElement("div");
+    if (!response.ok) {
+      throw new Error("Unable to load seat availability.");
+    }
 
-            modal.style.width =
-                "min(420px, calc(100vw - 48px))";
+    const data = await response.json();
 
-            modal.style.maxWidth =
-                "420px";
+    data.forEach(seat => {
 
-            modal.style.padding =
-                "40px 30px";
+      const venue =
+        seat.venue === "watchParty"
+          ? "watchParty"
+          : "mainHall";
 
-            modal.style.background =
-                "#ffffff";
+      const rowLetter =
+        String(seat.row_name || "").trim();
 
-            modal.style.borderRadius =
-                "20px";
+      const seatNumber =
+        String(seat.seat_number || "").trim();
 
-            modal.style.textAlign =
-                "center";
+      if (!rowLetter || !seatNumber) return;
 
-            modal.style.boxShadow =
-                "0 20px 60px rgba(0,0,0,0.25)";
+      const seatId =
+        `${venue}-${rowLetter}-${seatNumber}`;
 
-            const spinner =
-                document.createElement("div");
+      const unavailable =
+        Boolean(
+          seat.blocked ||
+          seat.orderposition ||
+          seat.cartposition ||
+          seat.voucher
+        );
 
-            spinner.className =
-                "order-spinner";
+      pretixSeatStatus[venue][seatId] = {
+        unavailable,
+        guid: seat.guid || seat.id || null
+      };
 
-            const heading =
-                document.createElement("h2");
+    });
 
-            heading.textContent =
-                title;
+  } catch (error) {
 
-            const paragraph =
-                document.createElement("p");
+    console.error(error);
 
-            paragraph.textContent =
-                message;
+  }
 
-            modal.appendChild(spinner);
-            modal.appendChild(heading);
-            modal.appendChild(paragraph);
+}
 
-            overlay.appendChild(modal);
+for (let row = 0; row < 10; row++) {
 
-            document.body.appendChild(overlay);
+  const rowLetter =
+    String.fromCharCode(65 + row);
 
-            return overlay;
+  for (let seat = 1; seat <= 10; seat++) {
+
+    temporarySeats.mainHall.push({
+      id: `mainHall-${rowLetter}-${seat}`,
+      row: rowLetter,
+      seatNumber: seat
+    });
+
+    temporarySeats.watchParty.push({
+      id: `watchParty-${rowLetter}-${seat}`,
+      row: rowLetter,
+      seatNumber: seat
+    });
+
+  }
+
+}
+
+const attendeeNumbers =
+  attendeeList.map(attendee => attendee.number);
+
+Object.keys(selectedSeats).forEach(number => {
+
+  if (!attendeeNumbers.includes(Number(number))) {
+    delete selectedSeats[number];
+  }
+
+});
+
+localStorage.setItem(
+  "selectedSeats",
+  JSON.stringify(selectedSeats)
+);
+
+function renderAttendees() {
+
+  const container =
+    document.getElementById("attendeeList");
+
+  container.innerHTML = "";
+
+  mainHallAttendees.forEach((attendee, index) => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "attendee-card";
+
+    if (index === currentAttendeeIndex) {
+      card.classList.add("active");
+    }
+
+    const selected =
+      selectedSeats[attendee.number];
+
+    card.innerHTML = `
+      <div class="attendee-card-top">
+        <div>
+          <span class="attendee-number">
+            ATTENDEE ${attendee.number}
+          </span>
+          <strong>${attendee.package}</strong>
+        </div>
+
+        <span class="attendee-seat">
+          ${selected ? selected.display : "No seat selected"}
+        </span>
+      </div>
+    `;
+
+    card.onclick = () => {
+
+      currentAttendeeIndex = index;
+
+      renderAttendees();
+      updateCurrentAttendee();
+      renderSeats();
+
+    };
+
+    container.appendChild(card);
+
+  });
+
+}
+
+function updateCurrentAttendee() {
+
+  const attendee =
+    mainHallAttendees[currentAttendeeIndex];
+
+  const currentSelecting =
+    document.getElementById("currentSelecting");
+
+  if (!attendee) {
+    currentSelecting.textContent = "";
+    return;
+  }
+
+  currentSelecting.textContent =
+    `Attendee ${attendee.number} · ${attendee.package}`;
+
+}
+
+function renderSeats() {
+
+  const seatMap =
+    document.getElementById("seatMap");
+
+  seatMap.innerHTML = "";
+
+  const currentAttendee =
+    mainHallAttendees[currentAttendeeIndex];
+
+  temporarySeats.mainHall.forEach(seat => {
+
+    const button =
+      document.createElement("button");
+
+    button.className =
+      "seat";
+
+    button.textContent =
+      seat.seatNumber;
+
+    const pretixStatus =
+      pretixSeatStatus.mainHall[seat.id];
+
+    const selectedByAnother =
+      Object.entries(selectedSeats).some(
+        ([number, selection]) =>
+          Number(number) !== currentAttendee?.number &&
+          selection?.id === seat.id
+      );
+
+    if (
+      pretixStatus?.unavailable ||
+      selectedByAnother
+    ) {
+
+      button.classList.add("taken");
+      button.disabled = true;
+
+    }
+
+    if (
+      currentAttendee &&
+      selectedSeats[currentAttendee.number]?.id === seat.id
+    ) {
+
+      button.classList.add("selected");
+
+    }
+
+    button.onclick = () => {
+
+      if (button.disabled) return;
+
+      selectSeat(
+        seat.id,
+        seat.row,
+        seat.seatNumber
+      );
+
+    };
+
+    seatMap.appendChild(button);
+
+  });
+
+}
+
+function selectSeat(
+  seatId,
+  row,
+  seatNumber
+) {
+
+  const attendee =
+    mainHallAttendees[currentAttendeeIndex];
+
+  if (!attendee) return;
+
+  selectedSeats[attendee.number] = {
+    id: seatId,
+    display: `${row}${seatNumber}`
+  };
+
+  localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+  );
+
+  renderAttendees();
+  updateCurrentAttendee();
+  renderSeats();
+
+}
+
+function allMainHallSeatsSelected() {
+
+  return mainHallAttendees.every(
+    attendee =>
+      selectedSeats[attendee.number]
+  );
+
+}
+
+function getCheckoutId() {
+
+  const checkout =
+    JSON.parse(
+      sessionStorage.getItem("checkout")
+    );
+
+  return checkout?.checkoutId || null;
+
+}
+
+function showSeatLoadingOverlay() {
+
+  const existing =
+    document.getElementById("order-overlay");
+
+  if (existing) return;
+
+  const overlay =
+    document.createElement("div");
+
+  overlay.id =
+    "order-overlay";
+
+  Object.assign(overlay.style, {
+
+    position: "fixed",
+    top: "0",
+    left: "0",
+    right: "0",
+    bottom: "0",
+    width: "100vw",
+    height: "100vh",
+    margin: "0",
+    padding: "24px",
+    boxSizing: "border-box",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "rgba(20, 33, 61, 0.48)",
+    backdropFilter: "blur(14px)",
+    webkitBackdropFilter: "blur(14px)",
+    zIndex: "2147483647"
+
+  });
+
+  overlay.innerHTML = `
+    <div
+      class="order-modal"
+      style="
+        position: relative;
+        width: min(420px, calc(100vw - 48px));
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 40px 30px;
+        box-sizing: border-box;
+        background: #ffffff;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      "
+    >
+      <div class="order-spinner"></div>
+      <h2>Securing your seats...</h2>
+      <p>Please wait while we reserve your seats.</p>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+}
+
+async function createPretixCart() {
+
+  const checkoutId =
+    getCheckoutId();
+
+  if (!checkoutId) {
+    throw new Error("Checkout session not found.");
+  }
+
+  const seats =
+    mainHallAttendees.map(attendee => {
+
+      const selection =
+        selectedSeats[attendee.number];
+
+      if (!selection) {
+        throw new Error(
+          `Seat missing for attendee ${attendee.number}.`
+        );
+      }
+
+      return {
+        attendeeNumber: attendee.number,
+        seatId: selection.id
+      };
+
+    });
+
+  const response =
+    await fetch("/api/create-cart", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        checkoutId: checkoutId,
+        seats: seats
+      })
+
+    });
+
+  const data =
+    await response.json();
+
+  if (!response.ok || !data.success) {
+
+    throw new Error(
+      data.error ||
+      "Unable to reserve seats."
+    );
+
+  }
+
+  sessionStorage.setItem(
+    "pretixCart",
+    JSON.stringify(data)
+  );
+
+  return data;
+
+}
+
+async function goBackFromSeats() {
+
+  const checkoutId =
+    getCheckoutId();
+
+  if (checkoutId) {
+
+    try {
+
+      await fetch(
+        "/api/release-cart",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            checkoutId
+          })
         }
+      );
 
-        async function loadUnavailableSeats() {
+    } catch (error) {
 
-            try {
+      console.error(error);
 
-                const response =
-                    await fetch(
-                        "/api/get-seats"
-                    );
+    }
 
-                if (!response.ok) {
-                    return;
-                }
+  }
 
-                const data =
-                    await response.json();
+  localStorage.removeItem(
+    "selectedSeats"
+  );
 
-                unavailableSeats =
-                    Array.isArray(data.seats)
-                        ? data.seats
-                        : [];
+  sessionStorage.removeItem(
+    "pretixCart"
+  );
 
-            } catch (error) {
+  sessionStorage.removeItem(
+    "seatsCompleted"
+  );
 
-                console.error(
-                    "Could not load unavailable seats:",
-                    error
-                );
+  window.location.href =
+    "attendees.html";
 
-            }
+}
 
-        }
+async function continueFromSeats() {
 
-        function renderSeats() {
+  if (!allMainHallSeatsSelected()) {
 
-            const container =
-                document.getElementById(
-                    "seatContainer"
-                );
+    alert(
+      "Please select a seat for every Main Hall and VIP attendee."
+    );
 
-            container.innerHTML = "";
+    return;
 
-            const section =
-                document.createElement("div");
+  }
 
-            section.className =
-                "seat-section";
+  localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+  );
 
-            const title =
-                document.createElement("div");
+  if (ticketQuantities.watchParty > 0) {
 
-            title.className =
-                "seat-section-title";
+    sessionStorage.setItem(
+      "seatsCompleted",
+      "true"
+    );
 
-            title.textContent =
-                "Main Hall & VIP";
+    window.location.href =
+      "watch-party-seats.html";
 
-            const subtitle =
-                document.createElement("div");
+    return;
 
-            subtitle.className =
-                "seat-section-subtitle";
+  }
 
-            subtitle.textContent =
-                `Please select ${requiredMainHallSeats} seat${requiredMainHallSeats === 1 ? "" : "s"}.`;
+  const button =
+    document.querySelector(
+      ".continue-button"
+    );
 
-            const grid =
-                document.createElement("div");
+  button.disabled = true;
+  button.textContent =
+    "Securing seats...";
 
-            grid.className =
-                "seat-grid";
+  showSeatLoadingOverlay();
 
-            MAIN_HALL_SEATS.forEach(
-                seatNumber => {
+  try {
 
-                    const button =
-                        document.createElement("button");
+    await createPretixCart();
 
-                    button.type =
-                        "button";
+    sessionStorage.setItem(
+      "seatsCompleted",
+      "true"
+    );
 
-                    button.className =
-                        "seat";
+    window.location.href =
+      "addons.html";
 
-                    button.textContent =
-                        seatNumber;
+  } catch (error) {
 
-                    const unavailable =
-                        unavailableSeats.includes(
-                            seatNumber
-                        );
+    console.error(error);
 
-                    const selected =
-                        selectedSeats.includes(
-                            seatNumber
-                        );
+    const overlay =
+      document.getElementById(
+        "order-overlay"
+      );
 
-                    if (unavailable) {
+    if (overlay) {
+      overlay.remove();
+    }
 
-                        button.classList.add(
-                            "unavailable"
-                        );
+    alert(
+      error.message ||
+      "Unable to reserve seats. Please try again."
+    );
 
-                        button.disabled =
-                            true;
+    button.disabled = false;
+    button.textContent =
+      "Continue";
 
-                    } else if (selected) {
+  }
 
-                        button.classList.add(
-                            "selected"
-                        );
+}
 
-                    }
+async function initialiseSeats() {
 
-                    button.addEventListener(
-                        "click",
-                        () => toggleSeat(seatNumber)
-                    );
+  await loadPretixSeatStatus();
 
-                    grid.appendChild(button);
+  if (mainHallAttendees.length > 0) {
 
-                }
-            );
+    renderAttendees();
+    updateCurrentAttendee();
+    renderSeats();
 
-            section.appendChild(title);
-            section.appendChild(subtitle);
-            section.appendChild(grid);
+  }
 
-            container.appendChild(section);
+  if (ticketQuantities.watchParty <= 0) {
 
-        }
+    document.getElementById(
+      "nextVenueNotice"
+    ).style.display = "none";
 
-        function toggleSeat(seatNumber) {
+  }
 
-            if (
-                unavailableSeats.includes(
-                    seatNumber
-                )
-            ) {
-                return;
-            }
+}
 
-            const index =
-                selectedSeats.indexOf(
-                    seatNumber
-                );
+initialiseSeats();
 
-            if (index !== -1) {
+if (ticketQuantities.watchParty <= 0) {
 
-                selectedSeats.splice(
-                    index,
-                    1
-                );
+  document.getElementById(
+    "nextVenueNotice"
+  ).style.display = "none";
 
-            } else {
+}
 
-                if (
-                    selectedSeats.length >=
-                    requiredMainHallSeats
-                ) {
-                    return;
-                }
-
-                selectedSeats.push(
-                    seatNumber
-                );
-
-            }
-
-            localStorage.setItem(
-                "selectedSeats",
-                JSON.stringify(
-                    selectedSeats
-                )
-            );
-
-            renderSeats();
-
-        }
-
-        async function createPretixCart() {
-
-            const response =
-                await fetch(
-                    "/api/create-cart",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-
-                            checkoutId:
-                                checkoutData.checkoutId,
-
-                            selectedSeats:
-                                selectedSeats
-
-                        })
-                    }
-                );
-
-            const data =
-                await response.json();
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.error ||
-                    "Could not reserve your seats."
-                );
-
-            }
-
-            sessionStorage.setItem(
-                "pretixCart",
-                JSON.stringify(data)
-            );
-
-        }
-
-        async function continueFromSeats() {
-
-            const errorElement =
-                document.getElementById(
-                    "seatError"
-                );
-
-            errorElement.style.display =
-                "none";
-
-            if (
-                requiredMainHallSeats === 0
-            ) {
-
-                selectedSeats = [];
-
-                localStorage.removeItem(
-                    "selectedSeats"
-                );
-
-                if (
-                    watchPartyQuantity > 0
-                ) {
-
-                    window.location.href =
-                        "watch-party-seats.html";
-
-                } else {
-
-                    window.location.href =
-                        "addons.html";
-
-                }
-
-                return;
-            }
-
-            if (
-                selectedSeats.length !==
-                requiredMainHallSeats
-            ) {
-
-                errorElement.textContent =
-                    `Please select exactly ${requiredMainHallSeats} seat${requiredMainHallSeats === 1 ? "" : "s"}.`;
-
-                errorElement.style.display =
-                    "block";
-
-                return;
-            }
-
-            const button =
-                document.querySelector(
-                    ".continue-button"
-                );
-
-            button.disabled =
-                true;
-
-            const loadingOverlay =
-                showLoadingOverlay(
-                    "Securing your seats...",
-                    "Please wait while we reserve your seats."
-                );
-
-            try {
-
-                if (
-                    watchPartyQuantity > 0
-                ) {
-
-                    sessionStorage.setItem(
-                        "seatsCompleted",
-                        "true"
-                    );
-
-                    window.location.href =
-                        "watch-party-seats.html";
-
-                    return;
-                }
-
-                await createPretixCart();
-
-                sessionStorage.setItem(
-                    "seatsCompleted",
-                    "true"
-                );
-
-                window.location.href =
-                    "addons.html";
-
-            } catch (error) {
-
-                console.error(
-                    "Create cart error:",
-                    error
-                );
-
-                if (loadingOverlay) {
-                    loadingOverlay.remove();
-                }
-
-                alert(
-                    error.message ||
-                    "Could not reserve your seats. Please try again."
-                );
-
-                button.disabled =
-                    false;
-            }
-
-        }
-
-        async function goBackFromSeats() {
-
-            const checkoutData =
-                JSON.parse(
-                    sessionStorage.getItem(
-                        "checkout"
-                    )
-                );
-
-            const checkoutId =
-                checkoutData &&
-                (
-                    checkoutData.checkoutId ||
-                    checkoutData.checkout_id
-                );
-
-            if (checkoutId) {
-
-                try {
-
-                    const response =
-                        await fetch(
-                            "/api/release-cart",
-                            {
-                                method: "POST",
-
-                                headers: {
-                                    "Content-Type":
-                                        "application/json"
-                                },
-
-                                body: JSON.stringify({
-                                    checkoutId:
-                                        checkoutId
-                                })
-                            }
-                        );
-
-                    const data =
-                        await response.json();
-
-                    if (
-                        !response.ok ||
-                        !data.success
-                    ) {
-
-                        console.error(
-                            "Could not release seat reservation:",
-                            data
-                        );
-
-                        alert(
-                            "We couldn't release your seat reservation. Please try again."
-                        );
-
-                        return;
-                    }
-
-                } catch (error) {
-
-                    console.error(
-                        "Release cart error:",
-                        error
-                    );
-
-                    alert(
-                        "We couldn't release your seat reservation. Please check your connection and try again."
-                    );
-
-                    return;
-                }
-            }
-
-            localStorage.removeItem(
-                "selectedSeats"
-            );
-
-            sessionStorage.removeItem(
-                "pretixCart"
-            );
-
-            sessionStorage.removeItem(
-                "seatsCompleted"
-            );
-
-            window.location.href =
-                "attendees.html";
-        }
-
-        async function initializeSeats() {
-
-            if (
-                requiredMainHallSeats === 0
-            ) {
-
-                renderSeats();
-
-                return;
-            }
-
-            await loadUnavailableSeats();
-
-            renderSeats();
-
-        }
-
-        initializeSeats();
-
-    </script>
+</script>
 
 </body>
 </html>
-
+```
