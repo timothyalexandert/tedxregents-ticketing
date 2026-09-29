@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -16,86 +17,88 @@
       <img src="logo-white.png" alt="TEDxRegents Secondary School Bali YOUTH">
     </a>
 
-    <div class="progress">
-      <span>01 Tickets</span>
-      <span>02 Details</span>
-      <span>03 Attendees</span>
-      <span class="active">04 Seats</span>
-      <span>05 Add-ons</span>
-      <span>06 Review</span>
-      <span>07 Payment</span>
-    </div>
+
+  <div class="progress">
+  <span>01 Tickets</span>
+  <span>02 Details</span>
+  <span>03 Attendees</span>
+  <span class="active">04 Seats</span>
+  <span>05 Add-ons</span>
+  <span>06 Review</span>
+  <span>07 Payment</span>
+</div>
+
   </div>
 </header>
 
 <main>
 
-  <button class="back-button" onclick="goBackFromWatchPartySeats()">← Back</button>
+<button class="back-button" onclick="goBackFromWatchPartySeats()">← Back</button>
 
   <section class="section seating-section">
 
-    <div class="section-heading">
-      <p class="eyebrow">SEATING · WATCH PARTY</p>
-      <h1>Choose your seats.</h1>
-      <p>Select a seat for each Watch Party attendee.</p>
+<div class="section-heading">
+  <p class="eyebrow">SEATING · WATCH PARTY</p>
+  <h1>Choose your seats.</h1>
+  <p>Select a seat for each Watch Party attendee.</p>
+</div>
+
+<div class="seating-layout">
+
+  <div class="seating-chart-box">
+
+    <div class="venue-header">
+      <span>WATCH PARTY</span>
     </div>
 
-    <div class="seating-layout">
+    <div class="stage">SCREEN</div>
 
-      <div class="seating-chart-box">
+    <div id="watchPartySeatMap" class="seat-map"></div>
 
-        <div class="venue-header">
-          <span>WATCH PARTY</span>
-        </div>
-
-        <div class="stage">SCREEN</div>
-
-        <div id="watchPartySeatMap" class="seat-map"></div>
-
-        <div class="seat-legend">
-          <div>
-            <span class="legend-seat available"></span>
-            Available
-          </div>
-          <div>
-            <span class="legend-seat selected"></span>
-            Selected
-          </div>
-          <div>
-            <span class="legend-seat taken"></span>
-            Taken
-          </div>
-        </div>
-
+    <div class="seat-legend">
+      <div>
+        <span class="legend-seat available"></span>
+        Available
       </div>
-
-      <div class="attendee-selection-box">
-
-        <div class="attendee-header">
-          <span>ATTENDEES</span>
-        </div>
-
-        <h2>Select seats</h2>
-        <p>Select a seat for each Watch Party attendee.</p>
-
-        <div id="watchPartyAttendeeList"></div>
-
-        <div class="current-selecting">
-          <span>Currently selecting:</span>
-          <strong id="currentSelecting"></strong>
-        </div>
-
+      <div>
+        <span class="legend-seat selected"></span>
+        Selected
       </div>
-
+      <div>
+        <span class="legend-seat taken"></span>
+        Taken
+      </div>
     </div>
 
-    <button
-      id="continueButton"
-      class="continue-button"
-      onclick="continueFromWatchPartySeats()"
-    >
-      Continue
-    </button>
+  </div>
+
+  <div class="attendee-selection-box">
+
+    <div class="attendee-header">
+      <span>ATTENDEES</span>
+    </div>
+
+    <h2>Select seats</h2>
+    <p>Select a seat for each Watch Party attendee.</p>
+
+    <div id="watchPartyAttendeeList"></div>
+
+    <div class="current-selecting">
+      <span>Currently selecting:</span>
+      <strong id="currentSelecting"></strong>
+    </div>
+
+  </div>
+
+</div>
+
+<button
+  id="continueButton"
+  class="continue-button"
+  onclick="continueFromWatchPartySeats()"
+>
+  Continue
+</button>
 
   </section>
 
@@ -482,6 +485,11 @@ function getCheckoutId() {
 
 }
 
+
+/* =========================================
+   LOADING SCREEN
+   ========================================= */
+
 function showSeatLoadingOverlay() {
 
   const existing =
@@ -489,7 +497,9 @@ function showSeatLoadingOverlay() {
       "order-overlay"
     );
 
-  if (existing) return;
+  if (existing) {
+    return existing;
+  }
 
   const overlay =
     document.createElement("div");
@@ -497,29 +507,42 @@ function showSeatLoadingOverlay() {
   overlay.id =
     "order-overlay";
 
-  Object.assign(overlay.style, {
+  Object.assign(
+    overlay.style,
+    {
 
-    position: "fixed",
-    top: "0",
-    left: "0",
-    right: "0",
-    bottom: "0",
-    width: "100vw",
-    height: "100vh",
-    margin: "0",
-    padding: "24px",
-    boxSizing: "border-box",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    background: "rgba(20, 33, 61, 0.48)",
-    backdropFilter: "blur(14px)",
-    webkitBackdropFilter: "blur(14px)",
-    zIndex: "2147483647"
+      position: "fixed",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      width: "100vw",
+      height: "100vh",
+      margin: "0",
+      padding: "24px",
+      boxSizing: "border-box",
 
-  });
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+
+      background:
+        "rgba(20, 33, 61, 0.48)",
+
+      backdropFilter:
+        "blur(14px)",
+
+      webkitBackdropFilter:
+        "blur(14px)",
+
+      zIndex:
+        "2147483647"
+
+    }
+  );
 
   overlay.innerHTML = `
+
     <div
       class="order-modal"
       style="
@@ -535,15 +558,29 @@ function showSeatLoadingOverlay() {
         box-shadow: 0 20px 60px rgba(0,0,0,0.25);
       "
     >
+
       <div class="order-spinner"></div>
-      <h2>Securing your seats...</h2>
-      <p>Please wait while we reserve your seats.</p>
+
+      <h2>
+        Securing your seats...
+      </h2>
+
+      <p>
+        Please wait while we reserve your seats.
+      </p>
+
     </div>
+
   `;
 
-  document.body.appendChild(overlay);
+  document.body.appendChild(
+    overlay
+  );
+
+  return overlay;
 
 }
+
 
 async function createPretixCart() {
 
@@ -639,6 +676,7 @@ async function createPretixCart() {
 
 }
 
+
 async function continueFromWatchPartySeats() {
 
   if (!allSeatsSelected()) {
@@ -656,26 +694,21 @@ async function continueFromWatchPartySeats() {
     JSON.stringify(selectedSeats)
   );
 
-  const button =
-    document.getElementById(
-      "continueButton"
-    );
 
-  button.disabled = true;
+  const overlay =
+    showSeatLoadingOverlay();
 
-  button.textContent =
-    "Securing seats...";
-
-  showSeatLoadingOverlay();
 
   try {
 
     await createPretixCart();
 
+
     sessionStorage.setItem(
       "watchPartySeatsCompleted",
       "true"
     );
+
 
     window.location.href =
       "addons.html";
@@ -684,28 +717,19 @@ async function continueFromWatchPartySeats() {
 
     console.error(error);
 
-    const overlay =
-      document.getElementById(
-        "order-overlay"
-      );
 
-    if (overlay) {
-      overlay.remove();
-    }
+    overlay.remove();
+
 
     alert(
       error.message ||
       "Unable to reserve seats. Please try again."
     );
 
-    button.disabled = false;
-
-    button.textContent =
-      "Continue";
-
   }
 
 }
+
 
 renderAttendees();
 updateCurrentAttendee();
@@ -715,4 +739,3 @@ renderSeats();
 
 </body>
 </html>
-
