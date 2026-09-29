@@ -1,672 +1,1334 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Seats — TEDxRegents Secondary School Bali YOUTH</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #ffffff;
-            color: #191919;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
-        }
-
-        .progress {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 50px;
-            font-size: 12px;
-            color: #999;
-        }
-
-        .progress div {
-            flex: 1;
-            text-align: center;
-        }
-
-        .progress .active {
-            color: #191919;
-            font-weight: 700;
-        }
-
-        h1 {
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 35px;
-        }
-
-        .attendee-section {
-            margin-bottom: 40px;
-        }
-
-        .attendee-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .seat-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
-            max-width: 650px;
-        }
-
-        .seat {
-            aspect-ratio: 1;
-            border: 1px solid #ccc;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 12px;
-        }
-
-        .seat:hover {
-            background: #f2f2f2;
-        }
-
-        .seat.selected {
-            background: #191919;
-            color: #fff;
-            border-color: #191919;
-        }
-
-        .seat.unavailable {
-            background: #eee;
-            color: #aaa;
-            cursor: not-allowed;
-            border-color: #ddd;
-        }
-
-        .continue-button,
-        .back-button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .continue-button {
-            background: #191919;
-            color: #fff;
-        }
-
-        .continue-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .back-button {
-            background: #eee;
-            color: #191919;
-            margin-right: 10px;
-        }
-
-        .actions {
-            margin-top: 40px;
-        }
-
-        .message {
-            margin-top: 20px;
-            color: #b00020;
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<header class="site-header">
+    <img
+        src="logo-white.png"
+        alt="TEDxRegents Secondary School Bali YOUTH"
+        class="site-logo"
+    >
+</header>
+
+
+<main>
 
     <div class="progress">
-        <div>01 Tickets</div>
-        <div>02 Details</div>
-        <div>03 Attendees</div>
-        <div class="active">04 Seats</div>
-        <div>05 Add-ons</div>
-        <div>06 Review</div>
-        <div>07 Payment</div>
+        <span>01 Tickets</span>
+        <span>02 Details</span>
+        <span>03 Attendees</span>
+        <span class="active">04 Seats</span>
+        <span>05 Add-ons</span>
+        <span>06 Review</span>
+        <span>07 Payment</span>
     </div>
 
-    <h1>Select Your Seats</h1>
-    <div class="subtitle">
-        Choose a seat for each Main Hall and VIP attendee.
-    </div>
 
-    <div id="seatSections"></div>
+    <!-- BACK -->
 
-    <div id="message" class="message"></div>
+    <button
+        type="button"
+        class="ticketing-back-button"
+        onclick="window.location.href='index.html'"
+    >
+        ‹
+    </button>
 
-    <div class="actions">
-        <button
-            type="button"
-            class="back-button"
-            onclick="window.location.href='attendees.html'"
+
+    <!-- --- -->
+
+
+    <section class="seats-section">
+
+        <p class="eyebrow">SEATING</p>
+
+        <h1 id="venueTitle">
+            Choose your seats.
+        </h1>
+
+        <p
+            class="subtitle"
+            id="venueSubtitle"
         >
-            Back
-        </button>
+            Select a seat for each attendee.
+        </p>
+
+
+        <!-- =====================================
+             MAIN SEATING AREA
+             ===================================== -->
+
+        <div class="seating-layout">
+
+
+            <!-- LEFT: SEATING CHART -->
+
+            <div class="seating-chart-box">
+
+                <div class="venue-header">
+
+                    <span id="venueName">
+                        MAIN HALL
+                    </span>
+
+                </div>
+
+
+                <div class="stage">
+                    STAGE
+                </div>
+
+
+                <div
+                    id="seatMap"
+                    class="seat-map"
+                >
+                    <!-- Seats generated by JavaScript -->
+                </div>
+
+
+                <div class="seat-legend">
+
+                    <div>
+                        <span class="legend-seat available"></span>
+                        Available
+                    </div>
+
+                    <div>
+                        <span class="legend-seat selected"></span>
+                        Selected
+                    </div>
+
+                    <div>
+                        <span class="legend-seat taken"></span>
+                        Taken
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT: ATTENDEE PANEL -->
+
+            <div class="attendee-selection-box">
+
+                <div class="selection-header">
+
+                    <p class="selection-eyebrow">
+                        ATTENDEES
+                    </p>
+
+                    <h2>
+                        Select seats
+                    </h2>
+
+                    <p>
+                        Choose an attendee, then select their seat.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="attendeeList"
+                    class="attendee-list"
+                >
+                    <!-- Attendees generated by JavaScript -->
+                </div>
+
+
+                <div class="selection-info">
+
+                    <span>
+                        CURRENTLY SELECTING
+                    </span>
+
+                    <strong id="currentlySelecting">
+                        Attendee 1
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             NEXT VENUE NOTICE
+             ===================================== -->
+
+        <div
+            id="nextVenueNotice"
+            class="next-venue-notice"
+        >
+
+            <div>
+
+                <span class="notice-label">
+                    NEXT
+                </span>
+
+                <strong>
+                    Watch Party seating
+                </strong>
+
+                <p>
+                    You’ll select your Watch Party seats on the next page.
+                </p>
+
+            </div>
+
+        </div>
+
 
         <button
             type="button"
             class="continue-button"
-            id="continueButton"
-            disabled
+            onclick="continueFromSeats()"
         >
             Continue
         </button>
-    </div>
 
-</div>
+    </section>
+
+</main>
+
+<script src="progress.js"></script>
 
 <script>
-    const ticketQuantities =
-        JSON.parse(
-            localStorage.getItem("ticketQuantities")
-        ) || {
-            mainHall: 0,
-            vip: 0,
-            watchParty: 0
-        };
 
-    const attendees =
-        JSON.parse(
-            localStorage.getItem("attendees")
-        ) || [];
+/* =========================================
+   LOAD DATA
+   ========================================= */
 
-    let selectedSeats =
-        JSON.parse(
-            localStorage.getItem("selectedSeats")
-        ) || {};
+const ticketQuantities =
+    JSON.parse(
+        localStorage.getItem("ticketQuantities")
+    ) || {
+        mainHall: 0,
+        vip: 0,
+        watchParty: 0
+    };
 
-    const mainHallAttendees = [];
 
-    let attendeeNumber = 1;
+const attendees =
+    JSON.parse(
+        localStorage.getItem("attendees")
+    ) || [];
 
-    for (
-        let i = 0;
-        i < ticketQuantities.mainHall;
-        i++
-    ) {
-        mainHallAttendees.push({
-            number: attendeeNumber,
-            name:
-                attendees[attendeeNumber - 1]?.name ||
-                "",
-            venue: "mainHall",
-            type: "Main Hall"
-        });
 
-        attendeeNumber++;
-    }
+/* =========================================
+   BUILD ATTENDEE LIST
+   ========================================= */
 
-    for (
-        let i = 0;
-        i < ticketQuantities.vip;
-        i++
-    ) {
-        mainHallAttendees.push({
-            number: attendeeNumber,
-            name:
-                attendees[attendeeNumber - 1]?.name ||
-                "",
-            venue: "mainHall",
-            type: "VIP"
-        });
+const attendeeList = [];
 
-        attendeeNumber++;
-    }
+let number = 0;
 
-    for (
-        let i = 0;
-        i < ticketQuantities.watchParty;
-        i++
-    ) {
-        attendeeNumber++;
-    }
 
-    const validAttendeeNumbers =
-        new Set(
-            Array.from(
-                {
-                    length:
-                        ticketQuantities.mainHall +
-                        ticketQuantities.vip +
-                        ticketQuantities.watchParty
-                },
-                (_, index) =>
-                    String(index + 1)
-            )
-        );
+/* Main Hall */
 
-    Object.keys(selectedSeats).forEach(
-        number => {
-            if (
-                !validAttendeeNumbers.has(
-                    String(number)
-                )
-            ) {
-                delete selectedSeats[number];
-            }
-        }
+for (
+    let i = 0;
+    i < ticketQuantities.mainHall;
+    i++
+) {
+
+    number++;
+
+    attendeeList.push({
+        number: number,
+        name:
+            attendees[number - 1]?.name ||
+            `Attendee ${number}`,
+        ticketType: "Main Hall",
+        venue: "mainHall"
+    });
+
+}
+
+
+/* VIP */
+
+for (
+    let i = 0;
+    i < ticketQuantities.vip;
+    i++
+) {
+
+    number++;
+
+    attendeeList.push({
+        number: number,
+        name:
+            attendees[number - 1]?.name ||
+            `Attendee ${number}`,
+        ticketType: "VIP",
+        venue: "mainHall"
+    });
+
+}
+
+
+/* Watch Party */
+
+for (
+    let i = 0;
+    i < ticketQuantities.watchParty;
+    i++
+) {
+
+    number++;
+
+    attendeeList.push({
+        number: number,
+        name:
+            attendees[number - 1]?.name ||
+            `Attendee ${number}`,
+        ticketType: "Watch Party",
+        venue: "watchParty"
+    });
+
+}
+
+
+/* =========================================
+   ONLY SHOW MAIN HALL ATTENDEES HERE
+   ========================================= */
+
+const mainHallAttendees =
+    attendeeList.filter(
+        attendee =>
+            attendee.venue === "mainHall"
     );
 
-    localStorage.setItem(
-        "selectedSeats",
-        JSON.stringify(selectedSeats)
-    );
 
-    const seatSections =
-        document.getElementById(
-            "seatSections"
-        );
+/* =========================================
+   CURRENT ATTENDEE
+   ========================================= */
 
-    const continueButton =
-        document.getElementById(
-            "continueButton"
-        );
+let currentAttendeeIndex = 0;
 
-    const message =
-        document.getElementById(
-            "message"
-        );
 
-    async function loadSeats() {
-        try {
-            const response =
-                await fetch(
-                    "/api/seats?zone=Main%20Hall"
-                );
+/* =========================================
+   TEMPORARY SEATS
+   ========================================= */
 
-            const data =
-                await response.json();
+const temporarySeats = {
+    mainHall: [],
+    watchParty: []
+};
 
-            if (!response.ok) {
-                throw new Error(
-                    data.error ||
-                    "Could not load seats."
-                );
-            }
 
-            const pretixSeats =
-                data.results || [];
+const pretixSeatStatus = {
+    mainHall: {},
+    watchParty: {}
+};
 
-            renderSeatSections(
-                pretixSeats
-            );
 
-            updateContinueButton();
+async function loadPretixSeatStatus() {
 
-        } catch (error) {
-            console.error(error);
+    try {
 
-            message.textContent =
-                error.message ||
-                "Could not load seats.";
-        }
-    }
+        const response =
+            await fetch("/api/seats");
 
-    function renderSeatSections(
-        pretixSeats
-    ) {
-        seatSections.innerHTML = "";
+        const data =
+            await response.json();
 
         if (
-            mainHallAttendees.length === 0
+            !response.ok ||
+            !data.success
         ) {
-            seatSections.innerHTML =
-                "<p>No Main Hall or VIP seats are required.</p>";
 
-            continueButton.disabled =
-                false;
+            throw new Error(
+                data.error ||
+                "Could not load seat availability."
+            );
 
-            return;
         }
 
-        mainHallAttendees.forEach(
-            attendee => {
-                const section =
-                    document.createElement(
-                        "div"
-                    );
 
-                section.className =
-                    "attendee-section";
+        const processSeats =
+            (seats, venue) => {
 
-                const title =
-                    document.createElement(
-                        "div"
-                    );
+                seats.forEach(seat => {
 
-                title.className =
-                    "attendee-title";
+                    const row =
+                        Number(
+                            seat.row_name
+                        );
 
-                title.textContent =
-                    "ATTENDEE " +
-                    attendee.number +
-                    " - " +
-                    attendee.type +
-                    (
-                        attendee.name
-                            ? " — " +
-                              attendee.name
-                            : ""
-                    );
+                    const seatNumber =
+                        Number(
+                            seat.seat_number
+                        );
 
-                section.appendChild(
-                    title
+
+                    if (
+                        !Number.isInteger(row) ||
+                        !Number.isInteger(
+                            seatNumber
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const rowLetter =
+                        String.fromCharCode(
+                            64 + row
+                        );
+
+
+                    const temporaryId =
+                        `${venue}-${rowLetter}-${seatNumber}`;
+
+
+                    const unavailable =
+                        Boolean(
+                            seat.blocked ||
+                            seat.orderposition ||
+                            seat.cartposition ||
+                            seat.voucher
+                        );
+
+
+                    pretixSeatStatus[venue][
+                        temporaryId
+                    ] = {
+
+                        unavailable:
+                            unavailable,
+
+                        seatGuid:
+                            seat.seat_guid
+
+                    };
+
+                });
+
+            };
+
+
+        processSeats(
+            data.mainHall || [],
+            "mainHall"
+        );
+
+
+        processSeats(
+            data.watchParty || [],
+            "watchParty"
+        );
+
+
+        console.log(
+            "Pretix seat status loaded:",
+            pretixSeatStatus
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Could not load Pretix seat status:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   CREATE 100 TEMPORARY MAIN HALL SEATS
+   ========================================= */
+
+for (
+    let row = 0;
+    row < 10;
+    row++
+) {
+
+    const letter =
+        String.fromCharCode(
+            65 + row
+        );
+
+    for (
+        let seat = 1;
+        seat <= 10;
+        seat++
+    ) {
+
+        temporarySeats.mainHall.push({
+
+            row: letter,
+
+            seat: seat
+
+        });
+
+    }
+
+}
+
+
+/* =========================================
+   CREATE 100 TEMPORARY WATCH PARTY SEATS
+   ========================================= */
+
+for (
+    let row = 0;
+    row < 10;
+    row++
+) {
+
+    const letter =
+        String.fromCharCode(
+            65 + row
+        );
+
+    for (
+        let seat = 1;
+        seat <= 10;
+        seat++
+    ) {
+
+        temporarySeats.watchParty.push({
+
+            row: letter,
+
+            seat: seat
+
+        });
+
+    }
+
+}
+
+
+/* =========================================
+   SAVED SEATS
+   ========================================= */
+
+let selectedSeats =
+    JSON.parse(
+        localStorage.getItem("selectedSeats")
+    ) || {};
+
+
+/* =========================================
+   REMOVE STALE SEAT SELECTIONS
+   ========================================= */
+
+const validAttendeeNumbers =
+    new Set(
+        attendeeList.map(
+            attendee =>
+                String(
+                    attendee.number
+                )
+        )
+    );
+
+
+Object.keys(selectedSeats).forEach(
+    attendeeNumber => {
+
+        if (
+            !validAttendeeNumbers.has(
+                String(attendeeNumber)
+            )
+        ) {
+
+            delete selectedSeats[
+                attendeeNumber
+            ];
+
+        }
+
+    }
+);
+
+
+localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+);
+
+
+/* =========================================
+   RENDER ATTENDEES
+   ========================================= */
+
+function renderAttendees() {
+
+    const container =
+        document.getElementById(
+            "attendeeList"
+        );
+
+    container.innerHTML = "";
+
+
+    mainHallAttendees.forEach(
+        (attendee, index) => {
+
+            const card =
+                document.createElement(
+                    "button"
                 );
 
-                const grid =
-                    document.createElement(
-                        "div"
+            card.type = "button";
+
+            card.className =
+                "attendee-card";
+
+
+            if (
+                index ===
+                currentAttendeeIndex
+            ) {
+
+                card.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const selected =
+                selectedSeats[
+                    attendee.number
+                ];
+
+
+            let seatText =
+                "Seat not selected";
+
+
+            if (selected) {
+
+                seatText =
+                    selected.display;
+
+            }
+
+
+            card.innerHTML = `
+
+                <div class="attendee-card-top">
+
+                    <span class="attendee-number">
+                        ATTENDEE ${attendee.number}
+                    </span>
+
+                    <span class="attendee-ticket">
+                        ${attendee.ticketType}
+                    </span>
+
+                </div>
+
+                <strong class="attendee-card-name">
+                    ${attendee.name}
+                </strong>
+
+                <span class="attendee-seat-status">
+                    ${seatText}
+                </span>
+
+            `;
+
+
+            card.addEventListener(
+                "click",
+                function() {
+
+                    currentAttendeeIndex =
+                        index;
+
+                    renderAttendees();
+
+                    renderSeats();
+
+                    updateCurrentAttendee();
+
+                }
+            );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   CURRENT ATTENDEE
+   ========================================= */
+
+function updateCurrentAttendee() {
+
+    const attendee =
+        mainHallAttendees[
+            currentAttendeeIndex
+        ];
+
+
+    if (!attendee) {
+        return;
+    }
+
+
+    document.getElementById(
+        "currentlySelecting"
+    ).textContent =
+        `Attendee ${attendee.number} — ${attendee.name}`;
+
+}
+
+
+/* =========================================
+   RENDER SEATS
+   ========================================= */
+
+function renderSeats() {
+
+    const container =
+        document.getElementById(
+            "seatMap"
+        );
+
+    container.innerHTML = "";
+
+
+    const seats =
+        temporarySeats.mainHall;
+
+
+    const rows = {};
+
+
+    seats.forEach(seat => {
+
+        if (!rows[seat.row]) {
+
+            rows[seat.row] = [];
+
+        }
+
+        rows[seat.row].push(seat);
+
+    });
+
+
+    Object.keys(rows).forEach(
+        row => {
+
+            const rowElement =
+                document.createElement(
+                    "div"
+                );
+
+            rowElement.className =
+                "seat-row";
+
+
+            const rowLabel =
+                document.createElement(
+                    "span"
+                );
+
+            rowLabel.className =
+                "seat-row-label";
+
+            rowLabel.textContent =
+                row;
+
+
+            rowElement.appendChild(
+                rowLabel
+            );
+
+
+            rows[row].forEach(
+                seat => {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+                    button.type =
+                        "button";
+
+                    button.className =
+                        "theatre-seat";
+
+
+                    const seatId =
+                        `mainHall-${row}-${seat.seat}`;
+
+
+                    button.dataset.seatId =
+                        seatId;
+
+
+                    button.setAttribute(
+                        "aria-label",
+                        `Row ${row}, Seat ${seat.seat}`
                     );
 
-                grid.className =
-                    "seat-grid";
 
-                for (
-                    let row = 0;
-                    row < 10;
-                    row++
-                ) {
-                    for (
-                        let seat = 1;
-                        seat <= 10;
-                        seat++
+                    button.innerHTML = `
+                        <span>${seat.seat}</span>
+                    `;
+
+
+                    const seatStatus =
+                        pretixSeatStatus
+                            .mainHall[
+                                seatId
+                            ];
+
+
+                    if (
+                        seatStatus &&
+                        seatStatus.unavailable
                     ) {
-                        const button =
-                            document.createElement(
-                                "button"
-                            );
 
-                        button.type =
-                            "button";
+                        button.disabled =
+                            true;
 
-                        button.className =
-                            "seat";
+                        button.classList.add(
+                            "taken"
+                        );
 
-                        const rowLetter =
-                            String.fromCharCode(
-                                65 + row
-                            );
+                        button.innerHTML = `
+                            <span>×</span>
+                        `;
 
-                        const temporaryId =
-                            "mainHall-" +
-                            rowLetter +
-                            "-" +
-                            seat;
+                        button.setAttribute(
+                            "aria-label",
+                            `Row ${row}, Seat ${seat.seat}, Taken`
+                        );
 
-                        button.dataset.seatId =
-                            temporaryId;
+                    }
 
-                        button.textContent =
-                            seat;
 
-                        const pretixSeat =
-                            pretixSeats.find(
-                                item => {
-                                    const sameNumber =
-                                        String(
-                                            item.seat_number
-                                        ) ===
-                                        String(
-                                            seat
-                                        );
+                    let takenByAnotherAttendee =
+                        false;
 
-                                    const sameRow =
-                                        String(
-                                            item.row_name
-                                        ) ===
-                                        String(
-                                            row + 1
-                                        ) ||
-                                        String(
-                                            item.row_name
-                                        ).toUpperCase() ===
-                                        rowLetter;
 
-                                    return (
-                                        sameNumber &&
-                                        sameRow
-                                    );
-                                }
-                            );
+                    Object.keys(
+                        selectedSeats
+                    ).forEach(
+                        attendeeNumber => {
 
-                        if (
-                            pretixSeat &&
-                            (
-                                pretixSeat.blocked ||
-                                pretixSeat.orderposition ||
-                                pretixSeat.cartposition ||
-                                pretixSeat.voucher
-                            )
-                        ) {
-                            button.classList.add(
-                                "unavailable"
-                            );
+                            if (
+                                attendeeNumber !==
+                                String(
+                                    mainHallAttendees[
+                                        currentAttendeeIndex
+                                    ]?.number
+                                ) &&
+                                selectedSeats[
+                                    attendeeNumber
+                                ]?.id ===
+                                seatId
+                            ) {
 
-                            button.disabled =
-                                true;
+                                takenByAnotherAttendee =
+                                    true;
+
+                            }
+
                         }
+                    );
 
-                        if (
-                            selectedSeats[
-                                attendee.number
-                            ]?.id ===
-                            temporaryId
-                        ) {
-                            button.classList.add(
-                                "selected"
-                            );
-                        }
+
+                    if (
+                        takenByAnotherAttendee
+                    ) {
+
+                        button.classList.add(
+                            "taken"
+                        );
+
+                        button.disabled =
+                            true;
+
+                        button.innerHTML = `
+                            <span>×</span>
+                        `;
+
+                    }
+
+
+                    const current =
+                        mainHallAttendees[
+                            currentAttendeeIndex
+                        ];
+
+
+                    if (
+                        current &&
+                        selectedSeats[
+                            current.number
+                        ]?.id ===
+                        seatId
+                    ) {
+
+                        button.classList.add(
+                            "selected"
+                        );
+
+                    }
+
+
+                    if (!button.disabled) {
 
                         button.addEventListener(
                             "click",
-                            function () {
+                            function() {
+
                                 selectSeat(
-                                    attendee,
-                                    temporaryId,
-                                    rowLetter,
-                                    seat
+                                    seatId,
+                                    row,
+                                    seat.seat
                                 );
+
                             }
                         );
 
-                        grid.appendChild(
-                            button
-                        );
                     }
+
+
+                    rowElement.appendChild(
+                        button
+                    );
+
                 }
+            );
 
-                section.appendChild(
-                    grid
-                );
 
-                seatSections.appendChild(
-                    section
-                );
-            }
-        );
+            container.appendChild(
+                rowElement
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   SELECT SEAT
+   ========================================= */
+
+function selectSeat(
+    seatId,
+    row,
+    seatNumber
+) {
+
+    const attendee =
+        mainHallAttendees[
+            currentAttendeeIndex
+        ];
+
+
+    if (!attendee) {
+        return;
     }
 
-    function selectSeat(
-        attendee,
-        seatId,
-        rowLetter,
-        seatNumber
-    ) {
-        Object.keys(selectedSeats).forEach(
-            number => {
-                if (
-                    String(number) !==
-                    String(
-                        attendee.number
-                    ) &&
-                    selectedSeats[number]?.id ===
-                    seatId
-                ) {
-                    delete selectedSeats[number];
-                }
-            }
-        );
 
-        selectedSeats[
-            attendee.number
-        ] = {
-            id: seatId,
-            display:
-                "Row " +
-                rowLetter +
-                ", Seat " +
-                seatNumber
-        };
+    selectedSeats[
+        attendee.number
+    ] = {
 
-        localStorage.setItem(
-            "selectedSeats",
-            JSON.stringify(
-                selectedSeats
+        id:
+            seatId,
+
+        display:
+            `Row ${row}, Seat ${seatNumber}`
+
+    };
+
+
+    localStorage.setItem(
+        "selectedSeats",
+        JSON.stringify(
+            selectedSeats
+        )
+    );
+
+
+    renderAttendees();
+
+    renderSeats();
+
+    updateCurrentAttendee();
+
+}
+
+
+/* =========================================
+   CHECK MAIN HALL COMPLETION
+   ========================================= */
+
+function allMainHallSeatsSelected() {
+
+    return mainHallAttendees.every(
+        attendee =>
+            selectedSeats[
+                attendee.number
+            ]?.id
+    );
+
+}
+
+
+/* =========================================
+   GET CHECKOUT ID
+   ========================================= */
+
+function getCheckoutId() {
+
+    const checkoutData =
+        JSON.parse(
+            sessionStorage.getItem(
+                "checkout"
             )
         );
 
-        loadSeats();
+
+    if (!checkoutData) {
+        return null;
     }
 
-    function allMainHallSeatsSelected() {
-        return mainHallAttendees.every(
+
+    return (
+        checkoutData.checkoutId ||
+        checkoutData.checkout_id ||
+        null
+    );
+
+}
+
+
+/* =========================================
+   CREATE PRETIX CART
+   ========================================= */
+
+async function createPretixCart() {
+
+    const checkoutId =
+        getCheckoutId();
+
+
+    if (!checkoutId) {
+
+        throw new Error(
+            "Your checkout could not be found. Please start again."
+        );
+
+    }
+
+
+    /*
+     * Only Main Hall + VIP attendees
+     * are sent from this page.
+     *
+     * Watch Party seats are selected
+     * on the next page.
+     */
+
+    const seats =
+        mainHallAttendees.map(
             attendee =>
                 selectedSeats[
                     attendee.number
                 ]?.id
         );
+
+
+    /*
+     * Make sure the number of seats
+     * exactly matches the number of
+     * Main Hall + VIP tickets.
+     */
+
+    if (
+        seats.length !==
+        mainHallAttendees.length ||
+        seats.some(
+            seat => !seat
+        )
+    ) {
+
+        throw new Error(
+            "Please select a seat for every Main Hall and VIP attendee."
+        );
+
     }
 
-    function updateContinueButton() {
-        continueButton.disabled =
-            !allMainHallSeatsSelected();
+
+    const response =
+        await fetch(
+            "/api/create-cart",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        checkoutId:
+                            checkoutId,
+
+                        seats:
+                            seats
+
+                    })
+
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !response.ok ||
+        !data.success
+    ) {
+
+        throw new Error(
+            data.error ||
+            "Could not reserve your seats."
+        );
+
     }
 
-    continueButton.addEventListener(
-        "click",
-        function () {
-            if (
-                !allMainHallSeatsSelected()
-            ) {
-                return;
-            }
 
-            if (
-                ticketQuantities.watchParty >
-                0
-            ) {
-                window.location.href =
-                    "watch-party-seats.html";
-
-                return;
-            }
-
-            createPretixCart();
-        }
+    sessionStorage.setItem(
+        "pretixCart",
+        JSON.stringify(
+            data
+        )
     );
 
-    async function createPretixCart() {
-        message.textContent =
-            "Reserving your seats...";
 
-        continueButton.disabled =
-            true;
+    return data;
 
-        const seats =
-            mainHallAttendees
-                .map(
-                    attendee =>
-                        selectedSeats[
-                            attendee.number
-                        ]?.id
-                )
-                .filter(Boolean);
+}
 
-        try {
-            const checkout =
-                JSON.parse(
-                    sessionStorage.getItem(
-                        "checkout"
-                    )
-                );
 
-            if (
-                !checkout ||
-                !checkout.checkoutId
-            ) {
-                throw new Error(
-                    "Your checkout could not be found. Please start again."
-                );
-            }
+/* =========================================
+   CONTINUE
+   ========================================= */
 
-            const response =
-                await fetch(
-                    "/api/create-cart",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body:
-                            JSON.stringify({
-                                checkoutId:
-                                    checkout.checkoutId,
-                                seats:
-                                    seats
-                            })
-                    }
-                );
+async function continueFromSeats() {
 
-            const data =
-                await response.json();
+    if (
+        !allMainHallSeatsSelected()
+    ) {
 
-            if (!response.ok) {
-                throw new Error(
-                    data.error ||
-                    "Could not reserve your seats."
-                );
-            }
+        alert(
+            "Please select a seat for every Main Hall and VIP attendee."
+        );
 
-            sessionStorage.setItem(
-                "pretixCart",
-                JSON.stringify(
-                    data
-                )
-            );
+        return;
 
-            window.location.href =
-                "addons.html";
-
-        } catch (error) {
-            console.error(error);
-
-            message.textContent =
-                error.message ||
-                "Could not reserve your seats.";
-
-            continueButton.disabled =
-                false;
-        }
     }
 
-    loadSeats();
+
+    localStorage.setItem(
+        "selectedSeats",
+        JSON.stringify(
+            selectedSeats
+        )
+    );
+
+
+    /*
+     * If Watch Party tickets exist,
+     * do NOT create the Pretix cart yet.
+     *
+     * The Watch Party page will add
+     * those seats and create the final cart.
+     */
+
+    if (
+        ticketQuantities.watchParty > 0
+    ) {
+
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+
+
+        window.location.href =
+            "watch-party-seats.html";
+
+
+        return;
+
+    }
+
+
+    /*
+     * No Watch Party tickets.
+     *
+     * Main Hall/VIP seating is complete,
+     * so create the Pretix cart now.
+     */
+
+    const button =
+        document.querySelector(
+            ".continue-button"
+        );
+
+
+    button.disabled =
+        true;
+
+    button.textContent =
+        "Securing seats...";
+
+
+    try {
+
+        await createPretixCart();
+
+
+        sessionStorage.setItem(
+            "seatsCompleted",
+            "true"
+        );
+
+
+        window.location.href =
+            "addons.html";
+
+    } catch (error) {
+
+        console.error(
+            "Create cart error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Could not reserve your seats. Please try again."
+        );
+
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Continue";
+
+    }
+
+}
+
+
+/* =========================================
+   INITIALISE
+   ========================================= */
+
+async function initialiseSeats() {
+
+    if (
+        mainHallAttendees.length === 0
+    ) {
+
+        document.getElementById(
+            "venueTitle"
+        ).textContent =
+            "No Main Hall seats needed.";
+
+    } else {
+
+        await loadPretixSeatStatus();
+
+        renderAttendees();
+
+        renderSeats();
+
+        updateCurrentAttendee();
+
+    }
+
+
+    if (
+        ticketQuantities.watchParty === 0
+    ) {
+
+        document.getElementById(
+            "nextVenueNotice"
+        ).style.display =
+            "none";
+
+    }
+
+}
+
+
+initialiseSeats();
+
+
+/* Hide next-venue notice if there
+   are no Watch Party tickets */
+
+if (
+    ticketQuantities.watchParty === 0
+) {
+
+    document.getElementById(
+        "nextVenueNotice"
+    ).style.display =
+        "none";
+
+}
+
 </script>
 
 </body>
+
 </html>
+```
