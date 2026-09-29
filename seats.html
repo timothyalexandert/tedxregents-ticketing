@@ -482,6 +482,43 @@ let selectedSeats =
 
 
 /* =========================================
+   REMOVE STALE SEAT SELECTIONS
+   ========================================= */
+
+const validAttendeeNumbers =
+    new Set(
+        attendeeList.map(
+            attendee => String(attendee.number)
+        )
+    );
+
+
+Object.keys(selectedSeats).forEach(
+    attendeeNumber => {
+
+        if (
+            !validAttendeeNumbers.has(
+                String(attendeeNumber)
+            )
+        ) {
+
+            delete selectedSeats[
+                attendeeNumber
+            ];
+
+        }
+
+    }
+);
+
+
+localStorage.setItem(
+    "selectedSeats",
+    JSON.stringify(selectedSeats)
+);
+
+
+/* =========================================
    RENDER ATTENDEES
    ========================================= */
 
@@ -950,18 +987,15 @@ async function createPretixCart() {
         Watch Party
     */
 
-    const seats =
-        Object.keys(selectedSeats)
-            .sort(
-                (a, b) =>
-                    Number(a) - Number(b)
-            )
-            .map(
-                attendeeNumber =>
-                    selectedSeats[
-                        attendeeNumber
-                    ].id
-            );
+        const seats =
+            mainHallAttendees
+                .map(
+                    attendee =>
+                        selectedSeats[
+                            attendee.number
+                        ]?.id
+                )
+                .filter(Boolean);
 
 
     const response =
