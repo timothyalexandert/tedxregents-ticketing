@@ -1,4 +1,3 @@
-```javascript
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
@@ -10,6 +9,134 @@ const PRETIX_BASE =
   "https://pretix.eu/api/v1/organizers/TEDxRegents/events/2027";
 
 const MAX_TICKETS_PER_ORDER = 10;
+
+
+/* =========================================
+   LOAD TICKET INFORMATION FROM PRETIX
+   ========================================= */
+
+async function loadTicketInformation(orderCode, expectedTicketCount) {
+
+  const positionsResponse =
+    await fetch(
+      `${PRETIX_BASE}/orderpositions/?order=${encodeURIComponent(
+        orderCode
+      )}`,
+      {
+        method: "GET",
+
+        headers: {
+          Authorization:
+            `Token ${process.env.PRETIX_API_TOKEN}`,
+
+          Accept:
+            "application/json",
+        },
+      }
+    );
+
+
+  const positionsText =
+    await positionsResponse.text();
+
+  let positionsData;
+
+  try {
+    positionsData =
+      JSON.parse(
+        positionsText
+      );
+  } catch {
+    positionsData =
+      positionsText;
+  }
+
+
+  if (
+    !positionsResponse.ok
+  ) {
+
+    console.error(
+      "Could not load Pretix order positions:",
+      JSON.stringify(
+        positionsData,
+        null,
+        2
+      )
+    );
+
+    throw new Error(
+      "The order was created, but the ticket information could not be loaded."
+    );
+
+  }
+
+
+  const ticketPositions =
+    Array.isArray(
+      positionsData.results
+    )
+      ? positionsData.results.filter(
+          position =>
+            position.addon_to == null
+        )
+      : [];
+
+
+  if (
+    ticketPositions.length !==
+    expectedTicketCount
+  ) {
+
+    console.error(
+      "Unexpected Pretix ticket position count:",
+      {
+        expected:
+          expectedTicketCount,
+
+        received:
+          ticketPositions.length,
+
+        positions:
+          positionsData.results,
+      }
+    );
+
+    throw new Error(
+      "The order was created, but the ticket information is incomplete."
+    );
+
+  }
+
+
+  return ticketPositions.map(
+    position => ({
+
+      positionId:
+        position.positionid,
+
+      secret:
+        position.secret,
+
+      attendeeName:
+        position.attendee_name,
+
+      attendeeEmail:
+        position.attendee_email,
+
+      item:
+        position.item,
+
+      variation:
+        position.variation,
+
+      seat:
+        position.seat,
+
+    })
+  );
+
+}
 
 
 /* =========================================
@@ -25,9 +152,12 @@ export default async function handler(req, res) {
     });
   }
 
+
   try {
 
-    const body = req.body;
+    const body =
+      req.body;
+
 
     if (
       !body ||
@@ -38,6 +168,7 @@ export default async function handler(req, res) {
         error: "Invalid request body.",
       });
     }
+
 
     const {
       checkoutId,
@@ -74,11 +205,34 @@ export default async function handler(req, res) {
         `tedx:checkout:${checkoutId}`
       );
 
+
     if (!checkout) {
       return res.status(400).json({
         success: false,
         error:
           "Your checkout has expired. Please start again.",
+      });
+    }
+
+
+    /* =====================================
+       VALIDATE TICKETS
+       ===================================== */
+
+    const tickets =
+      checkout.tickets;
+
+
+    if (
+      !Array.isArray(tickets) ||
+      tickets.length === 0 ||
+      tickets.length >
+        MAX_TICKETS_PER_ORDER
+    ) {
+      return res.status(400).json({
+        success: false,
+        error:
+          "Invalid ticket reservation.",
       });
     }
 
@@ -91,6 +245,7 @@ export default async function handler(req, res) {
       await redis.get(
         `tedx:cart:${checkoutId}`
       );
+
 
     if (!savedCart) {
       return res.status(400).json({
@@ -122,35 +277,94 @@ export default async function handler(req, res) {
         `tedx:order:${checkoutId}`
       );
 
+
     if (existingOrder) {
 
-      return res.status(200).json({
-        success: true,
-        existing: true,
-        ...existingOrder,
-      });
+      /*
+        If the order already has ticket
+        information, simply return it.
+      */
 
-    }
+      if (
+        Array.isArray(
+          existingOrder.tickets
+        ) &&
+        existingOrder.tickets.length > 0
+      ) {
+
+        return res.status(200).json({
+          success: true,
+          existing: true,
+          order:
+            existingOrder,
+        });
+
+      }
 
 
-    /* =====================================
-       VALIDATE TICKETS
-       ===================================== */
+      /*
+        Existing order does not have ticket
+        information yet.
 
-    const tickets =
-      checkout.tickets;
+        This handles older orders such as
+        the current 7MLCS order.
+      */
 
-    if (
-      !Array.isArray(tickets) ||
-      tickets.length === 0 ||
-      tickets.length >
-        MAX_TICKETS_PER_ORDER
-    ) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "Invalid ticket reservation.",
-      });
+      try {
+
+        const ticketInformation =
+          await loadTicketInformation(
+            existingOrder.orderCode,
+            tickets.length
+          );
+
+
+        const updatedOrder = {
+
+          ...existingOrder,
+
+          tickets:
+            ticketInformation,
+
+        };
+
+
+        await redis.set(
+          `tedx:order:${checkoutId}`,
+          updatedOrder
+        );
+
+
+        return res.status(200).json({
+
+          success: true,
+
+          existing: true,
+
+          order:
+            updatedOrder,
+
+        });
+
+      } catch (error) {
+
+        console.error(
+          "Existing order ticket backfill failed:",
+          error
+        );
+
+        return res.status(500).json({
+
+          success: false,
+
+          error:
+            error.message ||
+            "The existing order was found, but its ticket information could not be loaded.",
+
+        });
+
+      }
+
     }
 
 
@@ -169,26 +383,31 @@ export default async function handler(req, res) {
       });
     }
 
+
     const ordererName =
       String(
         ordererDetails.name || ""
       ).trim();
+
 
     const ordererEmail =
       String(
         ordererDetails.email || ""
       ).trim();
 
+
     let ordererPhone =
       String(
         ordererDetails.phone || ""
       ).trim();
+
 
     ordererPhone =
       ordererPhone.replace(
         /[\s()-]/g,
         ""
       );
+
 
     if (
       ordererPhone.startsWith("08")
@@ -198,6 +417,7 @@ export default async function handler(req, res) {
         ordererPhone.slice(1);
     }
 
+
     if (
       ordererPhone.startsWith("62")
     ) {
@@ -205,6 +425,7 @@ export default async function handler(req, res) {
         "+" +
         ordererPhone;
     }
+
 
     if (
       !ordererName ||
@@ -242,9 +463,15 @@ export default async function handler(req, res) {
 
       if (
         !attendee ||
-        !String(attendee.name || "").trim() ||
-        !String(attendee.email || "").trim() ||
-        !String(attendee.phone || "").trim()
+        !String(
+          attendee.name || ""
+        ).trim() ||
+        !String(
+          attendee.email || ""
+        ).trim() ||
+        !String(
+          attendee.phone || ""
+        ).trim()
       ) {
         return res.status(400).json({
           success: false,
@@ -302,11 +529,14 @@ export default async function handler(req, res) {
       const ticket =
         tickets[index];
 
+
       const attendee =
         attendees[index];
 
+
       const savedSeat =
         savedCart.seats?.[index];
+
 
       if (!savedSeat?.seatGuid) {
         return res.status(400).json({
@@ -335,12 +565,17 @@ export default async function handler(req, res) {
           savedSeat.seatGuid,
 
         attendee_name:
-          String(attendee.name).trim(),
+          String(
+            attendee.name
+          ).trim(),
 
         attendee_email:
-          String(attendee.email).trim(),
+          String(
+            attendee.email
+          ).trim(),
 
       });
+
 
       positionId++;
 
@@ -353,7 +588,7 @@ export default async function handler(req, res) {
 
     const ADDONS = [
       {
-        key: "tote",
+        key: "toteBag",
         item: 1162126,
         price: 60000,
       },
@@ -385,14 +620,6 @@ export default async function handler(req, res) {
     ];
 
 
-    /*
-      Add-ons are attached to the first
-      ticket position.
-
-      Only add-ons with quantity > 0
-      are included.
-    */
-
     const firstTicketPositionId =
       1;
 
@@ -412,6 +639,7 @@ export default async function handler(req, res) {
             addons[addon.key] || 0
           );
 
+
         if (
           !Number.isInteger(quantity) ||
           quantity <= 0
@@ -419,7 +647,10 @@ export default async function handler(req, res) {
           continue;
         }
 
-        if (quantity > 100) {
+
+        if (
+          quantity > 100
+        ) {
           return res.status(400).json({
             success: false,
             error:
@@ -448,6 +679,7 @@ export default async function handler(req, res) {
             firstTicketPositionId,
 
         });
+
 
         positionId++;
 
@@ -551,7 +783,9 @@ export default async function handler(req, res) {
     const responseText =
       await response.text();
 
+
     let pretixData;
+
 
     try {
 
@@ -583,6 +817,7 @@ export default async function handler(req, res) {
         )
       );
 
+
       return res.status(
         response.status
       ).json({
@@ -607,157 +842,36 @@ export default async function handler(req, res) {
        LOAD TICKET POSITIONS
        ===================================== */
 
-    const positionsResponse =
-      await fetch(
-        `${PRETIX_BASE}/orderpositions/?order=${encodeURIComponent(
-          pretixData.code
-        )}`,
-        {
-          method: "GET",
+    let ticketInformation;
 
-          headers: {
-
-            Authorization:
-              `Token ${process.env.PRETIX_API_TOKEN}`,
-
-            Accept:
-              "application/json",
-
-          },
-
-        }
-      );
-
-
-    const positionsText =
-      await positionsResponse.text();
-
-    let positionsData;
 
     try {
 
-      positionsData =
-        JSON.parse(
-          positionsText
+      ticketInformation =
+        await loadTicketInformation(
+          pretixData.code,
+          tickets.length
         );
 
-    } catch {
-
-      positionsData =
-        positionsText;
-
-    }
-
-
-    /* =====================================
-       CHECK POSITION RESPONSE
-       ===================================== */
-
-    if (
-      !positionsResponse.ok
-    ) {
+    } catch (error) {
 
       console.error(
-        "Could not load Pretix order positions:",
-        JSON.stringify(
-          positionsData,
-          null,
-          2
-        )
+        "Could not load ticket information:",
+        error
       );
+
 
       return res.status(500).json({
 
         success: false,
 
         error:
+          error.message ||
           "The order was created, but the ticket information could not be loaded.",
 
-        pretix:
-          positionsData,
-
       });
 
     }
-
-
-    /* =====================================
-       EXTRACT ACTUAL TICKETS
-       ===================================== */
-
-    const ticketPositions =
-      Array.isArray(
-        positionsData.results
-      )
-        ? positionsData.results.filter(
-            position =>
-              !position.addon_to
-          )
-        : [];
-
-
-    if (
-      ticketPositions.length !==
-      tickets.length
-    ) {
-
-      console.error(
-        "Unexpected Pretix ticket position count:",
-        {
-          expected:
-            tickets.length,
-
-          received:
-            ticketPositions.length,
-
-          positions:
-            positionsData.results,
-        }
-      );
-
-      return res.status(500).json({
-
-        success: false,
-
-        error:
-          "The order was created, but the ticket information is incomplete.",
-
-      });
-
-    }
-
-
-    /* =====================================
-       BUILD TICKET INFORMATION
-       ===================================== */
-
-    const ticketInformation =
-      ticketPositions.map(
-        position => ({
-
-          positionId:
-            position.positionid,
-
-          secret:
-            position.secret,
-
-          attendeeName:
-            position.attendee_name,
-
-          attendeeEmail:
-            position.attendee_email,
-
-          item:
-            position.item,
-
-          variation:
-            position.variation,
-
-          seat:
-            position.seat,
-
-        })
-      );
 
 
     /* =====================================
@@ -815,12 +929,14 @@ export default async function handler(req, res) {
 
     });
 
+
   } catch (error) {
 
     console.error(
       "Create order error:",
       error
     );
+
 
     return res.status(500).json({
 
@@ -835,3 +951,4 @@ export default async function handler(req, res) {
   }
 
 }
+```
