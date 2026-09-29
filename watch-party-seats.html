@@ -44,17 +44,17 @@
 </div>
 
 
-<!-- BACK -->
+    <!-- BACK -->
 
-<button
-    type="button"
-    class="ticketing-back-button"
-    onclick="window.location.href='seats.html'"
->
-    ‹
-</button>
-
-<!-- --- -->
+    <button
+        type="button"
+        class="ticketing-back-button"
+        onclick="goBackFromWatchPartySeats()"
+    >
+        ‹
+    </button>
+    
+    <!-- --- -->
 
 
 <section class="seats-section">
@@ -186,6 +186,105 @@
 <script src="progress.js"></script>
 
 <script>
+
+async function goBackFromWatchPartySeats() {
+
+    const checkoutData =
+        JSON.parse(
+            sessionStorage.getItem("checkout")
+        );
+
+    const checkoutId =
+        checkoutData &&
+        (
+            checkoutData.checkoutId ||
+            checkoutData.checkout_id
+        );
+
+
+    if (checkoutId) {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/release-cart",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            checkoutId:
+                                checkoutId
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !response.ok ||
+                !data.success
+            ) {
+
+                console.error(
+                    "Could not release seat reservation:",
+                    data
+                );
+
+                alert(
+                    "We couldn't release your seat reservation. Please try again."
+                );
+
+                return;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Release cart error:",
+                error
+            );
+
+            alert(
+                "We couldn't release your seat reservation. Please check your connection and try again."
+            );
+
+            return;
+        }
+    }
+
+
+    localStorage.removeItem(
+        "selectedSeats"
+    );
+
+
+    sessionStorage.removeItem(
+        "pretixCart"
+    );
+
+
+    sessionStorage.removeItem(
+        "seatsCompleted"
+    );
+
+
+    sessionStorage.removeItem(
+        "watchPartySeatsCompleted"
+    );
+
+
+    window.location.href =
+        "seats.html";
+}
 
 /* =========================================
    LOAD DATA
