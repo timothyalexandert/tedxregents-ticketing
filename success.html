@@ -1,114 +1,220 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmed — TEDxRegents Secondary School Bali YOUTH</title>
 
-    <link rel="stylesheet" href="style.css">
+```
+<meta charset="UTF-8">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Order Confirmed — TEDxRegents Secondary School Bali YOUTH
+</title>
+
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+```
+
 </head>
 
 <body>
 
 <header class="site-header">
-    <img
-        src="logo-white.png"
-        alt="TEDxRegents Secondary School Bali YOUTH"
-        class="site-logo"
-    >
+
+```
+<img
+    src="logo-white.png"
+    alt="TEDxRegents Secondary School Bali YOUTH"
+    class="site-logo"
+>
+```
+
 </header>
 
 <main>
 
-    <section class="success-section">
+```
+<section class="success-section">
 
-        <div class="success-icon">
-            ✓
+    <div class="success-icon">
+        ✓
+    </div>
+
+
+    <p class="eyebrow">
+        ORDER CONFIRMED
+    </p>
+
+
+    <h1>
+        You're all set.
+    </h1>
+
+
+    <p class="subtitle">
+        Thank you for getting your tickets to TEDxRegents Secondary School Bali YOUTH.
+    </p>
+
+
+    <!-- ORDER SUMMARY -->
+
+    <div class="success-summary">
+
+        <div class="success-summary-heading">
+
+            <h2>
+                Order Summary
+            </h2>
+
         </div>
 
-        <p class="eyebrow">ORDER CONFIRMED</p>
 
-        <h1>You're all set.</h1>
+        <div class="success-detail">
 
-        <p class="subtitle">
-            Thank you for getting your tickets to TEDxRegents Secondary School Bali YOUTH.
+            <span>
+                Name
+            </span>
+
+            <strong id="successName">
+                —
+            </strong>
+
+        </div>
+
+
+        <div class="success-detail">
+
+            <span>
+                Total
+            </span>
+
+            <strong id="successTotal">
+                Rp0
+            </strong>
+
+        </div>
+
+
+        <div class="success-detail">
+
+            <span>
+                Payment Method
+            </span>
+
+            <strong id="successPaymentMethod">
+                —
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <!-- TICKETS -->
+
+    <div
+        class="success-next"
+        id="ticketsSection"
+        style="display: none;"
+    >
+
+        <h2>
+            Your Tickets
+        </h2>
+
+
+        <p>
+            Please keep these tickets available for check-in at the event.
         </p>
 
 
-        <!-- ORDER SUMMARY -->
-
-        <div class="success-summary">
-
-            <div class="success-summary-heading">
-                <h2>Order Summary</h2>
-            </div>
-
-            <div class="success-detail">
-                <span>Name</span>
-                <strong id="successName">—</strong>
-            </div>
-
-            <div class="success-detail">
-                <span>Total</span>
-                <strong id="successTotal">Rp0</strong>
-            </div>
-
-            <div class="success-detail">
-                <span>Payment Method</span>
-                <strong id="successPaymentMethod">—</strong>
-            </div>
-
-        </div>
-
-
-        <!-- TICKETS -->
+        <!-- DOWNLOAD ALL -->
 
         <div
-            class="success-next"
-            id="ticketsSection"
-            style="display: none;"
+            id="downloadAllContainer"
+            style="display: none; margin-top: 24px; text-align: center;"
         >
 
-            <h2>Your Tickets</h2>
+            <button
+                type="button"
+                id="downloadAllButton"
+                style="
+                    display: inline-block;
+                    padding: 12px 22px;
+                    border: none;
+                    border-radius: 6px;
+                    background: #EB0028;
+                    color: #FFFFFF;
+                    font-size: 14px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    letter-spacing: 0.01em;
+                "
+            >
+                Download All Tickets
+            </button>
 
-            <p>
-                Please keep these tickets available for check-in at the event.
+
+            <p
+                style="
+                    margin: 9px 0 0;
+                    font-size: 12px;
+                    color: #386284;
+                "
+            >
+                Downloads all your ticket QR codes in one ZIP file.
             </p>
-
-            <div id="ticketCards"></div>
 
         </div>
 
 
-        <!-- NEXT STEPS -->
+        <div id="ticketCards"></div>
 
-        <div class="success-next">
-
-            <h2>What's next?</h2>
-
-            <p id="successMessage">
-                Your order has been recorded successfully.
-            </p>
-
-        </div>
+    </div>
 
 
-        <p class="success-note">
-            Please keep your order confirmation available and bring it with you on the day of the event.
+    <!-- NEXT STEPS -->
+
+    <div class="success-next">
+
+        <h2>
+            What's next?
+        </h2>
+
+
+        <p id="successMessage">
+            Your order has been recorded successfully.
         </p>
 
+    </div>
 
-        <button
-            type="button"
-            class="continue-button"
-            id="backHome"
-        >
-            Back to Tickets
-        </button>
 
-    </section>
+    <p class="success-note">
+        Please keep your order confirmation available and bring it with you on the day of the event.
+    </p>
+
+
+    <button
+        type="button"
+        class="continue-button"
+        id="backHome"
+    >
+        Back to Tickets
+    </button>
+
+</section>
+```
 
 </main>
 
@@ -116,12 +222,20 @@
 
 <script>
 
-function getStoredJSON(key, fallback) {
+/* =========================
+   GET STORED JSON
+========================= */
+
+function getStoredJSON(
+    key,
+    fallback
+) {
 
     try {
 
         const value =
             localStorage.getItem(key);
+
 
         return value
             ? JSON.parse(value)
@@ -146,17 +260,20 @@ const ordererDetails =
         {}
     );
 
+
 const quantities =
     getStoredJSON(
         "ticketQuantities",
         {}
     );
 
+
 const addons =
     getStoredJSON(
         "addons",
         {}
     );
+
 
 const paymentMethod =
     localStorage.getItem(
@@ -170,12 +287,14 @@ const paymentMethod =
 
 let pretixOrder = null;
 
+
 try {
 
     const storedOrder =
         sessionStorage.getItem(
             "pretixOrder"
         );
+
 
     if (storedOrder) {
 
@@ -215,10 +334,12 @@ const mainHallCount =
         quantities.mainHall
     ) || 0;
 
+
 const vipCount =
     Number(
         quantities.vip
     ) || 0;
+
 
 const watchPartyCount =
     Number(
@@ -231,7 +352,9 @@ const watchPartyCount =
 ========================= */
 
 const mainVipTotal =
-    mainHallCount + vipCount;
+    mainHallCount +
+    vipCount;
+
 
 const mainVipEarlyBird =
     Math.min(
@@ -239,11 +362,13 @@ const mainVipEarlyBird =
         10
     );
 
+
 const mainHallEarlyBird =
     Math.min(
         mainHallCount,
         mainVipEarlyBird
     );
+
 
 const vipEarlyBird =
     Math.min(
@@ -252,19 +377,23 @@ const vipEarlyBird =
         mainHallEarlyBird
     );
 
+
 const mainHallNormal =
     mainHallCount -
     mainHallEarlyBird;
 
+
 const vipNormal =
     vipCount -
     vipEarlyBird;
+
 
 const watchPartyEarlyBird =
     Math.min(
         watchPartyCount,
         10
     );
+
 
 const watchPartyNormal =
     watchPartyCount -
@@ -277,25 +406,31 @@ const watchPartyNormal =
 
 let ticketTotal = 0;
 
+
 ticketTotal +=
     mainHallEarlyBird *
     40000;
+
 
 ticketTotal +=
     mainHallNormal *
     45000;
 
+
 ticketTotal +=
     vipEarlyBird *
     50000;
+
 
 ticketTotal +=
     vipNormal *
     55000;
 
+
 ticketTotal +=
     watchPartyEarlyBird *
     25000;
+
 
 ticketTotal +=
     watchPartyNormal *
@@ -342,11 +477,15 @@ Object.keys(
                 addons[key]
             ) || 0;
 
+
         if (
             !addonPrices[key]
         ) {
+
             return;
+
         }
+
 
         addonTotal +=
             quantity *
@@ -544,6 +683,11 @@ function getTicketType(
     }
 
 
+    /*
+       These item IDs can be expanded
+       later if needed.
+    */
+
     return "Ticket";
 
 }
@@ -570,26 +714,35 @@ function getSeatName(
 
         }
 
+
         const zone =
             ticket.seat.zone_name || "";
+
 
         const row =
             ticket.seat.row_name || "";
 
+
         const number =
             ticket.seat.seat_number || "";
 
+
         const parts = [
+
             zone,
+
             row
                 ? `Row ${row}`
                 : "",
+
             number
                 ? `Seat ${number}`
                 : ""
+
         ].filter(
             Boolean
         );
+
 
         if (
             parts.length > 0
@@ -632,6 +785,7 @@ function downloadQRCode(
         qrContainer.querySelector(
             "canvas"
         );
+
 
     const image =
         qrContainer.querySelector(
@@ -698,6 +852,194 @@ function downloadQRCode(
 
 
 /* =========================
+   DOWNLOAD ALL TICKETS
+========================= */
+
+async function downloadAllTickets() {
+
+    if (
+        ticketData.length <= 1
+    ) {
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "downloadAllButton"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Preparing tickets...";
+
+
+    try {
+
+        const zip =
+            new JSZip();
+
+
+        const qrContainers =
+            document.querySelectorAll(
+                ".ticket-qr"
+            );
+
+
+        if (
+            qrContainers.length !==
+            ticketData.length
+        ) {
+
+            throw new Error(
+                "The tickets are still loading. Please try again."
+            );
+
+        }
+
+
+        for (
+            let i = 0;
+            i < qrContainers.length;
+            i++
+        ) {
+
+            const qrContainer =
+                qrContainers[i];
+
+
+            const canvas =
+                qrContainer.querySelector(
+                    "canvas"
+                );
+
+
+            const image =
+                qrContainer.querySelector(
+                    "img"
+                );
+
+
+            let dataURL = null;
+
+
+            if (canvas) {
+
+                dataURL =
+                    canvas.toDataURL(
+                        "image/png"
+                    );
+
+            } else if (image) {
+
+                dataURL =
+                    image.src;
+
+            }
+
+
+            if (!dataURL) {
+
+                continue;
+
+            }
+
+
+            const base64 =
+                dataURL.split(
+                    ","
+                )[1];
+
+
+            zip.file(
+                `TEDx-Ticket-${i + 1}-QR.png`,
+                base64,
+                {
+                    base64: true
+                }
+            );
+
+        }
+
+
+        const blob =
+            await zip.generateAsync(
+                {
+                    type: "blob"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+
+        link.download =
+            "TEDx-Tickets.zip";
+
+
+        document.body.appendChild(
+            link
+        );
+
+
+        link.click();
+
+
+        document.body.removeChild(
+            link
+        );
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Could not download all tickets:",
+            error
+        );
+
+
+        alert(
+            "The tickets could not be downloaded. Please try again."
+        );
+
+    }
+
+
+    button.disabled =
+        false;
+
+
+    button.textContent =
+        "Download All Tickets";
+
+}
+
+
+/* =========================
    DISPLAY TICKETS
 ========================= */
 
@@ -708,9 +1050,16 @@ function displayTickets() {
             "ticketsSection"
         );
 
+
     const ticketCards =
         document.getElementById(
             "ticketCards"
+        );
+
+
+    const downloadAllContainer =
+        document.getElementById(
+            "downloadAllContainer"
         );
 
 
@@ -735,6 +1084,29 @@ function displayTickets() {
         "";
 
 
+    /*
+       Only show "Download All Tickets"
+       when there is more than one ticket.
+    */
+
+    if (
+        ticketData.length > 1
+    ) {
+
+        downloadAllContainer.style.display =
+            "block";
+
+
+        document.getElementById(
+            "downloadAllButton"
+        ).addEventListener(
+            "click",
+            downloadAllTickets
+        );
+
+    }
+
+
     ticketData.forEach(
         (ticket, index) => {
 
@@ -747,9 +1119,9 @@ function displayTickets() {
             card.style.cssText = `
                 margin-top: 24px;
                 padding: 24px;
-                border: 1px solid #ddd;
+                border: 1px solid #D9E2E8;
                 border-radius: 12px;
-                background: #fff;
+                background: #FFFFFF;
                 text-align: center;
             `;
 
@@ -769,7 +1141,7 @@ function displayTickets() {
                 font-size: 12px;
                 font-weight: 700;
                 letter-spacing: 0.12em;
-                color: #777;
+                color: #EB0028;
             `;
 
 
@@ -788,6 +1160,7 @@ function displayTickets() {
             ticketType.style.cssText = `
                 margin: 0 0 8px;
                 font-size: 22px;
+                color: #062335;
             `;
 
 
@@ -806,7 +1179,8 @@ function displayTickets() {
             attendee.style.cssText = `
                 margin: 0 0 6px;
                 font-size: 16px;
-                font-weight: 600;
+                font-weight: 700;
+                color: #191919;
             `;
 
 
@@ -825,7 +1199,7 @@ function displayTickets() {
             seat.style.cssText = `
                 margin: 0 0 20px;
                 font-size: 14px;
-                color: #666;
+                color: #386284;
             `;
 
 
@@ -833,6 +1207,10 @@ function displayTickets() {
                 document.createElement(
                     "div"
                 );
+
+
+            qr.className =
+                "ticket-qr";
 
 
             qr.style.cssText = `
@@ -846,17 +1224,21 @@ function displayTickets() {
                 ticketNumber
             );
 
+
             card.appendChild(
                 ticketType
             );
+
 
             card.appendChild(
                 attendee
             );
 
+
             card.appendChild(
                 seat
             );
+
 
             card.appendChild(
                 qr
@@ -886,7 +1268,7 @@ function displayTickets() {
 
 
                 /*
-                   Download button
+                   Individual download button
                 */
 
                 const downloadButton =
@@ -907,12 +1289,12 @@ function displayTickets() {
                     display: inline-block;
                     margin-top: 8px;
                     padding: 10px 18px;
-                    border: none;
+                    border: 2px solid #EB0028;
                     border-radius: 6px;
-                    background: #191919;
-                    color: #fff;
+                    background: #EB0028;
+                    color: #FFFFFF;
                     font-size: 13px;
-                    font-weight: 600;
+                    font-weight: 700;
                     cursor: pointer;
                 `;
 
@@ -946,8 +1328,12 @@ function displayTickets() {
                     "QR code unavailable.";
 
 
-                errorText.style.color =
-                    "#b00020";
+                errorText.style.cssText = `
+                    margin-top: 12px;
+                    color: #EB0028;
+                    font-size: 13px;
+                    font-weight: 600;
+                `;
 
 
                 card.appendChild(
@@ -993,5 +1379,5 @@ document.getElementById(
 </script>
 
 </body>
+
 </html>
-```
