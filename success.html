@@ -222,6 +222,31 @@
 <script>
 
 /* =========================
+   PREVENT BACK INTO CHECKOUT
+========================= */
+
+window.history.pushState(
+    {
+        successPage: true
+    },
+    "",
+    window.location.href
+);
+
+
+window.addEventListener(
+    "popstate",
+    function () {
+
+        window.location.replace(
+            "index.html"
+        );
+
+    }
+);
+
+
+/* =========================
    GET STORED JSON
 ========================= */
 
