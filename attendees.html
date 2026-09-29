@@ -6,9 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
 
 <link rel="stylesheet" href="style.css">
+
 
 </head>
 
@@ -36,6 +38,7 @@
 </div>
 
 
+<!-- back button -->
 <button
     type="button"
     class="ticketing-back-button"
@@ -109,10 +112,9 @@ let attendeeNumber = 0;
 
 
 const totalAttendees =
-    Number(ticketQuantities.mainHall || 0) +
-    Number(ticketQuantities.vip || 0) +
-    Number(ticketQuantities.watchParty || 0);
-
+    ticketQuantities.mainHall +
+    ticketQuantities.vip +
+    ticketQuantities.watchParty;
 
 console.log(
     "Ticket quantities:",
@@ -123,15 +125,14 @@ console.log(
     "Total attendees:",
     totalAttendees
 );
-
-
+    
 /* =========================
    ADD ATTENDEE FIELDS
 ========================= */
 
 function addAttendeeFields(ticketType, quantity) {
 
-    for (let i = 1; i <= Number(quantity || 0); i++) {
+    for (let i = 1; i <= quantity; i++) {
 
         attendeeNumber++;
 
@@ -154,7 +155,7 @@ function addAttendeeFields(ticketType, quantity) {
             }
 
 
-            box.innerHTML = 
+            box.innerHTML = `
 
                 <summary class="attendee-heading">
 
@@ -265,7 +266,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
-            ;
+            `;
 
             attendeeFields.appendChild(box);
 
@@ -278,7 +279,7 @@ function addAttendeeFields(ticketType, quantity) {
                 "attendee-box";
 
 
-            box.innerHTML = 
+            box.innerHTML = `
 
                 <div class="attendee-heading">
 
@@ -387,7 +388,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
-            ;
+            `;
 
             attendeeFields.appendChild(box);
         }
@@ -543,14 +544,6 @@ document
             "true"
         );
 
-
-        /*
-         * If Main Hall tickets were purchased,
-         * go to Main Hall/VIP seating.
-         *
-         * If no Main Hall tickets were purchased,
-         * go directly to Watch Party seating.
-         */
 
         if (
             Number(ticketQuantities.mainHall || 0) > 0
