@@ -562,8 +562,21 @@ document
 
         } else {
 
-            window.location.href =
-                "seats.html";
+           if (
+                Number(ticketQuantities.mainHall || 0) === 0 &&
+                Number(ticketQuantities.vip || 0) === 0 &&
+                Number(ticketQuantities.watchParty || 0) > 0
+            ) {
+            
+                window.location.href =
+                    "watch-party-seats.html";
+            
+            } else {
+            
+                window.location.href =
+                    "seats.html";
+            
+            }
 
         }
 
