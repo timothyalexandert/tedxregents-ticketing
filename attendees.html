@@ -37,16 +37,13 @@
     <span>07 Payment</span>
 </div>
 
-
-<!-- back button -->
-    <button
-        type="button"
-        class="ticketing-back-button"
-        onclick="window.location.href='details.html'"
-    >
-        ‹
-    </button>
-
+<button
+    type="button"
+    class="ticketing-back-button"
+    onclick="window.location.href='details.html'"
+>
+    ‹
+</button>
 
 <section class="details-section">
 
@@ -58,11 +55,9 @@
         Enter the details of each person attending the event.
     </p>
 
-
     <form id="attendeesForm" class="attendees-form">
 
         <div id="attendeeFields"></div>
-
 
         <button
             type="submit"
@@ -74,7 +69,7 @@
     </form>
 
 </section>
-
+```
 
 </main>
 
@@ -85,7 +80,6 @@
 const savedTicketQuantities =
     localStorage.getItem("ticketQuantities");
 
-
 const ticketQuantities =
     savedTicketQuantities
         ? JSON.parse(savedTicketQuantities)
@@ -95,7 +89,6 @@ const ticketQuantities =
             watchParty: 0
         };
 
-
 const ordererDetails =
     JSON.parse(localStorage.getItem("ordererDetails")) || {
         name: "",
@@ -103,18 +96,24 @@ const ordererDetails =
         phone: ""
     };
 
-
 const attendeeFields =
     document.getElementById("attendeeFields");
 
-
 let attendeeNumber = 0;
 
+const mainHallQuantity =
+    Number(ticketQuantities.mainHall || 0);
+
+const vipQuantity =
+    Number(ticketQuantities.vip || 0);
+
+const watchPartyQuantity =
+    Number(ticketQuantities.watchParty || 0);
 
 const totalAttendees =
-    ticketQuantities.mainHall +
-    ticketQuantities.vip +
-    ticketQuantities.watchParty;
+    mainHallQuantity +
+    vipQuantity +
+    watchPartyQuantity;
 
 console.log(
     "Ticket quantities:",
@@ -125,7 +124,8 @@ console.log(
     "Total attendees:",
     totalAttendees
 );
-    
+
+
 /* =========================
    ADD ATTENDEE FIELDS
 ========================= */
@@ -136,27 +136,21 @@ function addAttendeeFields(ticketType, quantity) {
 
         attendeeNumber++;
 
+        const box =
+            totalAttendees > 2
+                ? document.createElement("details")
+                : document.createElement("div");
 
-        /*
-            Use collapsible boxes for 3+ attendees.
-            Keep normal boxes for 1–2 attendees.
-        */
+        box.className =
+            "attendee-box";
 
         if (totalAttendees > 2) {
-
-            const box =
-                document.createElement("details");
-
-            box.className =
-                "attendee-box";
 
             if (attendeeNumber === 1) {
                 box.open = true;
             }
 
-
             box.innerHTML = 
-
                 <summary class="attendee-heading">
 
                     <span class="attendee-name">
@@ -168,10 +162,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </summary>
 
-
                 <div class="attendee-content">
-
-                    <!-- FULL NAME -->
 
                     <div class="form-group">
 
@@ -190,8 +181,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
-
-                    <!-- PHONE -->
 
                     <div class="form-group">
 
@@ -217,7 +206,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
-
                         <input
                             type="tel"
                             id="attendeePhone${attendeeNumber}"
@@ -227,8 +215,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
-
-                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -254,7 +240,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
-
                         <input
                             type="email"
                             id="attendeeEmail${attendeeNumber}"
@@ -265,22 +250,11 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
                 </div>
-
-            ;
-
-            attendeeFields.appendChild(box);
+            `;
 
         } else {
 
-            const box =
-                document.createElement("div");
-
-            box.className =
-                "attendee-box";
-
-
-            box.innerHTML = 
-
+            box.innerHTML = `
                 <div class="attendee-heading">
 
                     <span class="attendee-name">
@@ -290,10 +264,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
-
                 <div class="attendee-content">
-
-                    <!-- FULL NAME -->
 
                     <div class="form-group">
 
@@ -312,8 +283,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
-
-                    <!-- PHONE -->
 
                     <div class="form-group">
 
@@ -339,7 +308,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
-
                         <input
                             type="tel"
                             id="attendeePhone${attendeeNumber}"
@@ -349,8 +317,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                     </div>
 
-
-                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -376,7 +342,6 @@ function addAttendeeFields(ticketType, quantity) {
 
                         </div>
 
-
                         <input
                             type="email"
                             id="attendeeEmail${attendeeNumber}"
@@ -387,11 +352,10 @@ function addAttendeeFields(ticketType, quantity) {
                     </div>
 
                 </div>
-
             ;
-
-            attendeeFields.appendChild(box);
         }
+
+        attendeeFields.appendChild(box);
     }
 }
 
@@ -411,7 +375,6 @@ function toggleOrdererPhone(number) {
         document.getElementById(
             `attendeePhone${number}`
         );
-
 
     if (checkbox.checked) {
 
@@ -448,7 +411,6 @@ function toggleOrdererEmail(number) {
             `attendeeEmail${number}`
         );
 
-
     if (checkbox.checked) {
 
         emailInput.value =
@@ -474,17 +436,17 @@ function toggleOrdererEmail(number) {
 
 addAttendeeFields(
     "Main Hall",
-    ticketQuantities.mainHall
+    mainHallQuantity
 );
 
 addAttendeeFields(
     "VIP",
-    ticketQuantities.vip
+    vipQuantity
 );
 
 addAttendeeFields(
     "Watch Party",
-    ticketQuantities.watchParty
+    watchPartyQuantity
 );
 
 
@@ -499,7 +461,6 @@ document
         event.preventDefault();
 
         const attendees = [];
-
 
         for (let i = 1; i <= attendeeNumber; i++) {
 
@@ -533,12 +494,11 @@ document
 
         }
 
-
         localStorage.setItem(
             "attendees",
             JSON.stringify(attendees)
         );
-        
+
         sessionStorage.setItem(
             "attendeesCompleted",
             "true"
@@ -546,15 +506,14 @@ document
 
 
         /*
-         * If there are no Main Hall or VIP tickets,
-         * skip the Main Hall seating page and go
-         * directly to Watch Party seating.
+         * Watch Party-only purchases skip
+         * the Main Hall/VIP seating page.
          */
 
         if (
-            Number(ticketQuantities.mainHall || 0) === 0 &&
-            Number(ticketQuantities.vip || 0) === 0 &&
-            Number(ticketQuantities.watchParty || 0) > 0
+            mainHallQuantity === 0 &&
+            vipQuantity === 0 &&
+            watchPartyQuantity > 0
         ) {
 
             window.location.href =
@@ -562,27 +521,13 @@ document
 
         } else {
 
-           if (
-                Number(ticketQuantities.mainHall || 0) === 0 &&
-                Number(ticketQuantities.vip || 0) === 0 &&
-                Number(ticketQuantities.watchParty || 0) > 0
-            ) {
-            
-                window.location.href =
-                    "watch-party-seats.html";
-            
-            } else {
-            
-                window.location.href =
-                    "seats.html";
-            
-            }
+            window.location.href =
+                "seats.html";
 
         }
 
     });
 
-    
 </script>
 
 </body>
