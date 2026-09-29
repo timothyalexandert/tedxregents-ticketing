@@ -39,13 +39,13 @@
 
 
 <!-- back button -->
-<button
-    type="button"
-    class="ticketing-back-button"
-    onclick="window.location.href='details.html'"
->
-    ‹
-</button>
+    <button
+        type="button"
+        class="ticketing-back-button"
+        onclick="window.location.href='details.html'"
+    >
+        ‹
+    </button>
 
 
 <section class="details-section">
@@ -155,7 +155,7 @@ function addAttendeeFields(ticketType, quantity) {
             }
 
 
-            box.innerHTML = `
+            box.innerHTML = 
 
                 <summary class="attendee-heading">
 
@@ -266,7 +266,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
-            `;
+            ;
 
             attendeeFields.appendChild(box);
 
@@ -279,7 +279,7 @@ function addAttendeeFields(ticketType, quantity) {
                 "attendee-box";
 
 
-            box.innerHTML = `
+            box.innerHTML = 
 
                 <div class="attendee-heading">
 
@@ -388,7 +388,7 @@ function addAttendeeFields(ticketType, quantity) {
 
                 </div>
 
-            `;
+            ;
 
             attendeeFields.appendChild(box);
         }
@@ -543,20 +543,13 @@ document
             "attendeesCompleted",
             "true"
         );
-
-
-        if (
-            Number(ticketQuantities.mainHall || 0) > 0
-        ) {
-
+        
+        if (Number(ticketQuantities.mainHall || 0) > 0) {
             window.location.href =
                 "seats.html";
-
         } else {
-
             window.location.href =
                 "watch-party-seats.html";
-
         }
 
     });
