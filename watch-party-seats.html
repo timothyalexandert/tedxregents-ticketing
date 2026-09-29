@@ -5,17 +5,16 @@
 <head>
     <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <title>
+        Watch Party Seating — TEDxRegents Secondary School Bali YOUTH
+    </title>
 
-<title>
-    Watch Party Seating — TEDxRegents Secondary School Bali YOUTH
-</title>
-
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -23,12 +22,11 @@
 
 <header class="site-header">
 
-
-<img
-    src="logo-white.png"
-    alt="TEDxRegents Secondary School Bali YOUTH"
-    class="site-logo"
->
+    <img
+        src="logo-white.png"
+        alt="TEDxRegents Secondary School Bali YOUTH"
+        class="site-logo"
+    >
 
 </header>
 
@@ -86,11 +84,9 @@
         SEATING · WATCH PARTY
     </p>
 
-
     <h1 id="venueTitle">
         Choose your seats.
     </h1>
-
 
     <p
         class="subtitle"
@@ -99,10 +95,6 @@
         Select a seat for each Watch Party attendee.
     </p>
 
-
-    <!-- =====================================
-         SEATING AREA
-         ===================================== -->
 
     <div class="seating-layout">
 
@@ -245,84 +237,6 @@
 <script>
 
 /* =========================================
-   GO BACK
-   ========================================= */
-
-async function goBackFromWatchPartySeats() {
-
-    const checkout =
-        JSON.parse(
-            sessionStorage.getItem(
-                "checkout"
-            )
-        );
-
-
-    const checkoutId =
-        checkout?.checkoutId ||
-        null;
-
-
-    if (checkoutId) {
-
-        try {
-
-            await fetch(
-                "/api/release-cart",
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-                            checkoutId:
-                                checkoutId
-                        })
-                }
-            );
-
-        } catch (error) {
-
-            console.error(
-                error
-            );
-
-        }
-
-    }
-
-
-    localStorage.removeItem(
-        "selectedSeats"
-    );
-
-
-    sessionStorage.removeItem(
-        "pretixCart"
-    );
-
-
-    sessionStorage.removeItem(
-        "seatsCompleted"
-    );
-
-
-    sessionStorage.removeItem(
-        "watchPartySeatsCompleted"
-    );
-
-
-    window.location.href =
-        "seats.html";
-
-}
-
-
-/* =========================================
    LOAD DATA
    ========================================= */
 
@@ -367,6 +281,52 @@ const checkoutData =
 
 
 /* =========================================
+   GO BACK
+   ========================================= */
+
+function goBackFromWatchPartySeats() {
+
+    /*
+     * The Pretix cart has NOT been created yet.
+     * It is only created after all seating is complete.
+     *
+     * Therefore:
+     * - Do not call /api/release-cart
+     * - Keep Main Hall/VIP seats
+     * - Remove only Watch Party seats
+     */
+
+    watchPartyAttendees.forEach(
+        attendee => {
+
+            delete selectedSeats[
+                attendee.number
+            ];
+
+        }
+    );
+
+
+    localStorage.setItem(
+        "selectedSeats",
+        JSON.stringify(
+            selectedSeats
+        )
+    );
+
+
+    sessionStorage.removeItem(
+        "watchPartySeatsCompleted"
+    );
+
+
+    window.location.href =
+        "seats.html";
+
+}
+
+
+/* =========================================
    TOTAL TICKETS
    ========================================= */
 
@@ -406,47 +366,108 @@ const totalTickets =
 
 
 /* =========================================
-   BUILD WATCH PARTY ATTENDEES
+   BUILD ATTENDEES
    ========================================= */
+
+const mainHallAttendees = [];
 
 const watchPartyAttendees = [];
 
+let attendeeNumber = 1;
 
-let attendeeNumber =
-    Number(
-        ticketQuantities.mainHall ||
-        0
-    ) +
 
-    Number(
-        ticketQuantities.vip ||
-        0
-    ) +
-
-    1;
-
+/* =========================================
+   MAIN HALL
+   ========================================= */
 
 for (
     let i = 0;
-    i < ticketQuantities.watchParty;
+    i < Number(ticketQuantities.mainHall || 0);
+    i++
+) {
+
+    mainHallAttendees.push({
+
+        number:
+            attendeeNumber,
+
+        name:
+            attendees[
+                attendeeNumber - 1
+            ]?.name ||
+            `Attendee ${attendeeNumber}`,
+
+        package:
+            "Main Hall"
+
+    });
+
+
+    attendeeNumber++;
+
+}
+
+
+/* =========================================
+   VIP
+   ========================================= */
+
+for (
+    let i = 0;
+    i < Number(ticketQuantities.vip || 0);
+    i++
+) {
+
+    mainHallAttendees.push({
+
+        number:
+            attendeeNumber,
+
+        name:
+            attendees[
+                attendeeNumber - 1
+            ]?.name ||
+            `Attendee ${attendeeNumber}`,
+
+        package:
+            "VIP"
+
+    });
+
+
+    attendeeNumber++;
+
+}
+
+
+/* =========================================
+   WATCH PARTY
+   ========================================= */
+
+for (
+    let i = 0;
+    i < Number(ticketQuantities.watchParty || 0);
     i++
 ) {
 
     watchPartyAttendees.push({
 
         number:
-            attendeeNumber++,
+            attendeeNumber,
 
         name:
             attendees[
-                attendeeNumber - 2
+                attendeeNumber - 1
             ]?.name ||
-            `Attendee ${attendeeNumber - 1}`,
+            `Attendee ${attendeeNumber}`,
 
         package:
             "Watch Party"
 
     });
+
+
+    attendeeNumber++;
 
 }
 
@@ -1141,71 +1162,146 @@ function showSeatLoadingOverlay() {
    CREATE PRETIX CART
    ========================================= */
 
-
 async function createPretixCart() {
-    const checkoutId = getCheckoutId();
+
+    const checkoutId =
+        getCheckoutId();
+
 
     if (!checkoutId) {
-        throw new Error("Checkout session not found.");
-    }
 
-    const allSeats = [];
-
-    // Main Hall + VIP seats
-    mainHallAttendees.forEach((attendee) => {
-        const seat = selectedSeats[attendee.number];
-
-        if (!seat) {
-            throw new Error(
-                `No seat selected for Attendee ${attendee.number}.`
-            );
-        }
-
-        allSeats.push(seat);
-    });
-
-    // Watch Party seats
-    watchPartyAttendees.forEach((attendee) => {
-        const seat = selectedSeats[attendee.number];
-
-        if (!seat) {
-            throw new Error(
-                `No seat selected for Attendee ${attendee.number}.`
-            );
-        }
-
-        allSeats.push(seat);
-    });
-
-    const response = await fetch("/api/create-cart", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            checkoutId,
-            seats: allSeats
-        })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
         throw new Error(
-            data?.error ||
-            data?.pretix?.detail ||
-            "Could not reserve your seats."
+            "Checkout session not found."
         );
+
     }
+
+
+    /*
+     * Pretix expects the seats in exactly
+     * the same order as the reserved tickets.
+     *
+     * Main Hall → VIP → Watch Party
+     */
+
+    const allAttendees = [
+
+        ...mainHallAttendees,
+
+        ...watchPartyAttendees
+
+    ];
+
+
+    const allSeats =
+        allAttendees.map(
+            attendee => {
+
+                const seat =
+                    selectedSeats[
+                        attendee.number
+                    ];
+
+
+                if (
+                    !seat ||
+                    !seat.id
+                ) {
+
+                    throw new Error(
+                        `No seat selected for Attendee ${attendee.number}.`
+                    );
+
+                }
+
+
+                /*
+                 * IMPORTANT:
+                 * Send only the seat ID string.
+                 *
+                 * Backend expects:
+                 * "mainHall-A-1"
+                 *
+                 * NOT:
+                 * { id: "...", display: "..." }
+                 */
+
+                return seat.id;
+
+            }
+        );
+
+
+    if (
+        allSeats.length === 0
+    ) {
+
+        throw new Error(
+            "No tickets found."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            "/api/create-cart",
+            {
+                method:
+                    "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+
+                        checkoutId:
+                            checkoutId,
+
+                        seats:
+                            allSeats
+
+                    })
+
+            }
+        );
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !response.ok
+    ) {
+
+        throw new Error(
+
+            data?.error ||
+
+            data?.pretix?.detail ||
+
+            "Could not reserve your seats."
+
+        );
+
+    }
+
 
     sessionStorage.setItem(
         "pretixCart",
-        JSON.stringify(data)
+        JSON.stringify(
+            data
+        )
     );
 
-    return data;
-}
 
+    return data;
+
+}
 
 
 /* =========================================
