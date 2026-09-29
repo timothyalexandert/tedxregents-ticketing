@@ -6,11 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
+
 <title>Attendees — TEDxRegents Secondary School Bali YOUTH</title>
 
 <link rel="stylesheet" href="style.css">
-```
+
 
 </head>
 
@@ -26,7 +26,7 @@
 
 <main>
 
-```
+
 <div class="progress">
     <span>01 Tickets</span>
     <span>02 Details</span>
@@ -74,7 +74,7 @@
     </form>
 
 </section>
-```
+
 
 </main>
 
@@ -96,4 +96,482 @@ const ticketQuantities =
         };
 
 
-const ordererDetail
+const ordererDetails =
+    JSON.parse(localStorage.getItem("ordererDetails")) || {
+        name: "",
+        email: "",
+        phone: ""
+    };
+
+
+const attendeeFields =
+    document.getElementById("attendeeFields");
+
+
+let attendeeNumber = 0;
+
+
+const totalAttendees =
+    ticketQuantities.mainHall +
+    ticketQuantities.vip +
+    ticketQuantities.watchParty;
+
+console.log(
+    "Ticket quantities:",
+    ticketQuantities
+);
+
+console.log(
+    "Total attendees:",
+    totalAttendees
+);
+    
+/* =========================
+   ADD ATTENDEE FIELDS
+========================= */
+
+function addAttendeeFields(ticketType, quantity) {
+
+    for (let i = 1; i <= quantity; i++) {
+
+        attendeeNumber++;
+
+
+        /*
+            Use collapsible boxes for 3+ attendees.
+            Keep normal boxes for 1–2 attendees.
+        */
+
+        if (totalAttendees > 2) {
+
+            const box =
+                document.createElement("details");
+
+            box.className =
+                "attendee-box";
+
+            if (attendeeNumber === 1) {
+                box.open = true;
+            }
+
+
+            box.innerHTML = `
+
+                <summary class="attendee-heading">
+
+                    <span class="attendee-name">
+                        ATTENDEE ${attendeeNumber}
+                        <em> - ${ticketType}</em>
+                    </span>
+
+                    <span class="attendee-arrow">⌄</span>
+
+                </summary>
+
+
+                <div class="attendee-content">
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            `;
+
+            attendeeFields.appendChild(box);
+
+        } else {
+
+            const box =
+                document.createElement("div");
+
+            box.className =
+                "attendee-box";
+
+
+            box.innerHTML = `
+
+                <div class="attendee-heading">
+
+                    <span class="attendee-name">
+                        ATTENDEE ${attendeeNumber}
+                        <em> - ${ticketType}</em>
+                    </span>
+
+                </div>
+
+
+                <div class="attendee-content">
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="attendeeName${attendeeNumber}"
+                        >
+                            Full name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="attendeeName${attendeeNumber}"
+                            placeholder="Enter full name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeePhone${attendeeNumber}"
+                            >
+                                Phone number
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererPhone${attendeeNumber}"
+                                    onchange="toggleOrdererPhone(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="tel"
+                            id="attendeePhone${attendeeNumber}"
+                            placeholder="+62 812 3456 7890"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <div class="email-label-row">
+
+                            <label
+                                for="attendeeEmail${attendeeNumber}"
+                            >
+                                Email address
+                            </label>
+
+                            <label class="same-orderer">
+
+                                <input
+                                    type="checkbox"
+                                    id="sameAsOrdererEmail${attendeeNumber}"
+                                    onchange="toggleOrdererEmail(${attendeeNumber})"
+                                >
+
+                                <span>Same as orderer</span>
+
+                            </label>
+
+                        </div>
+
+
+                        <input
+                            type="email"
+                            id="attendeeEmail${attendeeNumber}"
+                            placeholder="you@example.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+            `;
+
+            attendeeFields.appendChild(box);
+        }
+    }
+}
+
+
+/* =========================
+   SAME AS ORDERER — PHONE
+========================= */
+
+function toggleOrdererPhone(number) {
+
+    const checkbox =
+        document.getElementById(
+            `sameAsOrdererPhone${number}`
+        );
+
+    const phoneInput =
+        document.getElementById(
+            `attendeePhone${number}`
+        );
+
+
+    if (checkbox.checked) {
+
+        phoneInput.value =
+            ordererDetails.phone;
+
+        phoneInput.disabled =
+            true;
+
+    } else {
+
+        phoneInput.value =
+            "";
+
+        phoneInput.disabled =
+            false;
+    }
+}
+
+
+/* =========================
+   SAME AS ORDERER — EMAIL
+========================= */
+
+function toggleOrdererEmail(number) {
+
+    const checkbox =
+        document.getElementById(
+            `sameAsOrdererEmail${number}`
+        );
+
+    const emailInput =
+        document.getElementById(
+            `attendeeEmail${number}`
+        );
+
+
+    if (checkbox.checked) {
+
+        emailInput.value =
+            ordererDetails.email;
+
+        emailInput.disabled =
+            true;
+
+    } else {
+
+        emailInput.value =
+            "";
+
+        emailInput.disabled =
+            false;
+    }
+}
+
+
+/* =========================
+   BUILD ATTENDEES
+========================= */
+
+addAttendeeFields(
+    "Main Hall",
+    ticketQuantities.mainHall
+);
+
+addAttendeeFields(
+    "VIP",
+    ticketQuantities.vip
+);
+
+addAttendeeFields(
+    "Watch Party",
+    ticketQuantities.watchParty
+);
+
+
+/* =========================
+   SAVE ATTENDEES
+========================= */
+
+document
+    .getElementById("attendeesForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const attendees = [];
+
+
+        for (let i = 1; i <= attendeeNumber; i++) {
+
+            attendees.push({
+
+                name:
+                    document
+                        .getElementById(
+                            `attendeeName${i}`
+                        )
+                        .value
+                        .trim(),
+
+                phone:
+                    document
+                        .getElementById(
+                            `attendeePhone${i}`
+                        )
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById(
+                            `attendeeEmail${i}`
+                        )
+                        .value
+                        .trim()
+
+            });
+
+        }
+
+
+        localStorage.setItem(
+            "attendees",
+            JSON.stringify(attendees)
+        );
+        
+        sessionStorage.setItem(
+            "attendeesCompleted",
+            "true"
+        );
+
+
+        /*
+         * If there are no Main Hall or VIP tickets,
+         * skip the Main Hall seating page and go
+         * directly to Watch Party seating.
+         */
+
+        if (
+            Number(ticketQuantities.mainHall || 0) === 0 &&
+            Number(ticketQuantities.vip || 0) === 0 &&
+            Number(ticketQuantities.watchParty || 0) > 0
+        ) {
+
+            window.location.href =
+                "watch-party-seats.html";
+
+        } else {
+
+            window.location.href =
+                "seats.html";
+
+        }
+
+    });
+
+    
+</script>
+
+</body>
+
+</html>
