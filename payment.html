@@ -25,8 +25,6 @@
 
 <main>
 
-    <!-- PROGRESS -->
-
     <div class="progress">
 
         <span>01 Tickets</span>
@@ -40,8 +38,6 @@
     </div>
 
 
-    <!-- BACK -->
-
     <button
         type="button"
         class="ticketing-back-button"
@@ -50,8 +46,6 @@
         ‹
     </button>
 
-
-    <!-- PAYMENT SECTION -->
 
     <section class="payment-section">
 
@@ -69,8 +63,6 @@
             Choose how you would like to pay for your order.
         </p>
 
-
-        <!-- PRICE BREAKDOWN -->
 
         <div class="payment-price-section">
 
@@ -107,8 +99,6 @@
         </div>
 
 
-        <!-- PAYMENT METHOD -->
-
         <div class="payment-heading">
 
             <h2>
@@ -119,8 +109,6 @@
 
 
         <div class="payment-methods">
-
-            <!-- CASH -->
 
             <label class="payment-option">
 
@@ -152,8 +140,6 @@
 
             </label>
 
-
-            <!-- BANK -->
 
             <label class="payment-option">
 
@@ -187,8 +173,6 @@
 
         </div>
 
-
-        <!-- BANK TRANSFER -->
 
         <div
             id="bankTransferSection"
@@ -258,8 +242,6 @@
             </div>
 
 
-            <!-- PROOF OF PAYMENT -->
-
             <div class="proof-section">
 
                 <h3>
@@ -312,8 +294,6 @@
         </div>
 
 
-        <!-- CASH INFO -->
-
         <div
             id="cashSection"
             class="cash-section"
@@ -341,8 +321,6 @@
         </div>
 
 
-        <!-- CONFIRM -->
-
         <button
             type="button"
             class="continue-button"
@@ -367,10 +345,6 @@
 
 
 <script>
-
-/* =========================
-   HELPERS
-========================= */
 
 function getStoredJSON(
     key,
@@ -420,9 +394,115 @@ function getSessionJSON(
 }
 
 
-/* =========================
-   LOAD ORDER DATA
-========================= */
+function showPaymentLoadingOverlay() {
+
+    const overlay =
+        document.createElement("div");
+
+    overlay.id =
+        "order-overlay";
+
+    overlay.style.position =
+        "fixed";
+
+    overlay.style.inset =
+        "0";
+
+    overlay.style.background =
+        "rgba(20, 33, 61, 0.48)";
+
+    overlay.style.backdropFilter =
+        "blur(14px)";
+
+    overlay.style.webkitBackdropFilter =
+        "blur(14px)";
+
+    overlay.style.zIndex =
+        "2147483647";
+
+    overlay.style.display =
+        "flex";
+
+    overlay.style.alignItems =
+        "center";
+
+    overlay.style.justifyContent =
+        "center";
+
+
+    const modal =
+        document.createElement("div");
+
+    modal.style.width =
+        "min(420px, calc(100vw - 48px))";
+
+    modal.style.maxWidth =
+        "420px";
+
+    modal.style.padding =
+        "40px 30px";
+
+    modal.style.background =
+        "#ffffff";
+
+    modal.style.borderRadius =
+        "20px";
+
+    modal.style.textAlign =
+        "center";
+
+    modal.style.boxShadow =
+        "0 20px 60px rgba(0,0,0,0.25)";
+
+
+    const spinner =
+        document.createElement("div");
+
+    spinner.className =
+        "order-spinner";
+
+
+    const heading =
+        document.createElement("h2");
+
+    heading.textContent =
+        "Creating your ticket...";
+
+
+    const paragraph =
+        document.createElement("p");
+
+    paragraph.textContent =
+        "Please wait while we confirm your order.";
+
+
+    modal.appendChild(
+        spinner
+    );
+
+    modal.appendChild(
+        heading
+    );
+
+    modal.appendChild(
+        paragraph
+    );
+
+
+    overlay.appendChild(
+        modal
+    );
+
+
+    document.body.appendChild(
+        overlay
+    );
+
+
+    return overlay;
+
+}
+
 
 const quantities =
     getStoredJSON(
@@ -437,10 +517,6 @@ const addons =
         {}
     );
 
-
-/* =========================
-   PRICES
-========================= */
 
 const ticketPrices = {
 
@@ -488,10 +564,6 @@ const addonPrices = {
 };
 
 
-/* =========================
-   CALCULATE TOTAL
-========================= */
-
 function calculateTotal() {
 
     const mainHallCount =
@@ -511,10 +583,6 @@ function calculateTotal() {
             quantities.watchParty
         ) || 0;
 
-
-    /* =========================
-       EARLY BIRD ALLOCATION
-    ========================= */
 
     const mainVipTotal =
         mainHallCount +
@@ -564,10 +632,6 @@ function calculateTotal() {
         watchPartyCount -
         watchPartyEarlyBird;
 
-
-    /* =========================
-       TICKET BREAKDOWN
-    ========================= */
 
     let ticketTotal = 0;
 
@@ -673,10 +737,6 @@ function calculateTotal() {
     );
 
 
-    /* =========================
-       ADD-ONS
-    ========================= */
-
     const addonNames = {
 
         toteBag:
@@ -771,10 +831,6 @@ function calculateTotal() {
     );
 
 
-    /* =========================
-       TICKETS SUBTOTAL
-    ========================= */
-
     if (
         addonTotal > 0
     ) {
@@ -806,10 +862,6 @@ function calculateTotal() {
 
     }
 
-
-    /* =========================
-       ADD-ONS SUBTOTAL
-    ========================= */
 
     if (
         addonTotal > 0
@@ -843,10 +895,6 @@ function calculateTotal() {
     }
 
 
-    /* =========================
-       GRAND TOTAL
-    ========================= */
-
     const grandTotal =
         ticketTotal +
         addonTotal;
@@ -868,10 +916,6 @@ function calculateTotal() {
 
 calculateTotal();
 
-
-/* =========================
-   PAYMENT METHOD
-========================= */
 
 const paymentOptions =
     document.querySelectorAll(
@@ -930,10 +974,6 @@ paymentOptions.forEach(
 );
 
 
-/* =========================
-   FILE UPLOAD
-========================= */
-
 const paymentProof =
     document.getElementById(
         "paymentProof"
@@ -974,10 +1014,6 @@ paymentProof.addEventListener(
 );
 
 
-/* =========================
-   CONFIRM PAYMENT
-========================= */
-
 const confirmButton =
     document.getElementById(
         "confirmPayment"
@@ -997,10 +1033,6 @@ confirmButton.addEventListener(
         paymentError.hidden =
             true;
 
-
-        /* =========================
-           PAYMENT METHOD
-        ========================= */
 
         const selectedMethod =
             document.querySelector(
@@ -1023,10 +1055,6 @@ confirmButton.addEventListener(
         }
 
 
-        /* =========================
-           BANK PROOF
-        ========================= */
-
         if (
             selectedMethod.value === "bank" &&
             paymentProof.files.length === 0
@@ -1042,10 +1070,6 @@ confirmButton.addEventListener(
 
         }
 
-
-        /* =========================
-           LOAD STORED DATA
-        ========================= */
 
         const checkout =
             getSessionJSON(
@@ -1088,10 +1112,6 @@ confirmButton.addEventListener(
                 {}
             );
 
-
-        /* =========================
-           VALIDATE CHECKOUT
-        ========================= */
 
         if (
             !checkout ||
@@ -1140,10 +1160,6 @@ confirmButton.addEventListener(
         }
 
 
-        /* =========================
-           PAYMENT PROOF NAME
-        ========================= */
-
         let paymentProofName =
             null;
 
@@ -1158,10 +1174,6 @@ confirmButton.addEventListener(
 
         }
 
-
-        /* =========================
-           SAVE PAYMENT DETAILS
-        ========================= */
 
         localStorage.setItem(
             "paymentMethod",
@@ -1187,23 +1199,15 @@ confirmButton.addEventListener(
         }
 
 
-        /* =========================
-           DISABLE BUTTON
-        ========================= */
-
         confirmButton.disabled =
             true;
 
 
-        confirmButton.textContent =
-            "Creating your ticket...";
+        const loadingOverlay =
+            showPaymentLoadingOverlay();
 
 
         try {
-
-            /* =========================
-               CREATE PRETIX ORDER
-            ========================= */
 
             const response =
                 await fetch(
@@ -1250,10 +1254,6 @@ confirmButton.addEventListener(
                 );
 
 
-            /* =========================
-               READ SERVER RESPONSE
-            ========================= */
-
             const responseText =
                 await response.text();
 
@@ -1283,10 +1283,6 @@ confirmButton.addEventListener(
 
             }
 
-
-            /* =========================
-               CHECK RESPONSE
-            ========================= */
 
             if (
                 !response.ok ||
@@ -1324,10 +1320,6 @@ confirmButton.addEventListener(
             }
 
 
-            /* =========================
-               SAVE PRETIX ORDER
-            ========================= */
-
             sessionStorage.setItem(
                 "pretixOrder",
                 JSON.stringify(
@@ -1349,19 +1341,11 @@ confirmButton.addEventListener(
             }
 
 
-            /* =========================
-               MARK PAYMENT COMPLETE
-            ========================= */
-
             sessionStorage.setItem(
                 "paymentCompleted",
                 "true"
             );
 
-
-            /* =========================
-               SUCCESS
-            ========================= */
 
             window.location.href =
                 "success.html";
@@ -1372,6 +1356,15 @@ confirmButton.addEventListener(
                 "Order creation error:",
                 error
             );
+
+
+            if (
+                loadingOverlay
+            ) {
+
+                loadingOverlay.remove();
+
+            }
 
 
             paymentError.textContent =
@@ -1385,10 +1378,6 @@ confirmButton.addEventListener(
 
             confirmButton.disabled =
                 false;
-
-
-            confirmButton.textContent =
-                "Confirm Payment Method";
 
         }
 
